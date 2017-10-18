@@ -69,7 +69,7 @@ formula_t *parse_dimacs_file(char *path)
                 goto cleanup;
             }
 
-            vars[v] = var < 0 ? var-- : var++;
+            vars[v] = var < 0 ? var++ : var--;
         }
 
         add_clause(formula, vars);
