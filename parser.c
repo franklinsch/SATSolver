@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void ignore_comments(FILE *fp)
+static void skip_comments(FILE *fp)
 {
     int read;
     for (read = fgetc(fp); read == 'c'; read = fgetc(fp))
@@ -23,12 +23,12 @@ static formula_t *parse_problem_line(FILE *fp)
 {
     char p;
     char cnf[4];
-    unsigned variables;
-    unsigned clauses;
+    unsigned num_variables;
+    unsigned num_clauses;
 
-    ignore_comments(fp);
+    skip_comments(fp);
 
-    fscanf(fp, "%c %s %u %u \n", &p, cnf, &variables, &clauses);
+    fscanf(fp, "%c %s %u %u \n", &p, cnf, &num_variables, &num_clauses);
 
     if (p != 'p')
         return NULL;
@@ -36,47 +36,53 @@ static formula_t *parse_problem_line(FILE *fp)
     if (strncmp(cnf, "cnf", 3))
         return NULL;
 
-    return alloc_formula(clauses, variables);
+    return alloc_formula(num_clauses, num_variables);
 }
 
 formula_t *parse_dimacs_file(char *path)
 {
+    // Need to decalre this here in case the fopen call fails so we have smth to return
+    formula_t * formula = NULL;
+
     FILE *fp = fopen(path, "r");
+
     if (!fp)
         goto cleanup;
 
-    formula_t *formula = parse_problem_line(fp);
+    formula = parse_problem_line(fp);
 
     if (!formula)
         goto cleanup;
 
-    for (unsigned c = 0; c < formula->clauses; ++c)
+    for (unsigned c = 0; c < formula->num_clauses; ++c)
     {
-        ignore_comments(fp);
-        int *vars = calloc(formula->variables, sizeof (int));
+        skip_comments(fp);
+        int *variables = calloc(formula->num_variables, sizeof (int));
 
-        for (int v = 0; v < formula->variables; ++v)
+        //This loop is completely fucked, works by chance (the break when we reach 0)
+        for (int v = 0; v < formula->num_variables; ++v)
         {
             int var;
             fscanf(fp, "%d ", &var);
-            
+
             if (var == 0)
                 break;
 
-            if (abs(var) > formula->variables)
+            if (abs(var) > formula->num_variables)
             {
-                printf("Unknown variable: %d at clause %u\n", var, c);
+                fprintf(stderr, "Unknown variable: %d at clause %u\n", var, c);
                 goto cleanup;
             }
 
-            vars[v] = var < 0 ? var++ : var--;
+            // Convert var to 0-based variable index, ternary operator handles the negative case
+            var = var < 0 ? var++ : var--;
+            variables[abs(var)] = var;
         }
 
-        add_clause(formula, vars);
+        add_clause(formula, variables);
     }
 
 cleanup:
     fclose(fp);
-
     return formula;
 }

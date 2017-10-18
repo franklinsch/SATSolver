@@ -3,11 +3,11 @@
 
 typedef struct
 {
-    unsigned clauses;
-    int variables
+    unsigned num_clauses;
+    int num_variables;
 } formula_t;
 
-formula_t *alloc_formula(unsigned clauses, unsigned variables);
+formula_t *alloc_formula(unsigned num_clauses, unsigned num_variables);
 
 void add_clause(formula_t *formula, int *variables);
 
