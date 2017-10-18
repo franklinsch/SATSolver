@@ -1,0 +1,83 @@
+#include "clause.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define CLAUSE_INIT_CAPACITY 4
+
+int clause_init(clause_t *clause)
+{
+    clause->size = 0;
+    clause->variables = malloc(CLAUSE_INIT_CAPACITY * sizeof (int));
+    clause->capacity = (sizeof clause->variables) / (sizeof (int));
+
+    return clause->capacity;
+}
+
+// Internal API for resizing the array underpinning a clause
+static void clause_resize(clause_t *clause, int capacity)
+{
+#ifdef NDEBUG
+    fprintf(stderr, "vector resize from %d to %d.\n", clause->capacity, capacity);
+#endif
+
+    int *vars = realloc(clause->variables, capacity * sizeof (int));
+    if (vars)
+    {
+        clause->variables = vars;
+        clause->capacity = capacity;
+    }
+}
+
+size_t clause_add_var(clause_t *clause, int var)
+{
+    // The array underlying array is full, we need more memory
+    if(clause->capacity == clause->size)
+    {
+        clause_resize(clause, clause->size * 2);
+    }
+    clause->variables[clause->size] = var;
+    return clause->size++;
+}
+
+void clause_delete_var(clause_t *clause, size_t index)
+{
+    if (index >= clause->size)
+        return;
+
+    // Shift all the remaining elements to the left
+    int *dst = clause->variables;
+    int *src = clause->variables + 1;
+    size_t amount = (clause->variables + clause->size) - (clause->variables + index + 1);
+    memmove(dst, src, amount);
+
+    clause->size--;
+
+    if (clause->size > 0 && clause->size <= clause->capacity)
+        clause_resize(clause, clause->capacity / 2);
+}
+
+int clause_get_var(clause_t *clause, size_t index)
+{
+    if (index >= clause->size)
+        return 0;
+
+    return clause->variables[index];
+}
+
+int clause_toggle_var(clause_t *clause, size_t index)
+{
+    if (index >= clause->size)
+        return 0;
+
+    int var = clause->variables[index];
+    clause->variables[index] = -var;
+
+    return var;
+}
+
+void clause_free(clause_t *clause)
+{
+    free(clause->variables);
+}

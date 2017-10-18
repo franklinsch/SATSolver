@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include "formula.h"
+#include "clause.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,28 +40,25 @@ static formula_t *parse_problem_line(FILE *fp)
     return alloc_formula(num_clauses, num_variables);
 }
 
-static int parse_clause(formula_t *formula, FILE *fp)
+static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
 {
-    int *variables = calloc(formula->num_variables, sizeof (int));
+    clause_t clause;
+    clause_init(&clause);
 
-    //This loop is completely fucked, works by chance (the break when we reach 0)
     int var;
-    fscanf(fp, "%d ", &var);
-    for(; var != 0; fscanf(fp, "%d ", &var))
+    for(fscanf(fp, "%d ", &var); var != 0; fscanf(fp, "%d ", &var))
     {
         if (abs(var) > formula->num_variables)
         {
-            fprintf(stderr, "Unknown variable: %d at clause %u\n", var, c);
+            fprintf(stderr, "Unknown variable: %d at clause %u\n", var, clause_index);
             // Report the error to the caller
             return 1;
         }
 
-        // Convert var to 0-based variable index, ternary operator handles the negative case
-        var = var < 0 ? var++ : var--;
-        variables[abs(var)] = var;
+        clause_add_var(&clause, var);
     }
 
-    add_clause(formula, variables);
+    add_clause(formula, clause);
     return 0;
 }
 
@@ -83,7 +81,7 @@ formula_t *parse_dimacs_file(char *path)
     {
         skip_comments(fp);
 
-        if(parse_clause(formula, fp))
+        if(parse_clause(formula, fp, c))
             goto cleanup;
     }
 
