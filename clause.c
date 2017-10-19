@@ -16,7 +16,7 @@ int clause_init(clause_t *clause)
 }
 
 // Internal API for resizing the array underpinning a clause
-static void clause_resize(clause_t *clause, int capacity)
+static void _clause_resize(clause_t *clause, int capacity)
 {
 #ifdef NDEBUG
     fprintf(stderr, "vector resize from %d to %d.\n", clause->capacity, capacity);
@@ -30,12 +30,17 @@ static void clause_resize(clause_t *clause, int capacity)
     }
 }
 
+void clause_reserve(clause_t *clause, size_t capacity)
+{
+    _clause_resize(clause, capacity);
+}
+
 size_t clause_add_var(clause_t *clause, int var)
 {
     // The array underlying array is full, we need more memory
     if(clause->capacity == clause->size)
     {
-        clause_resize(clause, clause->size * 2);
+        _clause_resize(clause, clause->size * 2);
     }
     clause->variables[clause->size] = var;
     return clause->size++;
@@ -55,7 +60,7 @@ void clause_delete_var(clause_t *clause, size_t index)
     clause->size--;
 
     if (clause->size > 0 && clause->size <= clause->capacity)
-        clause_resize(clause, clause->capacity / 2);
+        _clause_resize(clause, clause->capacity / 2);
 }
 
 int clause_get_var(clause_t *clause, size_t index)

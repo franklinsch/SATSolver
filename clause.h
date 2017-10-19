@@ -16,6 +16,12 @@ typedef struct
 int clause_init(clause_t *clause);
 
 /*
+ * Reserve in advance if size is known
+ */
+
+void clause_reserve(clause_t *clause, size_t capacity);
+
+/*
  * Adding and removing variables from the clause
  */
 size_t clause_add_var(clause_t *clause, int var);
