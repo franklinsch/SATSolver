@@ -52,9 +52,9 @@ void clause_delete_var(clause_t *clause, size_t index)
         return;
 
     // Shift all the remaining elements to the left
-    int *dst = clause->variables;
-    int *src = clause->variables + 1;
-    size_t amount = clause->size - index -1;
+    int *dst = clause->variables + index;
+    int *src = dst + 1;
+    size_t amount = clause->size - index - 1;
     memmove(dst, src, amount);
 
     clause->size--;
