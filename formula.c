@@ -19,6 +19,7 @@ formula_t *alloc_formula(unsigned num_clauses, unsigned num_variables)
 
 void add_clause(formula_t *formula, clause_t clause)
 {
+    // Double check that only up to num_clauses clauses are added to formula
     assert(formula->_curr_clause < formula->num_clauses);
     formula->clauses[formula->_curr_clause++] = clause;
 }
