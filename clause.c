@@ -59,7 +59,7 @@ void clause_delete_var(clause_t *clause, size_t index)
 
     clause->size--;
 
-    if (clause->size > 0 && clause->size <= clause->capacity)
+    if (clause->size > 0 && clause->size <= clause->capacity / 4)
         _clause_resize(clause, clause->capacity / 2);
 }
 
