@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 formula_t *alloc_formula(unsigned num_clauses, unsigned num_variables)
 {
@@ -18,6 +19,7 @@ formula_t *alloc_formula(unsigned num_clauses, unsigned num_variables)
 
 void add_clause(formula_t *formula, clause_t clause)
 {
+    assert(formula->_curr_clause < formula->num_clauses);
     formula->clauses[formula->_curr_clause++] = clause;
 }
 
