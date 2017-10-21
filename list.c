@@ -77,7 +77,7 @@ size_t size(list_t *list)
 size_t list_append(list_t *list, int value)
 {
     list_elem_t *elem = list_elem_new(value, list->footer->prev, list->footer);
-    list->footer->prev->next = elem; // ERROR: incomplete definition of type 'struct list_elem'
+    list->footer->prev->next = elem;
     list->footer->prev = elem;
 
     return 0;
