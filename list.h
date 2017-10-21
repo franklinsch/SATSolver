@@ -22,7 +22,7 @@ list_elem_t *list_elem_alloc();
 
 void list_elem_free();
 
-int list_init();
+list_t *list_new();
 
 bool is_empty(list_t *list);
 
