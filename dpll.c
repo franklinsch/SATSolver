@@ -4,8 +4,8 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#include <clause.h>
-#include <list.h>
+#include "clause.h"
+#include "list.h"
 
 // -- Helper data structures.
 
