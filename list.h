@@ -4,11 +4,11 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-typedef struct
+typedef struct list_elem_t
 {
     int value;
-    struct list_elem *prev;
-    struct list_elem *next;
+    struct list_elem_t *prev;
+    struct list_elem_t *next;
 } list_elem_t;
 
 typedef struct
