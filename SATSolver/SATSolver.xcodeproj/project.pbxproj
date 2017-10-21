@@ -12,6 +12,7 @@
 		0E3DC6001F9BAAAD00E1CDBA /* formula.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */; };
 		0E3DC6011F9BAAAD00E1CDBA /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */; };
 		0E3DC6041F9BAF0B00E1CDBA /* dpll.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC6031F9BAF0B00E1CDBA /* dpll.c */; };
+		0E3DC6071F9BAF6300E1CDBA /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC6051F9BAF6300E1CDBA /* list.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		0E3DC5FD1F9BAAAD00E1CDBA /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clause.h; path = ../../clause.h; sourceTree = "<group>"; };
 		0E3DC6021F9BAF0B00E1CDBA /* dpll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dpll.h; path = ../../dpll.h; sourceTree = "<group>"; };
 		0E3DC6031F9BAF0B00E1CDBA /* dpll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dpll.c; path = ../../dpll.c; sourceTree = "<group>"; };
+		0E3DC6051F9BAF6300E1CDBA /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list.c; path = ../../list.c; sourceTree = "<group>"; };
+		0E3DC6061F9BAF6300E1CDBA /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = list.h; path = ../../list.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,8 @@
 				0E3DC5F71F9BAAAD00E1CDBA /* parser.h */,
 				0E3DC6031F9BAF0B00E1CDBA /* dpll.c */,
 				0E3DC6021F9BAF0B00E1CDBA /* dpll.h */,
+				0E3DC6051F9BAF6300E1CDBA /* list.c */,
+				0E3DC6061F9BAF6300E1CDBA /* list.h */,
 			);
 			path = SATSolver;
 			sourceTree = "<group>";
@@ -142,6 +147,7 @@
 				0E3DC6041F9BAF0B00E1CDBA /* dpll.c in Sources */,
 				0E3DC6001F9BAAAD00E1CDBA /* formula.c in Sources */,
 				0E3DC5FE1F9BAAAD00E1CDBA /* clause.c in Sources */,
+				0E3DC6071F9BAF6300E1CDBA /* list.c in Sources */,
 				0E3DC5FF1F9BAAAD00E1CDBA /* parser.c in Sources */,
 				0E3DC6011F9BAAAD00E1CDBA /* sat.c in Sources */,
 			);
