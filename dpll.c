@@ -43,7 +43,7 @@ bool dpll(formula_t *formula)
   for (size_t i = 0; i < trivial_assignments->_size; ++i)
   {
     int assignment = list_get_at(trivial_assignments, i)->value;
-    assignments[abs(assignment)] = assignment;
+    assignments[abs(assignment)] = assignment < 0 ? -1 : 1;
   }
 
 
