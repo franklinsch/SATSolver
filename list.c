@@ -20,8 +20,8 @@ list_elem_t *list_elem_new(int value, list_elem_t *prev, list_elem_t *next)
 {
     list_elem_t *elem = list_elem_alloc();
     elem->value = value;
-    elem->prev = prev; // TODO: don't know why but this and line below throw warning. Codename CORNELIUS
-    elem->next = next; // Warning: codename Cornelius
+    elem->prev = prev; 
+    elem->next = next;
     return elem;
 }
 
@@ -42,9 +42,9 @@ list_t *list_new()
 
     list->header = list_elem_alloc();
     list->header->prev = NULL;
-    list->header->next = list->footer; // Warning: codename Cornelius
+    list->header->next = list->footer;
     list->footer = list_elem_alloc();
-    list->footer->prev = list->header; // Warning: codename Cornelius
+    list->footer->prev = list->header;
     list->footer->next = NULL;
 
     return list;
