@@ -18,11 +18,11 @@ typedef struct
     list_elem_t *footer;
 } list_t;
 
-list_elem_t *list_elem_alloc();
+list_elem_t *list_elem_alloc(void);
 
-void list_elem_free();
+void list_elem_free(list_elem_t *elem);
 
-list_t *list_new();
+list_t *list_new(void);
 
 bool is_empty(list_t *list);
 

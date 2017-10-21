@@ -1,6 +1,7 @@
 #include "dpll.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include <stdbool.h>
 
@@ -43,9 +44,13 @@ bool dpll(formula_t *formula)
   for (size_t i = 0; i < trivial_assignments->_size; ++i)
   {
     int assignment = list_get_at(trivial_assignments, i)->value;
+    if (assignments[abs(assignment)] != assignment)
+    {
+      // Two trivial clauses have conflicting variable values.
+      return false;
+    }
     assignments[abs(assignment)] = assignment < 0 ? -1 : 1;
   }
-
 
   // hashmap_t *watch_literal_map = hashmap_alloc();
   
@@ -72,7 +77,7 @@ static list_t *get_trivial_assignments(formula_t *formula)
   {
     if (c->size == 1) 
     {
-      list_append(assignments, c->variables[0]);
+      list_append(assignments, *(c->variables));
     }
   }
 
