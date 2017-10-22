@@ -13,10 +13,7 @@
 
 // A BCP assignment made to a variable.
 typedef struct {
-  int variable;
-  
-  // The target value of literal after the assignment.
-  bool value;
+  int value;
   
   // The depth at which we assigned.
   int depth;
