@@ -1,0 +1,292 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0E3DC5FE1F9BAAAD00E1CDBA /* clause.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5F81F9BAAAD00E1CDBA /* clause.c */; };
+		0E3DC5FF1F9BAAAD00E1CDBA /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FA1F9BAAAD00E1CDBA /* parser.c */; };
+		0E3DC6001F9BAAAD00E1CDBA /* formula.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */; };
+		0E3DC6011F9BAAAD00E1CDBA /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0E3DC5EB1F9BAA9700E1CDBA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0E3DC5ED1F9BAA9700E1CDBA /* SATSolver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SATSolver; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E3DC5F71F9BAAAD00E1CDBA /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../../parser.h; sourceTree = "<group>"; };
+		0E3DC5F81F9BAAAD00E1CDBA /* clause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clause.c; path = ../../clause.c; sourceTree = "<group>"; };
+		0E3DC5F91F9BAAAD00E1CDBA /* formula.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = formula.h; path = ../../formula.h; sourceTree = "<group>"; };
+		0E3DC5FA1F9BAAAD00E1CDBA /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parser.c; path = ../../parser.c; sourceTree = "<group>"; };
+		0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = formula.c; path = ../../formula.c; sourceTree = "<group>"; };
+		0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sat.c; path = ../../sat.c; sourceTree = "<group>"; };
+		0E3DC5FD1F9BAAAD00E1CDBA /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clause.h; path = ../../clause.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0E3DC5EA1F9BAA9700E1CDBA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0E3DC5E41F9BAA9700E1CDBA = {
+			isa = PBXGroup;
+			children = (
+				0E3DC5EF1F9BAA9700E1CDBA /* SATSolver */,
+				0E3DC5EE1F9BAA9700E1CDBA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0E3DC5EE1F9BAA9700E1CDBA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0E3DC5ED1F9BAA9700E1CDBA /* SATSolver */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0E3DC5EF1F9BAA9700E1CDBA /* SATSolver */ = {
+			isa = PBXGroup;
+			children = (
+				0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */,
+				0E3DC5F81F9BAAAD00E1CDBA /* clause.c */,
+				0E3DC5FD1F9BAAAD00E1CDBA /* clause.h */,
+				0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */,
+				0E3DC5F91F9BAAAD00E1CDBA /* formula.h */,
+				0E3DC5FA1F9BAAAD00E1CDBA /* parser.c */,
+				0E3DC5F71F9BAAAD00E1CDBA /* parser.h */,
+			);
+			path = SATSolver;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E3DC5EC1F9BAA9700E1CDBA /* SATSolver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0E3DC5F41F9BAA9700E1CDBA /* Build configuration list for PBXNativeTarget "SATSolver" */;
+			buildPhases = (
+				0E3DC5E91F9BAA9700E1CDBA /* Sources */,
+				0E3DC5EA1F9BAA9700E1CDBA /* Frameworks */,
+				0E3DC5EB1F9BAA9700E1CDBA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SATSolver;
+			productName = SATSolver;
+			productReference = 0E3DC5ED1F9BAA9700E1CDBA /* SATSolver */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0E3DC5E51F9BAA9700E1CDBA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = "Franklin Schrans";
+				TargetAttributes = {
+					0E3DC5EC1F9BAA9700E1CDBA = {
+						CreatedOnToolsVersion = 9.0.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 0E3DC5E81F9BAA9700E1CDBA /* Build configuration list for PBXProject "SATSolver" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0E3DC5E41F9BAA9700E1CDBA;
+			productRefGroup = 0E3DC5EE1F9BAA9700E1CDBA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E3DC5EC1F9BAA9700E1CDBA /* SATSolver */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0E3DC5E91F9BAA9700E1CDBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E3DC6001F9BAAAD00E1CDBA /* formula.c in Sources */,
+				0E3DC5FE1F9BAAAD00E1CDBA /* clause.c in Sources */,
+				0E3DC5FF1F9BAAAD00E1CDBA /* parser.c in Sources */,
+				0E3DC6011F9BAAAD00E1CDBA /* sat.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0E3DC5F21F9BAA9700E1CDBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0E3DC5F31F9BAA9700E1CDBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0E3DC5F51F9BAA9700E1CDBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5QKHN66STV;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0E3DC5F61F9BAA9700E1CDBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5QKHN66STV;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0E3DC5E81F9BAA9700E1CDBA /* Build configuration list for PBXProject "SATSolver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E3DC5F21F9BAA9700E1CDBA /* Debug */,
+				0E3DC5F31F9BAA9700E1CDBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0E3DC5F41F9BAA9700E1CDBA /* Build configuration list for PBXNativeTarget "SATSolver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E3DC5F51F9BAA9700E1CDBA /* Debug */,
+				0E3DC5F61F9BAA9700E1CDBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0E3DC5E51F9BAA9700E1CDBA /* Project object */;
+}
