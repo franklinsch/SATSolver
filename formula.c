@@ -48,6 +48,11 @@ void print_formula(formula_t *formula)
     {
         printf("p cnf %d %u\n", formula->num_variables, formula->num_clauses);
     }
+    else
+    {
+        fprintf(stderr, "%s: The formula is empty.\n", __FUNCTION__);
+        return;
+    }
 
     clause_t *end = (formula->clauses + formula->num_clauses);
     for (clause_t *c = formula->clauses; c < end; ++c)
