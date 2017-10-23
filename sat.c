@@ -12,6 +12,12 @@ int main(int argc, char **argv) {
 
     formula_t *formula = parse_dimacs_file(argv[1]);
 
+    // There is no formula for some reason we can not continue
+    if (!formula)
+    {
+        exit(EXIT_FAILURE);
+    }
+
     formula_print(formula);
 
     // Free the formula and its associated clauses

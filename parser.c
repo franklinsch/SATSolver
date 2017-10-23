@@ -66,15 +66,12 @@ static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
 
 formula_t *parse_dimacs_file(char *path)
 {
-    // Need to decalre this here in case the fopen call fails so we have smth to return
-    formula_t * formula = NULL;
-
     FILE *fp = fopen(path, "r");
 
     if (!fp)
-        goto cleanup;
+        return NULL;
 
-    formula = parse_problem_line(fp);
+    formula_t *formula = parse_problem_line(fp);
 
     if (!formula)
         goto cleanup;
