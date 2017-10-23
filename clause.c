@@ -6,7 +6,7 @@
 
 #define CLAUSE_INIT_CAPACITY 4
 
-int clause_init(clause_t *clause)
+size_t clause_init(clause_t *clause)
 {
     clause->size = 0;
     clause->variables = malloc(CLAUSE_INIT_CAPACITY * sizeof (int));
@@ -16,7 +16,7 @@ int clause_init(clause_t *clause)
 }
 
 // Internal API for resizing the array underpinning a clause
-static void _clause_resize(clause_t *clause, int capacity)
+static void _clause_resize(clause_t *clause, size_t capacity)
 {
 #ifdef NDEBUG
     fprintf(stderr, "vector resize from %d to %d.\n", clause->capacity, capacity);

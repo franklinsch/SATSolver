@@ -13,7 +13,7 @@ typedef struct
 /*
  * Initialise a clause
  */
-int clause_init(clause_t *clause);
+size_t clause_init(clause_t *clause);
 
 /*
  * Reserve in advance if size is known
