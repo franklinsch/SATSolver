@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0E3DC5FE1F9BAAAD00E1CDBA /* clause.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5F81F9BAAAD00E1CDBA /* clause.c */; };
-		0E3DC5FF1F9BAAAD00E1CDBA /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FA1F9BAAAD00E1CDBA /* parser.c */; };
-		0E3DC6001F9BAAAD00E1CDBA /* formula.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */; };
-		0E3DC6011F9BAAAD00E1CDBA /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */; };
+		0E6260401F9E01C60063465A /* clause.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603A1F9E01C50063465A /* clause.c */; };
+		0E6260411F9E01C60063465A /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603C1F9E01C50063465A /* parser.c */; };
+		0E6260421F9E01C60063465A /* formula.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603D1F9E01C50063465A /* formula.c */; };
+		0E6260431F9E01C60063465A /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603E1F9E01C50063465A /* sat.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,13 +27,13 @@
 
 /* Begin PBXFileReference section */
 		0E3DC5ED1F9BAA9700E1CDBA /* SATSolver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SATSolver; sourceTree = BUILT_PRODUCTS_DIR; };
-		0E3DC5F71F9BAAAD00E1CDBA /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../../parser.h; sourceTree = "<group>"; };
-		0E3DC5F81F9BAAAD00E1CDBA /* clause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clause.c; path = ../../clause.c; sourceTree = "<group>"; };
-		0E3DC5F91F9BAAAD00E1CDBA /* formula.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = formula.h; path = ../../formula.h; sourceTree = "<group>"; };
-		0E3DC5FA1F9BAAAD00E1CDBA /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parser.c; path = ../../parser.c; sourceTree = "<group>"; };
-		0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = formula.c; path = ../../formula.c; sourceTree = "<group>"; };
-		0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sat.c; path = ../../sat.c; sourceTree = "<group>"; };
-		0E3DC5FD1F9BAAAD00E1CDBA /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clause.h; path = ../../clause.h; sourceTree = "<group>"; };
+		0E6260391F9E01C50063465A /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../../parser.h; sourceTree = "<group>"; };
+		0E62603A1F9E01C50063465A /* clause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clause.c; path = ../../clause.c; sourceTree = "<group>"; };
+		0E62603B1F9E01C50063465A /* formula.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = formula.h; path = ../../formula.h; sourceTree = "<group>"; };
+		0E62603C1F9E01C50063465A /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parser.c; path = ../../parser.c; sourceTree = "<group>"; };
+		0E62603D1F9E01C50063465A /* formula.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = formula.c; path = ../../formula.c; sourceTree = "<group>"; };
+		0E62603E1F9E01C50063465A /* sat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sat.c; path = ../../sat.c; sourceTree = "<group>"; };
+		0E62603F1F9E01C50063465A /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clause.h; path = ../../clause.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,7 +50,7 @@
 		0E3DC5E41F9BAA9700E1CDBA = {
 			isa = PBXGroup;
 			children = (
-				0E3DC5EF1F9BAA9700E1CDBA /* SATSolver */,
+				0E6260381F9E01B60063465A /* SATSolver */,
 				0E3DC5EE1F9BAA9700E1CDBA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -63,16 +63,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0E3DC5EF1F9BAA9700E1CDBA /* SATSolver */ = {
+		0E6260381F9E01B60063465A /* SATSolver */ = {
 			isa = PBXGroup;
 			children = (
-				0E3DC5FC1F9BAAAD00E1CDBA /* sat.c */,
-				0E3DC5F81F9BAAAD00E1CDBA /* clause.c */,
-				0E3DC5FD1F9BAAAD00E1CDBA /* clause.h */,
-				0E3DC5FB1F9BAAAD00E1CDBA /* formula.c */,
-				0E3DC5F91F9BAAAD00E1CDBA /* formula.h */,
-				0E3DC5FA1F9BAAAD00E1CDBA /* parser.c */,
-				0E3DC5F71F9BAAAD00E1CDBA /* parser.h */,
+				0E62603A1F9E01C50063465A /* clause.c */,
+				0E62603F1F9E01C50063465A /* clause.h */,
+				0E62603D1F9E01C50063465A /* formula.c */,
+				0E62603B1F9E01C50063465A /* formula.h */,
+				0E62603C1F9E01C50063465A /* parser.c */,
+				0E6260391F9E01C50063465A /* parser.h */,
+				0E62603E1F9E01C50063465A /* sat.c */,
 			);
 			path = SATSolver;
 			sourceTree = "<group>";
@@ -134,10 +134,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E3DC6001F9BAAAD00E1CDBA /* formula.c in Sources */,
-				0E3DC5FE1F9BAAAD00E1CDBA /* clause.c in Sources */,
-				0E3DC5FF1F9BAAAD00E1CDBA /* parser.c in Sources */,
-				0E3DC6011F9BAAAD00E1CDBA /* sat.c in Sources */,
+				0E6260421F9E01C60063465A /* formula.c in Sources */,
+				0E6260411F9E01C60063465A /* parser.c in Sources */,
+				0E6260431F9E01C60063465A /* sat.c in Sources */,
+				0E6260401F9E01C60063465A /* clause.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
