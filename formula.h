@@ -11,12 +11,35 @@ typedef struct formula
     clause_t *clauses;
 } formula_t;
 
-formula_t *alloc_formula(unsigned num_clauses, unsigned num_variables);
+/**
+ Initialise a formula
 
-void add_clause(formula_t *formula, clause_t clause);
+ @param formula pointer to the formula struct
+ @param num_clause number of clauses in the formula
+ @param num_variables number of variables in the formula
+*/
+void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variables);
 
-void dealloc_formula(formula_t *formula);
+/**
+ Add a clause to the formula
 
-void print_formula(formula_t *formula);
+ @param formula pointer to the formula struct
+ @param clause clause to add to the formula
+*/
+void formula_add_clause(formula_t *formula, clause_t clause);
+
+/**
+ Free ressources associated to a formula
+
+ @param formula pointer to the formula struct
+*/
+void formula_free(formula_t *formula);
+
+/**
+ Print the formula in dimacs format
+
+ @param formula pointer to the formula struct
+*/
+void formula_print(formula_t *formula);
 
 #endif // !FORMULA_H
