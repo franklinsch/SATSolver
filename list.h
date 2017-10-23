@@ -13,19 +13,16 @@ typedef struct list_elem_t
 
 typedef struct
 {
-    size_t size;
+    int length;
     list_elem_t *header;
     list_elem_t *footer;
 } list_t;
 
-
 void list_init(list_t *list);
 
-bool is_empty(list_t *list);
+int list_length(list_t *list);
 
-size_t size(list_t *list);
-
-size_t list_append(list_t *list, int value);
+int list_append(list_t *list, int value);
 
 list_elem_t* list_get_at(list_t *list, size_t pos);
 

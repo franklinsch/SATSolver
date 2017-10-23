@@ -32,7 +32,7 @@ void list_elem_free(list_elem_t *elem)
 
 void list_init(list_t *list)
 {
-    list->size = 0;
+    list->length = 0;
 
     list->header = list_elem_alloc();
     list->header->prev = NULL;
@@ -56,17 +56,17 @@ void list_dealloc(list_t *list)
     }
 }
 
-bool is_empty(list_t *list)
+int list_length(list_t *list)
 {
-    return list->size == 0;
+    return list->length;
 }
 
-size_t size(list_t *list)
-{
-    return list->size;
-}
+/**
+ Appends value to the list, and returns the new length of the list.
 
-size_t list_append(list_t *list, int value)
+ @return The length of the list after appending.
+ */
+int list_append(list_t *list, int value)
 {
     list_elem_t *elem = list_elem_new(value, list->footer->prev, list->footer);
     list->footer->prev->next = elem;
