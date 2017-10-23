@@ -72,5 +72,5 @@ int list_append(list_t *list, int value)
     list->footer->prev->next = elem;
     list->footer->prev = elem;
 
-    return 0;
+    return ++list->length;
 }
