@@ -17,7 +17,7 @@ void clause_init(clause_t *clause)
 static void _clause_resize(clause_t *clause, size_t capacity)
 {
 #ifdef NDEBUG
-    fprintf(stderr, "%s: vector resize from %d to %d.\n", __func__, clause->capacity, capacity);
+    fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, clause->capacity, capacity);
 #endif
 
     int *vars = realloc(clause->variables, capacity * sizeof (int));
