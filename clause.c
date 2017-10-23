@@ -13,7 +13,7 @@ void clause_init(clause_t *clause)
     clause->_capacity = (sizeof clause->variables) / (sizeof (int));
 }
 
-// Internal API for resizing the array underpinning a clause
+// Internal API for resizing the array underpinning a clause.
 static void _clause_resize(clause_t *clause, size_t capacity)
 {
 #ifdef NDEBUG
@@ -35,7 +35,7 @@ void clause_reserve(clause_t *clause, size_t capacity)
 
 size_t clause_add_var(clause_t *clause, int var)
 {
-    // The array underlying array is full, we need more memory
+    // The array underlying array is full, we need more memory.
     if(clause->_capacity == clause->size)
     {
         _clause_resize(clause, clause->size * 2);
@@ -49,7 +49,7 @@ void clause_delete_var(clause_t *clause, size_t index)
     if (index >= clause->size)
         return;
 
-    // Shift all the remaining elements to the left
+    // Shift all the remaining elements to the left.
     int *dst = clause->variables + index;
     int *src = dst + 1;
     size_t amount = clause->size - index - 1;
@@ -67,17 +67,6 @@ int clause_get_var(clause_t *clause, size_t index)
         return 0;
 
     return clause->variables[index];
-}
-
-int clause_toggle_var(clause_t *clause, size_t index)
-{
-    if (index >= clause->size)
-        return 0;
-
-    int var = clause->variables[index];
-    clause->variables[index] = -var;
-
-    return var;
 }
 
 void clause_free(clause_t *clause)

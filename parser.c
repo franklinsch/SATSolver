@@ -53,7 +53,7 @@ static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
         if (abs(var) > formula->num_variables)
         {
             fprintf(stderr, "Unknown variable: %d at clause %u\n", var, clause_index);
-            // Report the error to the caller
+            // Report the error to the caller.
             return 1;
         }
 
