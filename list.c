@@ -5,6 +5,17 @@
 #include <stdbool.h>
 #include <assert.h>
 
+// MARK: Internal data structures
+
+typedef struct list_elem_t
+{
+    void *value;
+    struct list_elem_t *prev;
+    struct list_elem_t *next;
+} list_elem_t;
+
+// MARK: Functions
+
 list_elem_t *list_elem_alloc()
 {
     list_elem_t *elem = malloc(sizeof(list_elem_t));
@@ -17,7 +28,7 @@ list_elem_t *list_elem_alloc()
     return elem;
 }
 
-list_elem_t *list_elem_new(int value, list_elem_t *prev, list_elem_t *next)
+list_elem_t *list_elem_new(void *value, list_elem_t *prev, list_elem_t *next)
 {
     list_elem_t *elem = list_elem_alloc();
     elem->value = value;
@@ -59,20 +70,22 @@ void list_dealloc(list_t *list)
 
 /**
  Appends value to the list, and returns the new length of the list.
+ 
+ @return The index at which the element has been added in the list.
  */
-void list_append(list_t *list, int value)
+size_t list_append(list_t *list, void *value)
 {
     list_elem_t *elem = list_elem_new(value, list->footer->prev, list->footer);
     list->footer->prev->next = elem;
     list->footer->prev = elem;
 
-    list->size++;
+    return list->size++;
 }
 
 /**
  Returns the element at pos in the given list.
  */
-int list_get_at(list_t *list, int pos)
+void *list_get_at(list_t *list, int pos)
 {
     assert(pos < list->size);
     list_elem_t *curr = list->header;
