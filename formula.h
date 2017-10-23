@@ -15,7 +15,7 @@ typedef struct formula
  Initialise a formula
 
  @param formula pointer to the formula struct
- @param num_clause number of clauses in the formula
+ @param num_clauses number of clauses in the formula
  @param num_variables number of variables in the formula
 */
 void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variables);
