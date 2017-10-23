@@ -32,7 +32,7 @@ void list_elem_free(list_elem_t *elem)
 
 void list_init(list_t *list)
 {
-    list->_size = 0;
+    list->size = 0;
 
     list->header = list_elem_alloc();
     list->header->prev = NULL;
@@ -58,12 +58,12 @@ void list_dealloc(list_t *list)
 
 bool is_empty(list_t *list)
 {
-    return list->_size == 0;
+    return list->size == 0;
 }
 
 size_t size(list_t *list)
 {
-    return list->_size;
+    return list->size;
 }
 
 size_t list_append(list_t *list, int value)

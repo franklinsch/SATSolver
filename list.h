@@ -13,7 +13,7 @@ typedef struct list_elem_t
 
 typedef struct
 {
-    size_t _size;
+    size_t size;
     list_elem_t *header;
     list_elem_t *footer;
 } list_t;
