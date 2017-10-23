@@ -30,14 +30,8 @@ void list_elem_free(list_elem_t *elem)
     free(elem);
 }
 
-list_t *list_new()
+void list_init(list_t *list)
 {
-    list_t *list = malloc(sizeof(list_t));
-    if (!list)
-    {
-        perror("list_new");
-        exit(EXIT_FAILURE);
-    }
     list->_size = 0;
 
     list->header = list_elem_alloc();
@@ -46,8 +40,6 @@ list_t *list_new()
     list->footer = list_elem_alloc();
     list->footer->prev = list->header;
     list->footer->next = NULL;
-
-    return list;
 }
 
 void list_dealloc(list_t *list)
