@@ -50,6 +50,7 @@ void print_formula(formula_t *formula)
     }
     else
     {
+        fprintf(stderr, "%s: The formula is empty.\n", __FUNCTION__);
         return;
     }
 
