@@ -35,6 +35,23 @@ void node_init(node_t *node, formula_t *formula, int depth)
     node->num_children = 0;
 }
 
+void node_free(node_t *node)
+{
+    free(node->assignments);
+    free(node->parents);
+    free(node->children);
+}
+
+void node_add_parent(node_t *node, node_t *parent)
+{
+    node->parents[node->num_parents++] = parent;
+}
+
+void node_add_children(node_t *node, node_t *child)
+{
+   node->children[node->num_children++] = child;
+}
+
 #define ASSIGNMENT_NOT_FOUND 0
 
 /**
@@ -53,6 +70,32 @@ static int find_assignment(node_t *node, int variable)
     return ASSIGNMENT_NOT_FOUND;
 }
 
+/**
+ From the top.
+ */
+static bool is_assigned(node_t *root, int variable)
+{
+    if (root == NULL) return false;
+    
+//    node_t **end = root->children + root->num_children;
+//    for (node_t **curr = root->children; curr != end; curr++)
+//    {
+//        if (abs((*curr)->assignments[0]) == abs(variable)) return true;
+//        if (is_assigned(*curr, variable)) return true;
+//    }
+    
+    if (abs(root->assignments[0]) == abs(variable)) return true;
+    if (is_assigned(root->children[0], variable)) return true;
+    
+    return false;
+}
+
+static void delete_node(node_t *curr)
+{
+    curr->parents[0]->children[0] = NULL;
+    node_free(curr);
+}
+
 bool dpll(formula_t *formula)
 {
     
@@ -62,23 +105,46 @@ bool dpll(formula_t *formula)
     node_t *curr = &root;
     
     clause_t *end = formula->clauses + formula->num_clauses;
+    
     for (clause_t *clause = formula->clauses; clause != end; clause++)
     {
         for (int i = 0; i < clause->size; i++)
         {
             int variable = clause_get_var(clause, i);
-            if (find_assignment(curr, variable) == ASSIGNMENT_NOT_FOUND)
+            int assignment = find_assignment(curr, variable);
+            if (assignment == ASSIGNMENT_NOT_FOUND)
             {
-                node_t new_assignment;
-                node_init(&new_assignment, formula, 0);
-                new_assignment.parents[0] = curr;
-                curr->children[0] = &new_assignment;
+                node_t *new_assignment = malloc(sizeof (node_t));
+                node_init(new_assignment, formula, curr->depth + 1);
+                new_assignment->assignments[0] = variable;
+                node_add_parent(new_assignment, curr);
+                node_add_children(curr, new_assignment);
+                
+                curr = new_assignment;
+            }
+            else if (assignment == variable)
+            {
+                continue;
+            }
+            else
+            {
+                node_t *parent = curr->parents[0];
+                delete_node(curr);
+                curr = parent;
             }
         }
     }
     
-    free(root.children);
-    free(root.parents);
-    free(root.assignments);
-    return false;
+    // SAT
+
+    bool all_assigned = true;
+    
+    for (int i = 1; i <= formula->num_variables; i++)
+    {
+        all_assigned &= is_assigned(&root, i);
+    }
+    
+break_clause:
+    node_free(&root);
+    return all_assigned;
 }

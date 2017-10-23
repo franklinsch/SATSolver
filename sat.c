@@ -1,5 +1,6 @@
 #include "formula.h"
 #include "parser.h"
+#include "dpll.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,12 +20,12 @@ int main(int argc, char **argv) {
     }
 
     formula_print(formula);
+    
+    printf("%s\n", dpll(formula) ? "SAT" : "UNSAT");
 
     // Free the formula and its associated clauses.
     formula_free(formula);
     free(formula);
-
-    printf("UNSAT\n");
 
     exit(EXIT_SUCCESS);
 }
