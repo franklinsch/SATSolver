@@ -6,13 +6,11 @@
 
 #define CLAUSE_INIT_CAPACITY 4
 
-size_t clause_init(clause_t *clause)
+void clause_init(clause_t *clause)
 {
     clause->size = 0;
     clause->variables = malloc(CLAUSE_INIT_CAPACITY * sizeof (int));
     clause->_capacity = (sizeof clause->variables) / (sizeof (int));
-
-    return clause->_capacity;
 }
 
 // Internal API for resizing the array underpinning a clause
