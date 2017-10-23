@@ -48,6 +48,10 @@ void print_formula(formula_t *formula)
     {
         printf("p cnf %d %u\n", formula->num_variables, formula->num_clauses);
     }
+    else
+    {
+        return;
+    }
 
     clause_t *end = (formula->clauses + formula->num_clauses);
     for (clause_t *c = formula->clauses; c < end; ++c)
