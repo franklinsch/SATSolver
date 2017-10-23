@@ -33,7 +33,7 @@ void list_elem_free(list_elem_t *elem)
 
 void list_init(list_t *list)
 {
-    list->length = 0;
+    list->size = 0;
 
     list->header = list_elem_alloc();
     list->header->prev = NULL;
@@ -57,23 +57,16 @@ void list_dealloc(list_t *list)
     }
 }
 
-int list_length(list_t *list)
-{
-    return list->length;
-}
-
 /**
  Appends value to the list, and returns the new length of the list.
-
- @return The length of the list after appending.
  */
-int list_append(list_t *list, int value)
+void list_append(list_t *list, int value)
 {
     list_elem_t *elem = list_elem_new(value, list->footer->prev, list->footer);
     list->footer->prev->next = elem;
     list->footer->prev = elem;
 
-    return ++list->length;
+    list->size++;
 }
 
 /**
@@ -81,7 +74,7 @@ int list_append(list_t *list, int value)
  */
 int list_get_at(list_t *list, int pos)
 {
-    assert(pos < list->length);
+    assert(pos < list->size);
     list_elem_t *curr = list->header;
     
     for (int i = 0; i < pos; i++) { curr = curr->next; };
@@ -94,7 +87,7 @@ int list_get_at(list_t *list, int pos)
  */
 void list_remove_at(list_t *list, int pos)
 {
-    assert(pos < list->length);
+    assert(pos < list->size);
     list_elem_t *curr = list->header;
     
     for (int i = 0; i < pos; i++) { curr = curr->next; }
