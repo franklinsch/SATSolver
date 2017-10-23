@@ -12,9 +12,17 @@ int main(int argc, char **argv) {
 
     formula_t *formula = parse_dimacs_file(argv[1]);
 
-    print_formula(formula);
+    // There is no formula for some reason we can not continue.
+    if (!formula)
+    {
+        exit(EXIT_FAILURE);
+    }
 
-    dealloc_formula(formula);
+    formula_print(formula);
+
+    // Free the formula and its associated clauses.
+    formula_free(formula);
+    free(formula);
 
     printf("UNSAT\n");
 

@@ -37,7 +37,9 @@ static formula_t *parse_problem_line(FILE *fp)
     if (strncmp(cnf, "cnf", 3))
         return NULL;
 
-    return alloc_formula(num_clauses, num_variables);
+    formula_t *formula = malloc(sizeof (formula_t));
+    formula_init(formula, num_clauses, num_variables);
+    return formula;
 }
 
 static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
@@ -51,28 +53,25 @@ static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
         if (abs(var) > formula->num_variables)
         {
             fprintf(stderr, "Unknown variable: %d at clause %u\n", var, clause_index);
-            // Report the error to the caller
+            // Report the error to the caller.
             return 1;
         }
 
         clause_add_var(&clause, var);
     }
 
-    add_clause(formula, clause);
+    formula_add_clause(formula, clause);
     return 0;
 }
 
 formula_t *parse_dimacs_file(char *path)
 {
-    // Need to decalre this here in case the fopen call fails so we have smth to return
-    formula_t * formula = NULL;
-
     FILE *fp = fopen(path, "r");
 
     if (!fp)
-        goto cleanup;
+        return NULL;
 
-    formula = parse_problem_line(fp);
+    formula_t *formula = parse_problem_line(fp);
 
     if (!formula)
         goto cleanup;
