@@ -6,7 +6,7 @@
 typedef struct
 {
     size_t size;
-    size_t capacity;
+    size_t _capacity;
     int *variables;
 } clause_t;
 
