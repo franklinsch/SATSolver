@@ -40,7 +40,7 @@ void formula_print(formula_t *formula)
 {
     if (!formula)
     {
-        fprintf(stderr, "%s: The formula is empty.\n", __FUNCTION__);
+        fprintf(stderr, "%s: The formula is empty.\n", __func__);
         return;
     }
 

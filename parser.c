@@ -37,7 +37,9 @@ static formula_t *parse_problem_line(FILE *fp)
     if (strncmp(cnf, "cnf", 3))
         return NULL;
 
-    return alloc_formula(num_clauses, num_variables);
+    formula_t *formula = malloc(sizeof (formula_t));
+    formula_init(formula, num_clauses, num_variables);
+    return formula;
 }
 
 static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
@@ -58,7 +60,7 @@ static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
         clause_add_var(&clause, var);
     }
 
-    add_clause(formula, clause);
+    formula_add_clause(formula, clause);
     return 0;
 }
 

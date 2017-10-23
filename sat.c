@@ -12,9 +12,11 @@ int main(int argc, char **argv) {
 
     formula_t *formula = parse_dimacs_file(argv[1]);
 
-    print_formula(formula);
+    formula_print(formula);
 
-    dealloc_formula(formula);
+    // Free the formula and its associated clauses
+    formula_free(formula);
+    free(formula);
 
     printf("UNSAT\n");
 
