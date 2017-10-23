@@ -24,8 +24,8 @@ int list_length(list_t *list);
 
 int list_append(list_t *list, int value);
 
-list_elem_t* list_get_at(list_t *list, size_t pos);
+int list_get_at(list_t *list, int pos);
 
-void list_remove_at(list_t *list, size_t pos);
+void list_remove_at(list_t *list, int pos);
 
 #endif // !LIST_H

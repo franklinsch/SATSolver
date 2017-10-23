@@ -1,8 +1,9 @@
 #include "list.h"
 
-#include "stdlib.h"
-#include "stdio.h"
-#include "stdbool.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <assert.h>
 
 list_elem_t *list_elem_alloc()
 {
@@ -73,4 +74,32 @@ int list_append(list_t *list, int value)
     list->footer->prev = elem;
 
     return ++list->length;
+}
+
+/**
+ Returns the element at pos in the given list.
+ */
+int list_get_at(list_t *list, int pos)
+{
+    assert(pos < list->length);
+    list_elem_t *curr = list->header;
+    
+    for (int i = 0; i < pos; i++) { curr = curr->next; };
+    
+    return curr->value;
+}
+
+/**
+ Removes the element at pos in the given list.
+ */
+void list_remove_at(list_t *list, int pos)
+{
+    assert(pos < list->length);
+    list_elem_t *curr = list->header;
+    
+    for (int i = 0; i < pos; i++) { curr = curr->next; }
+    
+    list_elem_t *prev = curr->prev;
+    prev->next = curr->next;
+    curr->next->prev = prev;
 }
