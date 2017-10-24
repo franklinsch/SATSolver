@@ -24,11 +24,11 @@ static int choose_var(int num_variables, implication_graph_node_t *node)
 
 EVALUATION _dpll(formula_t *formula, implication_graph_node_t *node)
 {
-    int variable = choose_var(formula->num_variables, node);
     EVALUATION evaluation = formula_evaluate(formula, node);
     
     if (evaluation == EVALUATION_UNDETERMINED)
     {
+        int variable = choose_var(formula->num_variables, node);
         implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
         EVALUATION result = _dpll(formula, child);
         

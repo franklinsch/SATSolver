@@ -8,6 +8,7 @@
 void implication_graph_node_init(implication_graph_node_t *node, formula_t *formula, unsigned depth)
 {
     node->depth = depth;
+    node->formula = formula;
 
     node->assignments = calloc(formula->num_variables, sizeof (int));
     node->num_assignments = formula->num_variables;
