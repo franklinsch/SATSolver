@@ -21,7 +21,6 @@ void implication_graph_node_init(implication_graph_node_t *node, formula_t *form
 
 static void _implication_graph_node_free(implication_graph_node_t *node)
 {
-    //TODO: Fix this
     free(node->assignments);
     free(node->parents);
     free(node->children);
@@ -36,7 +35,7 @@ void implication_graph_node_add_child(implication_graph_node_t *node, int variab
 {
     if (abs(variable) > node->formula->num_variables)
     {
-        fprintf(stderr, "%s: variable %d is invalid for the current formula.", __func__, variable);
+        fprintf(stderr, "%s: Variable %d is invalid for the current formula.", __func__, variable);
         return;
     }
 

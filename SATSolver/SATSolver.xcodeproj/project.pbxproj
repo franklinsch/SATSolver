@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0E6260401F9E01C60063465A /* clause.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603A1F9E01C50063465A /* clause.c */; };
-		0E6260411F9E01C60063465A /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603C1F9E01C50063465A /* parser.c */; };
-		0E6260421F9E01C60063465A /* formula.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603D1F9E01C50063465A /* formula.c */; };
-		0E6260431F9E01C60063465A /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E62603E1F9E01C50063465A /* sat.c */; };
-		0EE870E31F9E3F6A00D708B1 /* dpll.c in Sources */ = {isa = PBXBuildFile; fileRef = 0EE870E21F9E3F6A00D708B1 /* dpll.c */; };
+		0E6A2E1B1F9F5F0800839042 /* clause.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E111F9F5F0800839042 /* clause.c */; };
+		0E6A2E1C1F9F5F0800839042 /* formula.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E141F9F5F0800839042 /* formula.c */; };
+		0E6A2E1D1F9F5F0800839042 /* implication_graph.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E151F9F5F0800839042 /* implication_graph.c */; };
+		0E6A2E1E1F9F5F0800839042 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E161F9F5F0800839042 /* parser.c */; };
+		0E6A2E1F1F9F5F0800839042 /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E171F9F5F0800839042 /* sat.c */; };
+		0E6A2E201F9F5F0800839042 /* dpll.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E191F9F5F0800839042 /* dpll.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,15 +29,17 @@
 
 /* Begin PBXFileReference section */
 		0E3DC5ED1F9BAA9700E1CDBA /* SATSolver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SATSolver; sourceTree = BUILT_PRODUCTS_DIR; };
-		0E6260391F9E01C50063465A /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../../parser.h; sourceTree = "<group>"; };
-		0E62603A1F9E01C50063465A /* clause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clause.c; path = ../../clause.c; sourceTree = "<group>"; };
-		0E62603B1F9E01C50063465A /* formula.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = formula.h; path = ../../formula.h; sourceTree = "<group>"; };
-		0E62603C1F9E01C50063465A /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parser.c; path = ../../parser.c; sourceTree = "<group>"; };
-		0E62603D1F9E01C50063465A /* formula.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = formula.c; path = ../../formula.c; sourceTree = "<group>"; };
-		0E62603E1F9E01C50063465A /* sat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sat.c; path = ../../sat.c; sourceTree = "<group>"; };
-		0E62603F1F9E01C50063465A /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clause.h; path = ../../clause.h; sourceTree = "<group>"; };
-		0EE870E11F9E3F4000D708B1 /* dpll.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dpll.h; path = ../../dpll.h; sourceTree = "<group>"; };
-		0EE870E21F9E3F6A00D708B1 /* dpll.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = dpll.c; path = ../../dpll.c; sourceTree = "<group>"; };
+		0E6A2E101F9F5F0800839042 /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		0E6A2E111F9F5F0800839042 /* clause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = clause.c; sourceTree = "<group>"; };
+		0E6A2E121F9F5F0800839042 /* formula.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = formula.h; sourceTree = "<group>"; };
+		0E6A2E131F9F5F0800839042 /* implication_graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = implication_graph.h; sourceTree = "<group>"; };
+		0E6A2E141F9F5F0800839042 /* formula.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = formula.c; sourceTree = "<group>"; };
+		0E6A2E151F9F5F0800839042 /* implication_graph.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = implication_graph.c; sourceTree = "<group>"; };
+		0E6A2E161F9F5F0800839042 /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parser.c; sourceTree = "<group>"; };
+		0E6A2E171F9F5F0800839042 /* sat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sat.c; sourceTree = "<group>"; };
+		0E6A2E181F9F5F0800839042 /* dpll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpll.h; sourceTree = "<group>"; };
+		0E6A2E191F9F5F0800839042 /* dpll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dpll.c; sourceTree = "<group>"; };
+		0E6A2E1A1F9F5F0800839042 /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clause.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,17 +72,20 @@
 		0E6260381F9E01B60063465A /* SATSolver */ = {
 			isa = PBXGroup;
 			children = (
-				0E62603A1F9E01C50063465A /* clause.c */,
-				0E62603F1F9E01C50063465A /* clause.h */,
-				0E62603D1F9E01C50063465A /* formula.c */,
-				0E62603B1F9E01C50063465A /* formula.h */,
-				0E62603C1F9E01C50063465A /* parser.c */,
-				0E6260391F9E01C50063465A /* parser.h */,
-				0E62603E1F9E01C50063465A /* sat.c */,
-				0EE870E11F9E3F4000D708B1 /* dpll.h */,
-				0EE870E21F9E3F6A00D708B1 /* dpll.c */,
+				0E6A2E111F9F5F0800839042 /* clause.c */,
+				0E6A2E1A1F9F5F0800839042 /* clause.h */,
+				0E6A2E191F9F5F0800839042 /* dpll.c */,
+				0E6A2E181F9F5F0800839042 /* dpll.h */,
+				0E6A2E141F9F5F0800839042 /* formula.c */,
+				0E6A2E121F9F5F0800839042 /* formula.h */,
+				0E6A2E151F9F5F0800839042 /* implication_graph.c */,
+				0E6A2E131F9F5F0800839042 /* implication_graph.h */,
+				0E6A2E161F9F5F0800839042 /* parser.c */,
+				0E6A2E101F9F5F0800839042 /* parser.h */,
+				0E6A2E171F9F5F0800839042 /* sat.c */,
 			);
-			path = SATSolver;
+			name = SATSolver;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,11 +145,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0EE870E31F9E3F6A00D708B1 /* dpll.c in Sources */,
-				0E6260421F9E01C60063465A /* formula.c in Sources */,
-				0E6260411F9E01C60063465A /* parser.c in Sources */,
-				0E6260431F9E01C60063465A /* sat.c in Sources */,
-				0E6260401F9E01C60063465A /* clause.c in Sources */,
+				0E6A2E1D1F9F5F0800839042 /* implication_graph.c in Sources */,
+				0E6A2E201F9F5F0800839042 /* dpll.c in Sources */,
+				0E6A2E1C1F9F5F0800839042 /* formula.c in Sources */,
+				0E6A2E1E1F9F5F0800839042 /* parser.c in Sources */,
+				0E6A2E1F1F9F5F0800839042 /* sat.c in Sources */,
+				0E6A2E1B1F9F5F0800839042 /* clause.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
