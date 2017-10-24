@@ -4,6 +4,6 @@
 #include "formula.h"
 #include <stdbool.h>
 
-bool dpll(formula_t *formula);
+bool dpll(formula_t *formula, int assignments[]);
 
 #endif // !DPLL_H

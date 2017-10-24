@@ -47,10 +47,13 @@ EVALUATION _dpll(formula_t *formula, implication_graph_node_t *node)
     return evaluation;
 }
 
-bool dpll(formula_t *formula)
+bool dpll(formula_t *formula, int assignments[])
 {
     implication_graph_node_t root;
     implication_graph_node_init(&root, formula, 0);
+
+    EVALUATION evaluation = _dpll(formula, &root);
+    assignments = flatten_assignments(&root);
     
-    return _dpll(formula, &root);
+    return evaluation == EVALUATION_TRUE ? true : false;
 }

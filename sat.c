@@ -18,10 +18,10 @@ int main(int argc, char **argv) {
     {
         exit(EXIT_FAILURE);
     }
-
-    formula_print(formula);
     
-    printf("%s\n", dpll(formula) == EVALUATION_TRUE ? "SAT" : "UNSAT");
+    int assignments[formula->num_variables];
+
+    printf("%s\n", dpll(formula, &assignments) == EVALUATION_TRUE ? "SAT" : "UNSAT");
 
     // Free the formula and its associated clauses.
     formula_free(formula);
