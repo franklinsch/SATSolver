@@ -43,14 +43,20 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
         // At least one variable should be unassigned, otherwise formula_evaluate would not
         // have returned EVALUATION_UNDETERMINED.
         assert(variable != CHOOSE_VAR_ALL_ASSIGNED);
+        
+        // Create a new assignment setting the variable to the positive value.
         implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
+        
         result = _dpll(formula, child);
         
         EVALUATION evaluation = result.evaluation;
         
         if (evaluation == EVALUATION_FALSE)
         {
+            // Remove the assignment made previously.
             implication_graph_node_delete(child);
+            
+            // Create a new assignment with the negated value and run DPLL again.
             child = implication_graph_node_add_child(node, -variable);
             return _dpll(formula, child);
         }
