@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 
     formula_print(formula);
     
-    printf("%s\n", dpll(formula) ? "SAT" : "UNSAT");
+    printf("%s\n", dpll(formula) == EVALUATION_TRUE ? "SAT" : "UNSAT");
 
     // Free the formula and its associated clauses.
     formula_free(formula);

@@ -68,7 +68,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "tests/test1.cnf"
+            argument = "tests/test4.cnf"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
