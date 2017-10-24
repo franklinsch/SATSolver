@@ -2,6 +2,8 @@
 sat
 .DS_Store
 
+_tests.sh
+
 ### Xcode ###
 # Xcode
 #
