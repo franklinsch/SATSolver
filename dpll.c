@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 struct dpll_result
 {
@@ -59,11 +60,12 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 
 static void flatten_assignments(implication_graph_node_t *leaf, int assignments[])
 {
-    int num_assigned = 0;
+    // Set all the values of assignments to DPLL_ASSIGNMENT_DONT_CARE.
+    memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (int) * (leaf->formula->num_variables));
     
     for (implication_graph_node_t *node = leaf; node->depth > 0; node = node->parents[0])
     {
-        assignments[num_assigned++] = node->assignments[0];
+        assignments[abs(node->assignments[0]) - 1] = node->assignments[0];
     }
 }
 

@@ -9,7 +9,14 @@ static void print_assignments(int assignments[], int num_variables)
 {
     for (int i = 0; i < num_variables; i++)
     {
-        printf("%d ", assignments[i]);
+        if (assignments[i] == DPLL_ASSIGNMENT_DONT_CARE)
+        {
+            printf("%d ", i + 1);
+        }
+        else
+        {
+            printf("%d ", assignments[i]);
+        }
     }
     printf("\n");
 }

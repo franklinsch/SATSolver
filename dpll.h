@@ -5,6 +5,8 @@
 #include "evaluation.h"
 #include <stdbool.h>
 
+#define DPLL_ASSIGNMENT_DONT_CARE 0
+
 /**
  Computes whether a formula is satisfiable.
 
