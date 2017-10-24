@@ -11,7 +11,7 @@ void implication_graph_node_init(implication_graph_node_t *node, formula_t *form
     node->formula = formula;
 
     node->assignments = calloc(formula->num_variables, sizeof (int));
-    node->num_assignments = formula->num_variables;
+    node->num_assignments = 0;
 
     node->parents = calloc(1, sizeof (implication_graph_node_t *));
     node->num_parents = 0;
