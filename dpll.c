@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <assert.h>
 
 struct dpll_result
 {
@@ -38,6 +39,10 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
     if (evaluation == EVALUATION_UNDETERMINED)
     {
         int variable = choose_var(formula->num_variables, node);
+        
+        // At least one variable should be unassigned, otherwise formula_evaluate would not
+        // have returned EVALUATION_UNDETERMINED.
+        assert(variable != CHOOSE_VAR_ALL_ASSIGNED);
         implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
         result = _dpll(formula, child);
         
