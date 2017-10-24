@@ -32,8 +32,9 @@ void implication_graph_node_init(implication_graph_node_t *node, formula_t *form
  Add a child to the given implication graph node.
 
  @param variable The variable assignment we are adding to the child.
+ @return The new child.
 */
-void implication_graph_node_add_child(implication_graph_node_t *node, int variable);
+implication_graph_node_t *implication_graph_node_add_child(implication_graph_node_t *node, int variable);
 
 /**
  Deletes the given implication graph node. This removes the node from its parents' children.

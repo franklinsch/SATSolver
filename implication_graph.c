@@ -31,12 +31,12 @@ static void implication_graph_node_add_parent(implication_graph_node_t *node, im
     node->parents[node->num_parents++] = parent;
 }
 
-void implication_graph_node_add_child(implication_graph_node_t *node, int variable)
+implication_graph_node_t *implication_graph_node_add_child(implication_graph_node_t *node, int variable)
 {
     if (abs(variable) > node->formula->num_variables)
     {
         fprintf(stderr, "%s: Variable %d is invalid for the current formula.", __func__, variable);
-        return;
+        return NULL;
     }
 
     implication_graph_node_t *child = malloc(sizeof (implication_graph_node_t));
@@ -45,6 +45,8 @@ void implication_graph_node_add_child(implication_graph_node_t *node, int variab
 
     node->children[node->num_children++] = child;
     implication_graph_node_add_parent(child, node);
+    
+    return child;
 }
 
 void implication_graph_node_delete(implication_graph_node_t *node)
