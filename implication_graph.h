@@ -27,11 +27,6 @@ typedef struct implication_graph_node_t
 void implication_graph_node_init(implication_graph_node_t *node, formula_t *formula, unsigned depth);
 
 /**
- Frees the resources associated to the given implication graph node.
-*/
-void implication_graph_node_free(implication_graph_node_t *node);
-
-/**
  Add a child to the given implication graph node.
 
  @param variable The variable assignment we are adding to the child.
