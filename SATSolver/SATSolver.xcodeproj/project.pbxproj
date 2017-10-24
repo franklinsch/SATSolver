@@ -40,6 +40,7 @@
 		0E6A2E181F9F5F0800839042 /* dpll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpll.h; sourceTree = "<group>"; };
 		0E6A2E191F9F5F0800839042 /* dpll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dpll.c; sourceTree = "<group>"; };
 		0E6A2E1A1F9F5F0800839042 /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clause.h; sourceTree = "<group>"; };
+		0E6A2E211F9F651000839042 /* evaluation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evaluation.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +79,7 @@
 				0E6A2E181F9F5F0800839042 /* dpll.h */,
 				0E6A2E141F9F5F0800839042 /* formula.c */,
 				0E6A2E121F9F5F0800839042 /* formula.h */,
+				0E6A2E211F9F651000839042 /* evaluation.h */,
 				0E6A2E151F9F5F0800839042 /* implication_graph.c */,
 				0E6A2E131F9F5F0800839042 /* implication_graph.h */,
 				0E6A2E161F9F5F0800839042 /* parser.c */,

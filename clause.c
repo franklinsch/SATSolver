@@ -33,9 +33,9 @@ void clause_reserve(clause_t *clause, size_t capacity)
     _clause_resize(clause, capacity);
 }
 
-CLAUSE_EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
 {
-    CLAUSE_EVALUATION evaluation = CLAUSE_EVALUATION_FALSE;
+    EVALUATION evaluation = EVALUATION_FALSE;
     
     int *end = clause->variables + clause->size;
     for (int *curr = clause->variables; curr < end; curr++)
@@ -44,11 +44,11 @@ CLAUSE_EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *no
         
         if (*curr == assignment_value)
         {
-            return CLAUSE_EVALUATION_TRUE;
+            return EVALUATION_TRUE;
         }
         else if (assignment_value == ASSIGNMENT_NOT_FOUND)
         {
-            evaluation = CLAUSE_EVALUATION_UNDETERMINED;
+            evaluation = EVALUATION_UNDETERMINED;
         }
     }
     

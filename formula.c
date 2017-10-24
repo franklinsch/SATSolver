@@ -13,6 +13,28 @@ void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variabl
     formula->clauses = malloc(num_clauses * sizeof (clause_t));
 }
 
+EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node)
+{
+    EVALUATION evaluation = EVALUATION_TRUE;
+    
+    clause_t *end = formula->clauses + formula->num_clauses;
+    for (clause_t *curr = formula->clauses; curr < end; curr++)
+    {
+        EVALUATION curr_evaluation = clause_evaluate(curr, node);
+        switch (curr_evaluation)
+        {
+            // If one of the clauses evaluates to false, the formula is false.
+            case EVALUATION_FALSE: return EVALUATION_FALSE;
+            
+            // If one of the clauses cannot be evaluated, the formula cannot be either.
+            case EVALUATION_UNDETERMINED: evaluation = EVALUATION_UNDETERMINED; break;
+            default: break;
+        }
+    }
+    
+    return evaluation;
+}
+
 void formula_add_clause(formula_t *formula, clause_t clause)
 {
     // Double check that only up to num_clauses clauses are added to formula.
