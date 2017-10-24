@@ -1,6 +1,8 @@
 #include "dpll.h"
-#include "formula.h"
+
 #include "clause.h"
+#include "formula.h"
+#include "implication_graph.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
