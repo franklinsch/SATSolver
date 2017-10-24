@@ -19,7 +19,7 @@ void implication_graph_node_init(implication_graph_node_t *node, formula_t *form
     node->num_children = 0;
 }
 
-void implication_graph_node_free(implication_graph_node_t *node)
+static void _implication_graph_node_free(implication_graph_node_t *node)
 {
     //TODO: Fix this
     free(node->assignments);
@@ -69,8 +69,14 @@ void implication_graph_node_delete(implication_graph_node_t *node)
         }
     }
 
+    implication_graph_node_t *child_end = *(node->children) + node->num_children;
+    for (implication_graph_node_t *child = *(node->children); child < child_end; child++)
+    {
+        implication_graph_node_delete(child);
+    }
+
     // We have cleaned up all the references to ourselves so we can clean up.
-    implication_graph_node_free(node);
+    _implication_graph_node_free(node);
     free(node);
 }
 
@@ -83,7 +89,7 @@ int implication_graph_find_assignment(implication_graph_node_t *node, int variab
             return *ass;
     }
 
-    int *par_end = *(node->parents) + node->num_parents;
+    implication_graph_node_t *par_end = *(node->parents) + node->num_parents;
     int assigned = ASSIGNMENT_NOT_FOUND;
     for (implication_graph_node_t *par = *(node->parents); par < par_end; par++)
     {
