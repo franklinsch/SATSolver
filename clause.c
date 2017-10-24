@@ -33,6 +33,28 @@ void clause_reserve(clause_t *clause, size_t capacity)
     _clause_resize(clause, capacity);
 }
 
+CLAUSE_EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
+{
+    CLAUSE_EVALUATION evaluation = CLAUSE_EVALUATION_FALSE;
+    
+    int *end = clause->variables + clause->size;
+    for (int *curr = clause->variables; curr < end; curr++)
+    {
+        int assignment_value = implication_graph_find_assignment(node, *curr);
+        
+        if (*curr == assignment_value)
+        {
+            return CLAUSE_EVALUATION_TRUE;
+        }
+        else if (assignment_value == ASSIGNMENT_NOT_FOUND)
+        {
+            evaluation = CLAUSE_EVALUATION_UNDETERMINED;
+        }
+    }
+    
+    return evaluation;
+}
+
 size_t clause_add_var(clause_t *clause, int var)
 {
     // The array underlying array is full, we need more memory.

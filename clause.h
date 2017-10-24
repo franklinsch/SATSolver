@@ -36,9 +36,9 @@ void clause_reserve(clause_t *clause, size_t capacity);
  the assignment tree, up to the root.
 
  @param node The current assignment node. This function traverses its parents
- @return <#return value description#>
+ @return The result of the evaluation.
  */
-int clause_evaluate(clause_t *clause, implication_graph_node_t *node);
+CLAUSE_EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node);
 
 /**
  Add a variable to the clause. This function does not check if the variable is
