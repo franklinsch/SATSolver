@@ -69,18 +69,18 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
     return result;
 }
 
-static void flatten_assignments(implication_graph_node_t *leaf, int assignments[])
+static void flatten_assignments(implication_graph_node_t *leaf, bool assignments[])
 {
     // Set all the values of assignments to DPLL_ASSIGNMENT_DONT_CARE.
-    memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (int) * (leaf->formula->num_variables));
+    memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (bool) * (leaf->formula->num_variables));
     
     for (implication_graph_node_t *node = leaf; node->depth > 0; node = node->parents[0])
     {
-        assignments[abs(node->assignments[0]) - 1] = node->assignments[0];
+        assignments[abs(node->assignments[0]) - 1] = node->assignments[0] > 0;
     }
 }
 
-bool dpll(formula_t *formula, int assignments[])
+bool dpll(formula_t *formula, bool assignments[])
 {
     implication_graph_node_t root;
     implication_graph_node_init(&root, formula, 0);

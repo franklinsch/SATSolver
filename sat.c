@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void print_assignments(int assignments[], int num_variables)
+static void print_assignments(bool assignments[], int num_variables)
 {
-    for (int i = 0; i < num_variables; i++)
+    for (int variable = 1; variable <= num_variables; variable++)
     {
-        printf("%d%s",
-               assignments[i] == DPLL_ASSIGNMENT_DONT_CARE ? i + 1 : assignments[i],
-               i < num_variables - 1 ? " " : "");
+        // If the assignment is negative, make the variable negative.
+        int value = (assignments[variable - 1] ? 1 : -1) * variable;
+        printf("%d%s", value, variable < num_variables ? " " : "");
     }
     printf("\n");
 }
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     
-    int assignments[formula->num_variables];
+    bool assignments[formula->num_variables];
 
     bool is_sat = dpll(formula, assignments);
     
