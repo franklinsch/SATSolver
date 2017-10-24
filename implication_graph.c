@@ -67,6 +67,7 @@ void implication_graph_node_delete(implication_graph_node_t *node)
                 // We are moving pointers so pointer difference is correct.
                 size_t n = child_end - child;
                 memmove(dst, src, n);
+                par->num_children--;
             }
         }
     }
