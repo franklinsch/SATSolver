@@ -16,7 +16,7 @@ void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variabl
 EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node)
 {
     EVALUATION evaluation = EVALUATION_TRUE;
-    
+
     clause_t *end = formula->clauses + formula->num_clauses;
     for (clause_t *curr = formula->clauses; curr < end; curr++)
     {
@@ -25,13 +25,13 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node)
         {
             // If one of the clauses evaluates to false, the formula is false.
             case EVALUATION_FALSE: return EVALUATION_FALSE;
-            
+
             // If one of the clauses cannot be evaluated, the formula cannot be either.
             case EVALUATION_UNDETERMINED: evaluation = EVALUATION_UNDETERMINED; break;
             default: break;
         }
     }
-    
+
     return evaluation;
 }
 

@@ -47,7 +47,7 @@ size_t clause_add_var(clause_t *clause, int var);
 
 /**
  Remove a variable from the clause.
- 
+
  @param index The index of the element to delete.
 */
 void clause_delete_var(clause_t *clause, size_t index);

@@ -36,12 +36,12 @@ void clause_reserve(clause_t *clause, size_t capacity)
 EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
 {
     EVALUATION evaluation = EVALUATION_FALSE;
-    
+
     int *end = clause->variables + clause->size;
     for (int *curr = clause->variables; curr < end; curr++)
     {
         int assignment_value = implication_graph_find_assignment(node, *curr);
-        
+
         if (*curr == assignment_value)
         {
             return EVALUATION_TRUE;
@@ -51,7 +51,7 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
             evaluation = EVALUATION_UNDETERMINED;
         }
     }
-    
+
     return evaluation;
 }
 
