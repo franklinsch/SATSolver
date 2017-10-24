@@ -1,7 +1,9 @@
 #ifndef IMPLICATION_GRAPH_H
 #define IMPLICATION_GRAPH_H
 
-#include "formula.h"
+#include <stdlib.h>
+
+typedef struct formula_t formula_t;
 
 typedef struct implication_graph_node_t
 {

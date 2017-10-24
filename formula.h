@@ -3,7 +3,7 @@
 
 #include "clause.h"
 
-typedef struct formula
+typedef struct formula_t
 {
     int num_variables;
     unsigned num_clauses;

@@ -1,7 +1,15 @@
 #ifndef CLAUSE_H
 #define CLAUSE_H
 
+#include "implication_graph.h"
+
 #include <stddef.h>
+
+typedef enum {
+    CLAUSE_EVALUATION_TRUE,
+    CLAUSE_EVALUATION_FALSE,
+    CLAUSE_EVALUATION_UNDETERMINED
+} CLAUSE_EVALUATION;
 
 typedef struct
 {
@@ -21,6 +29,16 @@ void clause_init(clause_t *clause);
  @param capacity The new capacity of the underlying memory allocation.
 */
 void clause_reserve(clause_t *clause, size_t capacity);
+
+/**
+ Evaluates the given clause given a node in the implication graph. This function
+ tries to find assignments for all the variables in the clause by traversing up
+ the assignment tree, up to the root.
+
+ @param node The current assignment node. This function traverses its parents
+ @return <#return value description#>
+ */
+int clause_evaluate(clause_t *clause, implication_graph_node_t *node);
 
 /**
  Add a variable to the clause. This function does not check if the variable is
