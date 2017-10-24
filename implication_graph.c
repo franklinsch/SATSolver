@@ -77,7 +77,12 @@ void implication_graph_node_delete(implication_graph_node_t *node)
 
     // We have cleaned up all the references to ourselves so we can clean up.
     _implication_graph_node_free(node);
-    free(node);
+    // Non root nodes are allocated by us, so we can free them, however we don't know where root lives so we leave this
+    // responsibility to its' owner.
+    if (node->depth > 0)
+    {
+        free(node);
+    }
 }
 
 int implication_graph_find_assignment(implication_graph_node_t *node, int variable)
