@@ -1,7 +1,6 @@
 #ifndef DPLL_H
 #define DPLL_H
 
-
 struct variable_map_entry_t;
 /**
  Represents a hash map of variables to (void *). Duplicates are not allowed.

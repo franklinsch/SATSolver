@@ -91,4 +91,3 @@ void *variable_map_get(variable_map_t *map, const int variable)
     return entry->value;
 }
 
-
