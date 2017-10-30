@@ -19,7 +19,7 @@ void variable_map_init(variable_map_t *map, const int num_variables)
 {
     map->_num_variables = num_variables;
 
-    map->_buckets = calloc(map->_num_variables * 2, sizeof (variable_map_entry_t));
+    map->_buckets = calloc(map->_num_variables << 1, sizeof (variable_map_entry_t));
 }
 
 void variable_map_free(variable_map_t *map)
