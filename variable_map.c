@@ -41,6 +41,7 @@ void *variable_map_get(variable_map_t *map, const int variable)
     // Mod just to be sure
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % map->_num_variables);
 
+    // Explicitly remove constness of the pointer for the user to do whatever they want with their memory
     return (void *) bucket->value;
 }
 
