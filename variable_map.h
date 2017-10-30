@@ -4,27 +4,22 @@
 #include <stddef.h>
 
 struct variable_map_entry_t;
+
 /**
- Represents a hash map of variables to (void *).
+ Represents a hash map of variables to (void *). Duplicates are not allowed.
 */
 typedef struct variable_map_t
 {
     struct variable_map_entry_t *_buckets;
-    size_t _used_buckets;
-    // Needs to be a power of 2
-    size_t _num_buckets;
-    float _load_factor;
     int _num_variables;
 } variable_map_t;
 
 /**
  Initialises a map of variables.
 
- @param num_buckets The number of buckets to use initially. A value of 0 indicates the default number.
- @param load_factor The maximum allowed load factor before a resize. A value of 0 indicates the default value.
- @param num_variables The total number of indexable variables
+ @param num_variables The total number of indexable variables, it defines the size of the buckets array
 */
-void variable_map_init(variable_map_t *map, const size_t num_buckets, const float load_factor, const int num_variables);
+void variable_map_init(variable_map_t *map, const int num_variables);
 
 /**
  Deallocate the supplied map.
