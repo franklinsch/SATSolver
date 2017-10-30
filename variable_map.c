@@ -17,7 +17,7 @@ typedef struct variable_map_entry_t
 
 static size_t _hash_variable(variable_map_t *map, const int variable)
 {
-    return variable < 0 ? variable : (abs(variable) + map->_num_variables);
+    return variable > 0 ? variable : (abs(variable) + map->_num_variables);
 }
 
 static void _free_bucket(variable_map_entry_t *bucket)
