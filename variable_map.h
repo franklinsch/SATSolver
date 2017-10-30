@@ -1,9 +1,11 @@
 #ifndef DPLL_H
 #define DPLL_H
 
+#include <stddef.h>
+
 struct variable_map_entry_t;
 /**
- Represents a hash map of variables to (void *). Duplicates are not allowed.
+ Represents a hash map of variables to (void *).
 */
 typedef struct variable_map_t
 {
@@ -27,7 +29,7 @@ void variable_map_init(variable_map_t *map, const size_t num_buckets, const floa
 /**
  Deallocate the supplied map.
 */
-void variable_map_free(variable_map_t * const map);
+void variable_map_free(variable_map_t *map);
 
 /**
  Add a mapping from the pecified variable to the specified value.
