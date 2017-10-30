@@ -1,5 +1,5 @@
-#ifndef DPLL_H
-#define DPLL_H
+#ifndef VARIABLE_MAP_H
+#define VARIABLE_MAP_H
 
 #include <stddef.h>
 
@@ -54,4 +54,4 @@ void *variable_map_get(variable_map_t *map, const int variable);
 */
 void variable_map_remove(variable_map_t *map, const int variable);
 
-#endif // !DPLL_H
+#endif // !VARIABLE_MAP_H
