@@ -6,7 +6,8 @@
 struct variable_map_entry_t;
 
 /**
- Represents a hash map of variables to (void *). Duplicates are not allowed.
+ Represents a hash map of variables to (void *). Duplicates are not allowed. As we are mapping variables starting at 1,
+ a key of 0 is not allowed.
 */
 typedef struct variable_map_t
 {

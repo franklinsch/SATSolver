@@ -29,13 +29,13 @@ int main(int argc, char **argv) {
     {
         exit(EXIT_FAILURE);
     }
-    
+
     bool assignments[formula->num_variables];
 
     bool is_sat = dpll(formula, assignments);
-    
+
 //    formula_print(formula);
-    
+
     if (is_sat)
     {
         printf("SAT\n");
