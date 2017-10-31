@@ -6,7 +6,6 @@
 
 typedef struct variable_map_entry_t
 {
-    int variable;
     const void *value;
 } variable_map_entry_t;
 
@@ -32,7 +31,6 @@ void variable_map_add(variable_map_t *map, const int variable, const void *value
     // Mod just to be sure
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % (map->_num_variables << 1));
 
-    bucket->variable = variable;
     bucket->value = value;
 }
 
@@ -49,6 +47,5 @@ void variable_map_remove(variable_map_t *map, const int variable)
 {
     // Mod just to be sure
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % (map->_num_variables << 1));
-    bucket->variable = 0;
     bucket->value = NULL;
 }
