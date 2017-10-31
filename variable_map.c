@@ -39,20 +39,11 @@ static variable_map_entry_t* _search_bucket(const int variable, const variable_m
 {
     assert(bucket->variable == BUCKET_HEADER_KEY);
 
-    variable_map_entry_t *curr_entry = bucket->_next_entry;
+    variable_map_entry_t *it = bucket->_next_entry;
 
-    while (curr_entry != NULL)
-    {
-        if (curr_entry->variable == variable)
-        {
-            return curr_entry;
-        }
+    for (; (it != NULL) && (it->variable != variable); it = it->_next_entry);
 
-        variable_map_entry_t *next = curr_entry->_next_entry;
-        curr_entry = next;
-    }
-
-    return NULL;
+    return it;
 }
 
 static void _rehash(variable_map_t *map)
