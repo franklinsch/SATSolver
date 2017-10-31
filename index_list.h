@@ -1,5 +1,5 @@
-#ifndef LIST_H
-#define LIST_H
+#ifndef INDEX_LIST_H
+#define INDEX_LIST_H
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -21,4 +21,4 @@ void *list_get_at(list_t *list, int pos);
 
 void list_remove_at(list_t *list, int pos);
 
-#endif // !LIST_H
+#endif // !INDEX_LIST_H
