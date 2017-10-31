@@ -42,7 +42,7 @@ void list_elem_free(list_elem_t *elem)
     free(elem);
 }
 
-void list_init(list_t *list)
+void index_list_init(list_t *list)
 {
     list->size = 0;
 
@@ -73,7 +73,7 @@ void list_dealloc(list_t *list)
  
  @return The index at which the element has been added in the list.
  */
-size_t list_append(list_t *list, void *value)
+size_t index_list_append(list_t *list, void *value)
 {
     list_elem_t *elem = list_elem_new(value, list->footer->prev, list->footer);
     list->footer->prev->next = elem;
@@ -85,7 +85,7 @@ size_t list_append(list_t *list, void *value)
 /**
  Returns the element at pos in the given list.
  */
-void *list_get_at(list_t *list, int pos)
+void *index_list_get_at(list_t *list, int pos)
 {
     assert(pos < list->size);
     list_elem_t *curr = list->header;
@@ -98,7 +98,7 @@ void *list_get_at(list_t *list, int pos)
 /**
  Removes the element at pos in the given list.
  */
-void list_remove_at(list_t *list, int pos)
+void index_list_remove_at(list_t *list, int pos)
 {
     assert(pos < list->size);
     list_elem_t *curr = list->header;
