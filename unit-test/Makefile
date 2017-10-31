@@ -1,10 +1,8 @@
 CC=gcc
-CFLAGS=-iquote../ -Wall -Wextra -Wpedantic $(flags)
+CFLAGS=-iquote../ -g -Wall -Wextra -Wpedantic $(flags)
 
-DEPS = $(wildcard *.h)
+UPDEPS=$(wildcard ../*.h)
 SRCS=$(wildcard *.c)
-UPDEPS=$(wildcard ../*c)
-OBJS=$(wildcard ../*.o)
 TST=$(SRCS:.c=.tst)
 
 %.o: %.c $(UPDEPS)
@@ -12,10 +10,10 @@ TST=$(SRCS:.c=.tst)
 
 
 %.tst : %.c ../%.o
-	$(CC) -g $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 
-test: $(TST)
+test: $(TST) run-tests
 	./run-tests
 
 
@@ -24,4 +22,4 @@ all: $(TST)
 
 .PHONY: clean
 clean:
-	rm -f *.tst
+	rm -f *.tst ../*.o
