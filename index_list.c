@@ -9,103 +9,89 @@
 
 typedef struct list_elem_t
 {
-    void *value;
-    struct list_elem_t *prev;
+    size_t value;
     struct list_elem_t *next;
 } list_elem_t;
 
 // MARK: Functions
 
-list_elem_t *list_elem_alloc()
-{
-    list_elem_t *elem = malloc(sizeof(list_elem_t));
-    if (elem == NULL)
-    {
-        perror("list_elem_alloc");
-        exit(EXIT_FAILURE);
-    }
-
-    return elem;
-}
-
-list_elem_t *list_elem_new(void *value, list_elem_t *prev, list_elem_t *next)
-{
-    list_elem_t *elem = list_elem_alloc();
-    elem->value = value;
-    elem->prev = prev; 
-    elem->next = next;
-    return elem;
-}
-
-void list_elem_free(list_elem_t *elem)
-{
-    free(elem);
-}
-
 void index_list_init(list_t *list)
 {
     list->size = 0;
 
-    list->header = list_elem_alloc();
-    list->header->prev = NULL;
-    list->header->next = list->footer;
-    list->footer = list_elem_alloc();
-    list->footer->prev = list->header;
-    list->footer->next = NULL;
+    list->_header = NULL;
+    list->_footer = NULL;
 }
 
-void list_dealloc(list_t *list)
+void list_free(list_t *list)
 {
-    if (list)
+    list_elem_t *elem = list->_header;
+
+    while (elem)
     {
-        list_elem_t *elem = list->header;
-        while(elem)
-        {
-            list_elem_t *next = elem->next;
-            list_elem_free(elem);
-            elem = next;
-        }
+        list_elem_t *next = elem->next;
+        free(elem);
+        elem = next;
     }
 }
 
-/**
- Appends value to the list, and returns the new length of the list.
- 
- @return The index at which the element has been added in the list.
- */
-size_t index_list_append(list_t *list, void *value)
+size_t index_list_append(list_t *list, size_t value)
 {
-    list_elem_t *elem = list_elem_new(value, list->footer->prev, list->footer);
-    list->footer->prev->next = elem;
-    list->footer->prev = elem;
+    list_elem_t *elem = malloc(sizeof (list_elem_t));
+    elem->value = value;
+    elem->next = list->_footer;
+
+    if (list->_header == NULL)
+    {
+        list->_header = elem;
+        list->_footer = elem;
+        return list->size++;
+    }
+
+    list->_footer->next = elem;
+    list->_footer = elem;
 
     return list->size++;
 }
 
-/**
- Returns the element at pos in the given list.
- */
-void *index_list_get_at(list_t *list, int pos)
+size_t index_list_get_at(list_t *list, size_t index)
 {
-    assert(pos < list->size);
-    list_elem_t *curr = list->header;
+    assert(index < list->size);
+    list_elem_t *curr = list->_header;
     
-    for (int i = 0; i < pos; i++) { curr = curr->next; };
+    for (int i = 0; i < index; i++) { curr = curr->next; };
     
     return curr->value;
 }
 
-/**
- Removes the element at pos in the given list.
- */
-void index_list_remove_at(list_t *list, int pos)
+void index_list_remove_at(list_t *list, size_t pos)
 {
     assert(pos < list->size);
-    list_elem_t *curr = list->header;
+
+    if (pos == 0)
+    {
+        list_elem_t *prev_header = list->_header;
+        list->_header = prev_header->next;
+        free(prev_header);
+        list->size--;
+        return;
+    }
+
+    list_elem_t *prev = list->_header;
     
-    for (int i = 0; i < pos; i++) { curr = curr->next; }
-    
-    list_elem_t *prev = curr->prev;
-    prev->next = curr->next;
-    curr->next->prev = prev;
+    for (int i = 0; i < pos - 1; i++) prev = prev->next;
+
+    if (prev->next != NULL)
+    {
+        list_elem_t *prev_next = prev->next;
+        prev->next = prev_next->next;
+        free(prev_next);
+    }
+    else
+    {
+        free(list->_footer);
+        list->_footer = prev;
+    }
+
+    list->size--;
 }
