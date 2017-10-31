@@ -1,4 +1,4 @@
-#include "variable_map.h"
+#include "variable_hash_map.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -139,15 +139,15 @@ void variable_map_remove(variable_map_t *map, const int variable)
 
     variable_map_entry_t *prev_entry = bucket;
 
-    for (variable_map_entry_t *curr_entry = bucket->_next_entry; curr_entry != NULL; curr_entry = next_entry)
+    for (variable_map_entry_t *it = bucket->_next_entry; it != NULL; it = it->_next_entry)
     {
-        if (curr_entry->variable == variable)
+        if (it->variable == variable)
         {
-            prev_entry->_next_entry = curr_entry->_next_entry;
-            free(curr_entry);
+            prev_entry->_next_entry = it->_next_entry;
+            free(it);
             return;
         }
 
-        prev_entry = curr_entry;
+        prev_entry = it;
     }
 }
