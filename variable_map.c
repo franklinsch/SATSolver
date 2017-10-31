@@ -146,18 +146,17 @@ void variable_map_remove(variable_map_t *map, const int variable)
 
     assert(bucket->variable == BUCKET_HEADER_KEY);
 
-    variable_map_entry_t *curr_entry = bucket->_next_entry;
     variable_map_entry_t *prev_entry = bucket;
 
-    while (curr_entry != NULL)
+    for (variable_map_entry_t *curr_entry = bucket->_next_entry; curr_entry != NULL; curr_entry = next_entry)
     {
         if (curr_entry->variable == variable)
         {
             prev_entry->_next_entry = curr_entry->_next_entry;
             free(curr_entry);
+            return;
         }
 
         prev_entry = curr_entry;
-        curr_entry = curr_entry->_next_entry;
     }
 }
