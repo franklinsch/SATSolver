@@ -1,4 +1,4 @@
-#include "variable_hash_map.h"
+#include "variable_map.h"
 
 #include <assert.h>
 #include <stdlib.h>

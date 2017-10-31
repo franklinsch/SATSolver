@@ -1,5 +1,5 @@
-#ifndef VARIABLE_HASH_MAP_H
-#define VARIABLE_HASH_MAP_H
+#ifndef VARIABLE_MAP_H
+#define VARIABLE_MAP_H
 
 #include <stddef.h>
 
@@ -54,4 +54,4 @@ void *variable_map_get(variable_map_t *map, const int variable);
 */
 void variable_map_remove(variable_map_t *map, const int variable);
 
-#endif // !VARIABLE_HASH_MAP_H
+#endif // !VARIABLE_MAP_H
