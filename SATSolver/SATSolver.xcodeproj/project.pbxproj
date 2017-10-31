@@ -13,6 +13,7 @@
 		0E6A2E1E1F9F5F0800839042 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E161F9F5F0800839042 /* parser.c */; };
 		0E6A2E1F1F9F5F0800839042 /* sat.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E171F9F5F0800839042 /* sat.c */; };
 		0E6A2E201F9F5F0800839042 /* dpll.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E191F9F5F0800839042 /* dpll.c */; };
+		0E98B9931FA88256002E5182 /* variable_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E98B9921FA88256002E5182 /* variable_map.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +42,8 @@
 		0E6A2E191F9F5F0800839042 /* dpll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dpll.c; sourceTree = "<group>"; };
 		0E6A2E1A1F9F5F0800839042 /* clause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clause.h; sourceTree = "<group>"; };
 		0E6A2E211F9F651000839042 /* evaluation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evaluation.h; sourceTree = "<group>"; };
+		0E98B9911FA88256002E5182 /* variable_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = variable_map.h; sourceTree = "<group>"; };
+		0E98B9921FA88256002E5182 /* variable_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = variable_map.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +85,8 @@
 				0E6A2E211F9F651000839042 /* evaluation.h */,
 				0E6A2E151F9F5F0800839042 /* implication_graph.c */,
 				0E6A2E131F9F5F0800839042 /* implication_graph.h */,
+				0E98B9921FA88256002E5182 /* variable_map.c */,
+				0E98B9911FA88256002E5182 /* variable_map.h */,
 				0E6A2E161F9F5F0800839042 /* parser.c */,
 				0E6A2E101F9F5F0800839042 /* parser.h */,
 				0E6A2E171F9F5F0800839042 /* sat.c */,
@@ -149,6 +154,7 @@
 			files = (
 				0E6A2E1D1F9F5F0800839042 /* implication_graph.c in Sources */,
 				0E6A2E201F9F5F0800839042 /* dpll.c in Sources */,
+				0E98B9931FA88256002E5182 /* variable_map.c in Sources */,
 				0E6A2E1C1F9F5F0800839042 /* formula.c in Sources */,
 				0E6A2E1E1F9F5F0800839042 /* parser.c in Sources */,
 				0E6A2E1F1F9F5F0800839042 /* sat.c in Sources */,
