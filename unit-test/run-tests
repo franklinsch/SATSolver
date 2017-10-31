@@ -1,0 +1,23 @@
+#! /bin/bash
+
+TESTS="./*.tst"
+FAILURES=0
+
+for f in $TESTS
+do
+  echo "########## Running test $f ##########"
+  echo ""
+  $f
+  if [ $? -eq 0 ]
+  then
+    echo "SUCCESS"
+  else
+    echo "FAILURE"
+    ((++FAILURES))
+  fi
+  echo ""
+  echo "%%%%%%%%%%%%%%%%%%%%"
+  echo ""
+done
+
+echo "$FAILURES tests failed"
