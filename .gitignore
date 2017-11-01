@@ -4,6 +4,9 @@ sat
 
 _tests.sh
 
+*.tst
+*.tst.*
+
 ### Xcode ###
 # Xcode
 #
