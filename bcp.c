@@ -7,13 +7,20 @@
 static variable_map_t g_watch_literals;
 static const formula_t *g_formula;
 
+/**
+ Assign the watch literals for the given clause. Deduces trivial assignments if the clause has only one
+ literal.
+
+ @param root The root of the implication graph.
+ @return Whether the clause's satisfiability is trivially decidable.
+ */
 static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implication_graph_node_t *root) {
     EVALUATION evaluation = EVALUATION_TRUE;
 
     size_t clause_index = clause - g_formula->clauses;
     if (clause->size > 1)
     {
-        // Get to watch literals we probably need a better heuristic for choosing them.
+        // Get two watch literals we probably need a better heuristic for choosing them.
         for (int i = 0; i < 2; i++)
         {
             evaluation = EVALUATION_UNDETERMINED;
