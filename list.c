@@ -1,4 +1,4 @@
-#include "index_list.h"
+#include "list.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,11 +7,11 @@
 
 typedef struct list_elem_t
 {
-    size_t value;
+    void *value;
     struct list_elem_t *next;
 } list_elem_t;
 
-void index_list_init(index_list_t *list)
+void list_init(list_t *list)
 {
     list->size = 0;
 
@@ -19,7 +19,7 @@ void index_list_init(index_list_t *list)
     list->_footer = NULL;
 }
 
-void index_list_free(index_list_t *list)
+void list_free(list_t *list)
 {
     list_elem_t *elem = list->_header;
 
@@ -31,7 +31,7 @@ void index_list_free(index_list_t *list)
     }
 }
 
-size_t index_list_append(index_list_t *list, size_t value)
+size_t list_append(list_t *list, void *value)
 {
     list_elem_t *elem = malloc(sizeof (list_elem_t));
     elem->value = value;
@@ -51,7 +51,7 @@ size_t index_list_append(index_list_t *list, size_t value)
     return list->size++;
 }
 
-size_t index_list_get_at(index_list_t *list, size_t index)
+void *list_get_at(list_t *list, size_t index)
 {
     assert(index < list->size);
     list_elem_t *curr = list->_header;
@@ -61,7 +61,7 @@ size_t index_list_get_at(index_list_t *list, size_t index)
     return curr->value;
 }
 
-void index_list_remove_at(index_list_t *list, size_t pos)
+void list_remove_at(list_t *list, size_t pos)
 {
     assert(pos < list->size);
 

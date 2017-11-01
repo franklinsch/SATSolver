@@ -1,7 +1,7 @@
 #include "bcp.h"
 #include "formula.h"
 #include "implication_graph.h"
-#include "index_list.h"
+#include "list.h"
 #include "variable_map.h"
 
 static variable_map_t g_watch_literals;
@@ -25,15 +25,15 @@ static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implicatio
         {
             evaluation = EVALUATION_UNDETERMINED;
             int watch = clause_get_var(clause, i);
-            index_list_t *watch_list = variable_map_get(&g_watch_literals, watch);
+            list_t *watch_list = variable_map_get(&g_watch_literals, watch);
             if (watch_list == NULL)
             {
-                watch_list = malloc(sizeof (index_list_t));
-                index_list_init(watch_list);
+                watch_list = malloc(sizeof (list_t));
+                list_init(watch_list);
                 variable_map_add(&g_watch_literals, watch, watch_list);
             }
             // Store an index into the formula clauses to represent the watched clause.
-            index_list_append(watch_list, clause_index);
+            list_append(watch_list, (void *) clause_index);
         }
     }
     else
