@@ -39,7 +39,7 @@ size_t index_list_append(index_list_t *list, size_t value)
 {
     list_elem_t *elem = malloc(sizeof (list_elem_t));
     elem->value = value;
-    elem->next = list->_footer;
+    elem->next = NULL;
 
     if (list->_header == NULL)
     {
