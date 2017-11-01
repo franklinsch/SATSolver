@@ -9,6 +9,8 @@ struct variable_map_entry_t;
  Represents a hash map of SAT variables to (void *).
  Adding an entry that is already there will result in the previous value being overwritten.
  As we are mapping variables starting at 1, a key of 0 is not allowed, and will result in potentially weird behaviour.
+ Furthermore, adding a variable greater than the num_variables the map has been initialised with results in undefined
+ behaviour as this data structure relies on a domain specific hash function.
 */
 typedef struct variable_map_t
 {
@@ -28,6 +30,14 @@ typedef struct variable_map_t
  @param num_variables The total number of indexable variables
 */
 void variable_map_init(variable_map_t *map, const size_t num_buckets, const float load_factor, const int num_variables);
+
+/**
+ Initialises a map of variables to have num_variables buckets intially and a load factor greater than 1.0f to avoid any
+ resizing.
+
+ @param num_variables The total number of indexable variables.
+*/
+void variable_map_init_direct(varible_map_t *map, const int num_variables);
 
 /**
  Deallocate the supplied map.
