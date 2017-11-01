@@ -10,8 +10,7 @@ typedef struct implication_graph_node_t
     unsigned depth;
     formula_t *formula;
 
-    //TODO: be smart about this
-    int assignments[10000];
+    int *assignments;
     size_t num_assignments;
 
     struct implication_graph_node_t **parents;

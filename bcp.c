@@ -7,7 +7,7 @@
 static variable_map_t g_watch_literals;
 static const formula_t *g_formula;
 
-void bcp_init(const formula_t *formula)
+EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 {
     g_formula = formula;
     variable_map_init(&g_watch_literals, formula->num_variables);
@@ -34,9 +34,10 @@ void bcp_init(const formula_t *formula)
         }
         else
         {
-            node->assignem
+            
         }
     }
+    return EVALUATION_UNDETERMINED;
 }
 
 void bcp(implication_graph_node_t *node)
@@ -44,7 +45,7 @@ void bcp(implication_graph_node_t *node)
 
 }
 
-void bcp_free()
+void bcp_free(void)
 {
     variable_map_free(&g_watch_literals);
 }
