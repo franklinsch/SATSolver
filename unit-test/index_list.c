@@ -28,7 +28,7 @@ int main(void)
         index_list_remove_at(&list, 0);
     }
 
-    list_free(&list);
+    index_list_free(&list);
 
     return 0;
 }
