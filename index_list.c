@@ -56,7 +56,7 @@ size_t index_list_get_at(index_list_t *list, size_t index)
     assert(index < list->size);
     list_elem_t *curr = list->_header;
     
-    for (size_t i = 0; i < index; i++) { curr = curr->next; };
+    for (size_t i = 0; i < index; i++) curr = curr->next;
     
     return curr->value;
 }
