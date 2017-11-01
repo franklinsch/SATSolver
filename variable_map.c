@@ -3,10 +3,16 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#define DEFAULT_NUM_BUCKETS 16
+#define DEFAULT_LOAD_FACTOR 0.75f
+// A variable cannot be 0 so we use this value to signify the start of the bucket list info
+#define BUCKET_HEADER_KEY 0
 
 typedef struct variable_map_entry_t
 {
+    int variable;
     const void *value;
+    struct variable_map_entry_t *_next_entry;
 } variable_map_entry_t;
 
 static size_t _hash_variable(variable_map_t *map, const int variable)
@@ -48,12 +54,11 @@ static void _rehash(variable_map_t *map)
     variable_map_init(map, num_buckets * 2, map->_load_factor, map->_num_variables);
 
     variable_map_entry_t *buckets_end = buckets + num_buckets;
-    for (variable_map_entry_t *it; it < buckets_end; it++)
+    for (variable_map_entry_t *it = buckets; it < buckets_end; it++)
     {
         assert(it->variable == BUCKET_HEADER_KEY);
         for (variable_map_entry_t *pair = it->_next_entry; pair != NULL; pair = pair->_next_entry)
         {
-            // What happens if after rehash we exceed the load factor? Should be fine, but...
             variable_map_add(map, pair->variable, pair->value);
         }
 
@@ -67,30 +72,59 @@ static void _rehash(variable_map_t *map)
 void variable_map_init(variable_map_t *map, const size_t num_buckets, const float load_factor, const int num_variables)
 {
     map->_num_variables = num_variables;
+    map->_size = 0;
+    map->_num_buckets = num_buckets ? num_buckets : DEFAULT_NUM_BUCKETS;
+    map->_load_factor = load_factor != 0.0f ? load_factor : DEFAULT_LOAD_FACTOR;
 
-    map->_buckets = calloc(map->_num_variables << 1, sizeof (variable_map_entry_t));
+    map->_buckets = malloc(map->_num_buckets * sizeof (variable_map_entry_t));
+
+    variable_map_entry_t *buckets_end = map->_buckets + map->_num_buckets;
+    for (variable_map_entry_t *bucket = map->_buckets; bucket < buckets_end; bucket++)
+    {
+        bucket->variable = BUCKET_HEADER_KEY;
+        // Terminator for bucket chain
+        bucket->_next_entry = NULL;
+    }
 }
 
 void variable_map_free(variable_map_t *map)
 {
+    variable_map_entry_t *buckets_end = map->_buckets + map->_num_buckets;
+    for (variable_map_entry_t *bucket = map->_buckets; bucket < buckets_end; bucket++)
+    {
+        assert(bucket->variable == BUCKET_HEADER_KEY);
+        _free_bucket(bucket);
+    }
+
     free(map->_buckets);
 }
 
 void variable_map_add(variable_map_t *map, const int variable, const void *value)
 {
-    // Mod just to be sure
-    variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % (map->_num_variables << 1));
+    // If the load is too high we need to resize
+    if (((float) map->_size / map->_num_buckets) >= map->_load_factor)
+    {
+        _rehash(map);
+    }
 
-    bucket->value = value;
+    variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) & (map->_num_buckets - 1));
+    assert(bucket->variable == BUCKET_HEADER_KEY);
+
+    variable_map_entry_t *fst_entry = bucket->_next_entry;
+
+    variable_map_entry_t *new_entry = malloc(sizeof (variable_map_entry_t));
+    new_entry->variable = variable;
+    new_entry->value = value;
+    new_entry->_next_entry = fst_entry;
+    bucket->_next_entry = new_entry;
+    map->_size++;
 }
 
 void *variable_map_get(variable_map_t *map, const int variable)
 {
-    // Mod just to be sure
-    variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % (map->_num_variables << 1));
-
-    // Explicitly remove constness of the pointer for the user to do whatever they want with their memory
-    return (void *) bucket->value;
+    variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) & (map->_num_buckets - 1));
+    variable_map_entry_t *entry = _search_bucket(variable, bucket);
+    return (void *) entry->value;
 }
 
 void variable_map_remove(variable_map_t *map, const int variable)
