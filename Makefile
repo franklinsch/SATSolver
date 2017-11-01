@@ -19,6 +19,6 @@ clean:
 tests: sat
 	bash ./tests.sh
 
-.PHONY: tests2
-tests: sat
-	bash ./tests2.sh
+#.PHONY: tests2
+#tests: sat
+#	bash ./tests2.sh

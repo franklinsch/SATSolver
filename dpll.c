@@ -3,6 +3,7 @@
 #include "clause.h"
 #include "formula.h"
 #include "implication_graph.h"
+#include "bcp.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -32,9 +33,16 @@ static int choose_var(int num_variables, implication_graph_node_t *node)
 
 struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 {
-    EVALUATION evaluation = formula_evaluate(formula, node);
-
     struct dpll_result result;
+
+    if (bcp(node) == EVALUATION_FALSE)
+    {
+        result.evaluation = false;
+        result.leaf = NULL;
+        return result;
+    }
+
+    EVALUATION evaluation = formula_evaluate(formula, node);
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
@@ -58,6 +66,7 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 
             // Create a new assignment with the negated value and run DPLL again.
             child = implication_graph_node_add_child(node, -variable);
+
             return _dpll(formula, child);
         }
 
@@ -74,9 +83,15 @@ static void flatten_assignments(implication_graph_node_t *leaf, bool assignments
     // Set all the values of assignments to DPLL_ASSIGNMENT_DONT_CARE.
     memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (bool) * (leaf->formula->num_variables));
 
-    for (implication_graph_node_t *node = leaf; node->depth > 0; node = node->parents[0])
+    // At the end of DPLL, the graph will contain a single path from the root to the last assignment.
+    // Every node will have at most one parent, so we pick it.
+    for (implication_graph_node_t *node = leaf; node != NULL; node = node->parents[0])
     {
-        assignments[abs(node->assignments[0]) - 1] = node->assignments[0] > 0;
+        if (node->num_assignments < 1) continue;
+        for (int i = 0; i < node->num_assignments; i++)
+        {
+            assignments[abs(node->assignments[i]) - 1] = node->assignments[i] > 0;
+        }
     }
 }
 
@@ -85,9 +100,18 @@ bool dpll(formula_t *formula, bool assignments[])
     implication_graph_node_t root;
     implication_graph_node_init(&root, formula, 0);
 
-    struct dpll_result result = _dpll(formula, &root);
-    EVALUATION evaluation = result.evaluation;
-    flatten_assignments(result.leaf, assignments);
+    EVALUATION evaluation = bcp_init(formula, &root);
+    implication_graph_node_t *leaf = &root;
+
+    if (evaluation == EVALUATION_UNDETERMINED)
+    {
+        struct dpll_result result = _dpll(formula, &root);
+        evaluation = result.evaluation;
+        leaf = result.leaf;
+    }
+
+    if (evaluation == EVALUATION_TRUE) flatten_assignments(leaf, assignments);
+
     implication_graph_node_delete(&root);
     return evaluation == EVALUATION_TRUE ? true : false;
 }

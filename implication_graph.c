@@ -32,6 +32,11 @@ static void implication_graph_node_add_parent(implication_graph_node_t *node, im
     node->parents[node->num_parents++] = parent;
 }
 
+void implication_graph_node_add_assignment(implication_graph_node_t *node, int variable)
+{
+    node->assignments[node->num_assignments++] = variable;
+}
+
 implication_graph_node_t *implication_graph_node_add_child(implication_graph_node_t *node, int variable)
 {
     if (abs(variable) > node->formula->num_variables)
