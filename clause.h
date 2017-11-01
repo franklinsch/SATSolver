@@ -6,6 +6,8 @@
 
 #include <stddef.h>
 
+#define CLAUSE_ASSIGNED 0
+
 typedef struct
 {
     size_t size;
@@ -59,6 +61,14 @@ void clause_delete_var(clause_t *clause, size_t index);
  @return The variable, where a negative value indicates negation.
 */
 int clause_get_var(clause_t *clause, size_t index);
+
+/**
+ Get an unassigned_literal from the given clause.
+
+ @param curr_assignment The current assignment
+ @return An unassigned variable in the clause or CLAUSE_ASSIGNED if there is no such variable.
+*/
+int clause_get_unassigned_literal(const clause_t *clause, implication_graph_node_t *curr_assignment);
 
 /**
  Deallocate the clause and all associated ressources.

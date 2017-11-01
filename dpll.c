@@ -32,6 +32,9 @@ static int choose_var(int num_variables, implication_graph_node_t *node)
 
 struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 {
+
+    /* bcp(formula, node) */
+
     EVALUATION evaluation = formula_evaluate(formula, node);
 
     struct dpll_result result;
@@ -58,6 +61,7 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 
             // Create a new assignment with the negated value and run DPLL again.
             child = implication_graph_node_add_child(node, -variable);
+
             return _dpll(formula, child);
         }
 
@@ -85,6 +89,8 @@ bool dpll(formula_t *formula, bool assignments[])
     implication_graph_node_t root;
     implication_graph_node_init(&root, formula, 0);
 
+    // initialise literal_to_watching_clause
+    // struct dpll_result result = _dpll(formula, &root, literal_to_watching_clauses_map);
     struct dpll_result result = _dpll(formula, &root);
     EVALUATION evaluation = result.evaluation;
     flatten_assignments(result.leaf, assignments);

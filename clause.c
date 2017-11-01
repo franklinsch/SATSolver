@@ -91,6 +91,17 @@ int clause_get_var(clause_t *clause, size_t index)
     return clause->variables[index];
 }
 
+int clause_get_unassigned_literal(const clause_t *clause, implication_graph_node_t *curr_assignment)
+{
+    int *clause_end = clause->variables + clause->size;
+    for (int *it = clause->variables; it < clause_end; it++)
+    {
+        int ass = implication_graph_find_assignment(curr_assignment, *it);
+        if (ass == ASSIGNMENT_NOT_FOUND) return *it;
+    }
+    return CLAUSE_ASSIGNED;
+}
+
 void clause_free(clause_t *clause)
 {
     free(clause->variables);
