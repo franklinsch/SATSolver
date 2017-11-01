@@ -11,19 +11,37 @@ void bcp_init(const formula_t *formula)
 {
     g_formula = formula;
     variable_map_init(&g_watch_literals, formula->num_variables);
-    //TODO assign the watch literals
     clause_t *end = g_formula->clauses + g_formula->num_clauses;
     for (clause_t *it = g_formula->clauses; it < end; it++)
     {
-        int watch = clause_get_var(it, 0);
-        variable_map
+        size_t clause_index = it - g_formula->clauses;
+        if (it->size > 1)
+        {
+            // Get to watch literals we probably need a better heuristic for choosing them.
+            for (int i = 0; i < 2; i++)
+            {
+                int watch = clause_get_var(it, i);
+                index_list_t *watch_list = variable_map_get(&g_watch_literals, watch);
+                if (watch_list == NULL)
+                {
+                    watch_list = malloc(sizeof (index_list_t));
+                    index_list_init(watch_list);
+                    variable_map_add(&g_watch_literals, watch, watch_list);
+                }
+                // Store an index into the formula clauses to represent the watched clause.
+                index_list_append(watch_list, clause_index);
+            }
+        }
+        else
+        {
+            node->assignem
+        }
     }
 }
 
 void bcp(implication_graph_node_t *node)
 {
-    return;
-    //TODO
+
 }
 
 void bcp_free()

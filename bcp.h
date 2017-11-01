@@ -3,13 +3,16 @@
 
 #include "formula.h"
 #include "implication_graph.h"
+#include "evaluation.h"
 
 /**
  Initialises the internal BCP data structures.
 
  @param formula The formula on which we will be performing the BCP.
+ @param root the root of the implication graph to use.
+ @return An EVALUATION that determines trivially decidable formulas.
 */
-void bcp_init(const formula_t *formula);
+EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root);
 
 /**
  Performs BCP on the given formula.
