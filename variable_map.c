@@ -86,6 +86,11 @@ void variable_map_init(variable_map_t *map, const size_t num_buckets, const floa
     }
 }
 
+void variable_map_init_direct(variable_map_t *map, const int num_variables)
+{
+    variable_map_init(map, (size_t) num_variables, 2.0f, num_variables);
+}
+
 void variable_map_free(variable_map_t *map)
 {
     variable_map_entry_t *buckets_end = map->_buckets + map->_num_buckets;
