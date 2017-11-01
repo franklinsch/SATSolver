@@ -66,7 +66,6 @@ static void _rehash(variable_map_t *map)
     }
 
     free(buckets);
-
 }
 
 void variable_map_init(variable_map_t *map, const size_t num_buckets, const float load_factor, const int num_variables)
