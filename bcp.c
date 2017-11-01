@@ -17,7 +17,6 @@ static const formula_t *g_formula;
 static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implication_graph_node_t *root) {
     EVALUATION evaluation = EVALUATION_TRUE;
 
-    size_t clause_index = clause - g_formula->clauses;
     if (clause->size > 1)
     {
         // Get two watch literals we probably need a better heuristic for choosing them.
@@ -33,7 +32,7 @@ static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implicatio
                 variable_map_add(&g_watch_literals, watch, watch_list);
             }
             // Store an index into the formula clauses to represent the watched clause.
-            list_append(watch_list, (void *) clause_index);
+            list_append(watch_list, (void *) clause);
         }
     }
     else
@@ -68,7 +67,7 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 
 void bcp(implication_graph_node_t *node)
 {
-    
+
 }
 
 void bcp_free(void)
