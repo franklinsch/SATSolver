@@ -109,6 +109,15 @@ void variable_map_add(variable_map_t *map, const int variable, const void *value
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) & (map->_num_buckets - 1));
     assert(bucket->variable == BUCKET_HEADER_KEY);
 
+    // If the key, is already there, we overwrite the associated value and do not update the size
+    variable_map_entry_t *entry = _search_bucket(variable, bucket);
+    if (entry)
+    {
+        entry->value = value;
+        return;
+    }
+
+    // Otherwise we allocate a new entry at the front of the bucket hoping it will be retrieved soon
     variable_map_entry_t *fst_entry = bucket->_next_entry;
 
     variable_map_entry_t *new_entry = malloc(sizeof (variable_map_entry_t));
@@ -126,6 +135,7 @@ void *variable_map_get(variable_map_t *map, const int variable)
     return (void *) entry->value;
 }
 
+// This could be simplified if we did doubly-linked list
 void variable_map_remove(variable_map_t *map, const int variable)
 {
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) & (map->_num_buckets - 1));

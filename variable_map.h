@@ -6,8 +6,9 @@
 struct variable_map_entry_t;
 
 /**
- Represents a hash map of variables to (void *). Duplicates are not allowed. As we are mapping variables starting at 1,
- a key of 0 is not allowed.
+ Represents a hash map of SAT variables to (void *).
+ Adding an entry that is already there will result in the previous value being overwritten.
+ As we are mapping variables starting at 1, a key of 0 is not allowed, and will result in potentially weird behaviour.
 */
 typedef struct variable_map_t
 {
@@ -36,7 +37,8 @@ void variable_map_free(variable_map_t *map);
 /**
  Add a mapping from the pecified variable to the specified value.
 
- @param variable The variable to use as the key for this mapping.
+ @param variable The variable to use as the key for this mapping. If the variable is already present in the map, this
+ operation will result in the previous value being overwritten.
  @param value A pointer to the value to be mapped to.
 */
 void variable_map_add(variable_map_t *map, const int variable, const void *value);

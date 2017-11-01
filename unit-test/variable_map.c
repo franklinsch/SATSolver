@@ -12,6 +12,7 @@ int main(void)
     // The next statement will trigger a resize and hash
     variable_map_add(&map, -1, (void *) -1);
     variable_map_add(&map, -4, (void *) -4);
+    variable_map_add(&map, -4, (void *) -3);
 
     void *val = variable_map_get(&map, 1);
     CHECK( (int) val == 1 );
@@ -23,7 +24,7 @@ int main(void)
     CHECK( (int) val == -1 );
 
     val = variable_map_get(&map, -4);
-    CHECK( (int) val == -4 );
+    CHECK( (int) val == -3 );
 
     variable_map_free(&map);
     return 0;
