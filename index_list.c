@@ -59,7 +59,7 @@ size_t index_list_get_at(index_list_t *list, size_t index)
     assert(index < list->size);
     list_elem_t *curr = list->_header;
     
-    for (int i = 0; i < index; i++) { curr = curr->next; };
+    for (size_t i = 0; i < index; i++) { curr = curr->next; };
     
     return curr->value;
 }
@@ -79,7 +79,7 @@ void index_list_remove_at(index_list_t *list, size_t pos)
 
     list_elem_t *prev = list->_header;
     
-    for (int i = 0; i < pos - 1; i++) prev = prev->next;
+    for (size_t i = 0; i < pos - 1; i++) prev = prev->next;
 
     if (prev->next != NULL)
     {
