@@ -51,4 +51,21 @@ void *list_get_at(list_t *list, size_t pos);
  */
 void list_remove_at(list_t *list, size_t pos);
 
+// Iterator
+
+typedef struct
+{
+    struct list_elem_t *curr;
+} list_iterator_t;
+
+/**
+ Returns whether the iterator has a next value.
+ */
+bool list_iterator_has_next(list_iterator_t *it);
+
+/**
+ Returns the next value in the iterator.
+ */
+void *list_iterator_next(list_iterator_t *it);
+
 #endif // !LIST_H

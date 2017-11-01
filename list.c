@@ -95,3 +95,18 @@ void list_remove_at(list_t *list, size_t pos)
 
     list->size--;
 }
+
+// Iterator
+
+bool list_iterator_has_next(list_iterator_t *it)
+{
+    return it->curr->next == NULL;
+}
+
+void *list_iterator_next(list_iterator_t *it)
+{
+    assert(it->curr != NULL);
+    void *value = it->curr->value;
+    it->curr = it->curr->next;
+    return value;
+}

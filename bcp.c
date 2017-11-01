@@ -4,6 +4,8 @@
 #include "list.h"
 #include "variable_map.h"
 
+#include <assert.h>
+
 static variable_map_t g_watch_literals;
 static const formula_t *g_formula;
 
@@ -67,7 +69,13 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 
 void bcp(implication_graph_node_t *node)
 {
+    list_t pending_assignments;
+    list_init(&pending_assignments);
 
+    // The node should only have one assignment (added by DPLL).
+    assert(node->num_assignments == 1);
+
+    list_t *clauses = variable_map_get(&g_watch_literals, node->assignments[0]);
 }
 
 void bcp_free(void)
