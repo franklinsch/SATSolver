@@ -5,15 +5,11 @@
 #include <stdbool.h>
 #include <assert.h>
 
-// MARK: Internal data structures
-
 typedef struct list_elem_t
 {
     size_t value;
     struct list_elem_t *next;
 } list_elem_t;
-
-// MARK: Functions
 
 void index_list_init(index_list_t *list)
 {
