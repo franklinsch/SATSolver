@@ -78,6 +78,8 @@ static void flatten_assignments(implication_graph_node_t *leaf, bool assignments
     // Set all the values of assignments to DPLL_ASSIGNMENT_DONT_CARE.
     memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (bool) * (leaf->formula->num_variables));
 
+    // At the end of DPLL, the graph will contain a single path from the root to the last assignment.
+    // Every node will have at most one parent, so we pick it.
     for (implication_graph_node_t *node = leaf; node->depth > 0; node = node->parents[0])
     {
         assignments[abs(node->assignments[0]) - 1] = node->assignments[0] > 0;

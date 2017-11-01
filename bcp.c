@@ -42,7 +42,7 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 
 void bcp(implication_graph_node_t *node)
 {
-
+    
 }
 
 void bcp_free(void)
