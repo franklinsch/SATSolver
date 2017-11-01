@@ -10,7 +10,8 @@ typedef struct implication_graph_node_t
     unsigned depth;
     formula_t *formula;
 
-    int *assignments;
+    //TODO: be smart about this
+    int assignments[10000];
     size_t num_assignments;
 
     struct implication_graph_node_t **parents;
@@ -28,6 +29,12 @@ typedef struct implication_graph_node_t
 */
 void implication_graph_node_init(implication_graph_node_t *node, formula_t *formula, unsigned depth);
 
+/**
+ Add an assignemnt to the given node.
+
+ @param variable The variable assignment we are adding to the child.
+*/
+void implication_graph_node_add_assignment(implication_graph_node_t *node, int variable);
 /**
  Add a child to the given implication graph node.
 
