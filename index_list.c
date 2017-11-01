@@ -71,6 +71,8 @@ void index_list_remove_at(index_list_t *list, size_t pos)
         list->_header = prev_header->next;
         free(prev_header);
         list->size--;
+
+        if (list->size == 0) list->_footer = NULL;
         return;
     }
 
@@ -78,7 +80,7 @@ void index_list_remove_at(index_list_t *list, size_t pos)
     
     for (size_t i = 0; i < pos - 1; i++) prev = prev->next;
 
-    if (prev->next != NULL)
+    if (prev->next != list->_footer)
     {
         list_elem_t *prev_next = prev->next;
         prev->next = prev_next->next;
@@ -86,6 +88,7 @@ void index_list_remove_at(index_list_t *list, size_t pos)
     }
     else
     {
+        // We are removing the footer.
         free(list->_footer);
         list->_footer = prev;
     }
