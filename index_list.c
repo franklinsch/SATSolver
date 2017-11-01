@@ -23,7 +23,7 @@ void index_list_init(index_list_t *list)
     list->_footer = NULL;
 }
 
-void list_free(index_list_t *list)
+void index_list_free(index_list_t *list)
 {
     list_elem_t *elem = list->_header;
 

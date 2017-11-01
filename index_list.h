@@ -27,7 +27,7 @@ void index_list_init(index_list_t *list);
 /**
  Frees the resources associated to the given list.
  */
-void list_free(index_list_t *list);
+void index_list_free(index_list_t *list);
 
 /**
  Appends the given index to the index list.
