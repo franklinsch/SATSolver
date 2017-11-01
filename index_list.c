@@ -41,11 +41,12 @@ size_t index_list_append(index_list_t *list, size_t value)
     {
         list->_header = elem;
         list->_footer = elem;
-        return list->size++;
     }
-
-    list->_footer->next = elem;
-    list->_footer = elem;
+    else
+    {
+        list->_footer->next = elem;
+        list->_footer = elem;
+    }
 
     return list->size++;
 }
