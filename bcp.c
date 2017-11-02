@@ -3,6 +3,7 @@
 #include "implication_graph.h"
 #include "list.h"
 #include "variable_map.h"
+#include "variable_vector.h"
 
 #include <assert.h>
 
@@ -19,23 +20,30 @@ static const formula_t *g_formula;
 static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implication_graph_node_t *root) {
     EVALUATION evaluation = EVALUATION_TRUE;
 
-    if (clause->variables.size > 1)
+    variable_vector_t unassigned_lits;
+    variable_vector_init(&unassigned_lits);
+    clause_get_unassigned_literals(clause, root, &unassigned_lits);
+
+    if (unassigned_lits.size > 1)
     {
-        // Get two watch literals we probably need a better heuristic for choosing them.
+        // This clause's satisfiability is not trivially decidable since it contains more than one unassigned literal.
+        evaluation = EVALUATION_UNDETERMINED;
+
         for (int i = 0; i < 2; i++)
         {
-            evaluation = EVALUATION_UNDETERMINED;
-            int watch = clause_get_var(clause, i);
+            int watch = *variable_vector_get(&unassigned_lits, i);
             list_t *watch_list = variable_map_get(&g_watch_literals, watch);
+
             if (watch_list == NULL)
             {
                 watch_list = malloc(sizeof (list_t));
                 list_init(watch_list);
                 variable_map_add(&g_watch_literals, watch, watch_list);
             }
-            // Store an index into the formula clauses to represent the watched clause.
+
             list_append(watch_list, (void *) clause);
         }
+
     }
     else
     {
@@ -47,6 +55,7 @@ static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implicatio
         implication_graph_node_add_assignment(root, assignment);
     }
 
+    variable_vector_free(&unassigned_lits);
     return evaluation;
 }
 
