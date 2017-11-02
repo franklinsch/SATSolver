@@ -21,19 +21,19 @@ typedef struct
  Initializes an index list.
 
  @param list The list to initialize.
- */
+*/
 void list_init(list_t *list);
 
 /**
  Frees the resources associated to the given list.
- */
+*/
 void list_free(list_t *list);
 
 /**
  Appends the given value to the list.
 
  @return The position of the appended element.
- */
+*/
 size_t list_append(list_t *list, void *value);
 
 /**
@@ -41,36 +41,41 @@ size_t list_append(list_t *list, void *value);
 
  @param pos The position of the element to retrieve.
  @return The value at the given position.
- */
+*/
 void *list_get_at(list_t *list, size_t pos);
 
 /**
  Remove the value at the given position.
 
  @param pos The position of the element to remove.
- */
+*/
 void list_remove_at(list_t *list, size_t pos);
 
 // Iterator
 
 typedef struct
 {
-    struct list_elem_t *curr;
+    struct list_elem_t *_curr;
 } list_iterator_t;
 
 /**
- Get an iterator for the current list.
- */
+ Get an iterator for the current list. Returns a malloced pointer to the iterator the caller must remember to free.
+*/
 list_iterator_t *list_get_iterator(list_t *list);
 
 /**
  Returns whether the iterator has a next value.
- */
+*/
 bool list_iterator_has_next(list_iterator_t *it);
 
 /**
- Returns the next value in the iterator.
- */
-void *list_iterator_next(list_iterator_t *it);
+ Gets the next value in the iterator.
+*/
+void list_iterator_next(list_iterator_t *it);
+
+/**
+ Returns the value in the iterator.
+*/
+void *list_iterator_get(list_iterator_t *it);
 
 #endif // !LIST_H
