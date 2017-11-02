@@ -20,7 +20,7 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node)
     clause_t *end = formula->clauses + formula->num_clauses;
     for (clause_t *curr = formula->clauses; curr < end; curr++)
     {
-        EVALUATION curr_evaluation = clause_evaluate(curr, node);
+        EVALUATION curr_evaluation = clause_evaluate(curr, node, NULL);
         switch (curr_evaluation)
         {
             // If one of the clauses evaluates to false, the formula is false.

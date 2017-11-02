@@ -7,8 +7,6 @@
 
 #include <stddef.h>
 
-#define CLAUSE_ASSIGNED 0
-
 typedef struct
 {
     variable_vector_t variables;
@@ -26,9 +24,11 @@ void clause_init(clause_t *clause);
  the assignment tree, up to the root.
 
  @param node The current assignment node. This function traverses its parents.
+ @param [out] unassigned_lits A variable_vector to add the unassigned literals in the clause to. Caller must have
+ initialised it beforehands. A NULL value indicates the caller does not care about this.
  @return The result of the evaluation.
  */
-EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node);
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, variable_vector_t *unassigned_lits);
 
 /**
  Add a variable to the clause. This function does not check if the variable is
@@ -55,12 +55,14 @@ void clause_delete_var(clause_t *clause, size_t index);
 int clause_get_var(clause_t *clause, size_t index);
 
 /**
- Get an unassigned_literal from the given clause.
+ Get the unassigned literals in the given clause.
 
  @param curr_assignment The current assignment
- @return An unassigned variable in the clause or CLAUSE_ASSIGNED if there is no such variable.
+ @param [out] unassigned_lits A variable_vector to add the unassigned literals in the clause to. Caller must have initialised it beforehands.
 */
-int clause_get_unassigned_literal(const clause_t *clause, implication_graph_node_t *curr_assignment);
+void clause_get_unassigned_literals(const clause_t *clause,
+        implication_graph_node_t *curr_assignment,
+        variable_vector_t *unassigned_lits);
 
 /**
  Deallocate the clause and all associated ressources.
