@@ -1,6 +1,7 @@
 #include "variable_map.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <stdlib.h>
 
 #define DEFAULT_NUM_BUCKETS 16
@@ -17,7 +18,7 @@ typedef struct variable_map_entry_t
 
 static size_t _hash_variable(variable_map_t *map, const int variable)
 {
-    return variable > 0 ? variable : (abs(variable) + map->_num_variables);
+    return (variable > 0 ? variable : (abs(variable) + map->_num_variables)) - 1;
 }
 
 static void _free_bucket(variable_map_entry_t *bucket)
@@ -88,7 +89,12 @@ void variable_map_init(variable_map_t *map, const size_t num_buckets, const floa
 
 void variable_map_init_direct(variable_map_t *map, const int num_variables)
 {
-    variable_map_init(map, (size_t) num_variables, 2.0f, num_variables);
+    //Round up number variables to the nearest power of 2
+    size_t num_buckets = num_variables > 0 ? num_variables - 1 : 0;
+    for (size_t i = 1; i < (sizeof (num_buckets) * CHAR_BIT); i <<= 1) num_buckets |= (num_buckets >> i);
+    num_buckets++;
+
+    variable_map_init(map, num_buckets, 2.0f, num_variables);
 }
 
 void variable_map_free(variable_map_t *map)
