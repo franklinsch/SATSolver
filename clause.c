@@ -1,48 +1,26 @@
 #include "clause.h"
 
+#include "variable_vector.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define CLAUSE_INIT_CAPACITY 4
-
 void clause_init(clause_t *clause)
 {
-    clause->size = 0;
-    clause->variables = malloc(CLAUSE_INIT_CAPACITY * sizeof (int));
-    clause->_capacity = (sizeof clause->variables) / (sizeof (int));
+    variable_vector_init(&clause->variables);
 }
 
-// Internal API for resizing the array underpinning a clause.
-static void _clause_resize(clause_t *clause, size_t capacity)
-{
-#ifdef NDEBUG
-    fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, clause->capacity, capacity);
-#endif
-
-    int *vars = realloc(clause->variables, capacity * sizeof (int));
-    if (vars)
-    {
-        clause->variables = vars;
-        clause->_capacity = capacity;
-    }
-}
-
-void clause_reserve(clause_t *clause, size_t capacity)
-{
-    _clause_resize(clause, capacity);
-}
 
 EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
 {
     EVALUATION evaluation = EVALUATION_FALSE;
 
-    int *end = clause->variables + clause->size;
-    for (int *curr = clause->variables; curr < end; curr++)
+    for (int *it = variable_vector_cbegin(&clause->variables); it < variable_vector_cend(&clause->variables); it++)
     {
-        int assignment_value = implication_graph_find_assignment(node, *curr);
+        int assignment_value = implication_graph_find_assignment(node, *it);
 
-        if (*curr == assignment_value)
+        if (*it == assignment_value)
         {
             return EVALUATION_TRUE;
         }
@@ -55,46 +33,25 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node)
     return evaluation;
 }
 
-size_t clause_add_var(clause_t *clause, int var)
+void clause_add_var(clause_t *clause, int var)
 {
-    // The array underlying array is full, we need more memory.
-    if(clause->_capacity == clause->size)
-    {
-        _clause_resize(clause, clause->size * 2);
-    }
-    clause->variables[clause->size] = var;
-    return clause->size++;
+    variable_vector_push_back(&clause->variables, var);
 }
 
 void clause_delete_var(clause_t *clause, size_t index)
 {
-    if (index >= clause->size)
-        return;
-
-    // Shift all the remaining elements to the left.
-    int *dst = clause->variables + index;
-    int *src = dst + 1;
-    size_t amount = clause->size - index - 1;
-    memmove(dst, src, amount);
-
-    clause->size--;
-
-    if (clause->size > 0 && clause->size <= clause->_capacity / 4)
-        _clause_resize(clause, clause->_capacity / 2);
+    variable_vector_delete(&clause->variables, index);
 }
 
 int clause_get_var(clause_t *clause, size_t index)
 {
-    if (index >= clause->size)
-        return 0;
-
-    return clause->variables[index];
+    int *res = variable_vector_get(&clause->variables, index);
+    return *res;
 }
 
 int clause_get_unassigned_literal(const clause_t *clause, implication_graph_node_t *curr_assignment)
 {
-    int *clause_end = clause->variables + clause->size;
-    for (int *it = clause->variables; it < clause_end; it++)
+    for (int *it = variable_vector_cbegin(&clause->variables); it < variable_vector_cend(&clause->variables); it++)
     {
         int ass = implication_graph_find_assignment(curr_assignment, *it);
         if (ass == ASSIGNMENT_NOT_FOUND) return *it;
@@ -104,5 +61,5 @@ int clause_get_unassigned_literal(const clause_t *clause, implication_graph_node
 
 void clause_free(clause_t *clause)
 {
-    free(clause->variables);
+    variable_vector_free(&clause->variables);
 }

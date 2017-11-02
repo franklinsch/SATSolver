@@ -19,7 +19,7 @@ static const formula_t *g_formula;
 static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implication_graph_node_t *root) {
     EVALUATION evaluation = EVALUATION_TRUE;
 
-    if (clause->size > 1)
+    if (clause->variables.size > 1)
     {
         // Get two watch literals we probably need a better heuristic for choosing them.
         for (int i = 0; i < 2; i++)

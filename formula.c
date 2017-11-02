@@ -71,7 +71,7 @@ void formula_print(formula_t *formula)
     clause_t *end = (formula->clauses + formula->num_clauses);
     for (clause_t *c = formula->clauses; c < end; ++c)
     {
-        for (size_t i = 0; i < c->size; ++i)
+        for (size_t i = 0; i < c->variables.size; ++i)
         {
             int var = clause_get_var(c, i);
             printf("%d ", var);
