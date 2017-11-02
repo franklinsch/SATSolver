@@ -96,6 +96,15 @@ void list_remove_at(list_t *list, size_t pos)
     list->size--;
 }
 
+bool list_find(list_t *list, void *value)
+{
+    for (list_elem_t *curr = list->_header; curr != NULL; curr = curr->next)
+    {
+        if (curr->value == value) return true;
+    }
+    return false;
+}
+
 // Iterator
 
 list_iterator_t *list_get_iterator(list_t *list)
@@ -110,10 +119,12 @@ bool list_iterator_has_next(list_iterator_t *it)
     return it->_curr->next == NULL;
 }
 
-void list_iterator_next(list_iterator_t *it)
+void *list_iterator_next(list_iterator_t *it)
 {
     assert(it->_curr != NULL);
+    void * value = it->_curr->value;
     it->_curr = it->_curr->next;
+    return value;
 }
 
 void *list_iterator_get(list_iterator_t *it)

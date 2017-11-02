@@ -51,6 +51,13 @@ void *list_get_at(list_t *list, size_t pos);
 */
 void list_remove_at(list_t *list, size_t pos);
 
+/**
+ Checks if the supplied pointer is already in the list. This function has shallow equality semantics.
+
+ @param value The element to find.
+*/
+bool list_find(list_t *list, void *value);
+
 // Iterator
 
 typedef struct
@@ -71,7 +78,7 @@ bool list_iterator_has_next(list_iterator_t *it);
 /**
  Gets the next value in the iterator.
 */
-void list_iterator_next(list_iterator_t *it);
+void *list_iterator_next(list_iterator_t *it);
 
 /**
  Returns the value in the iterator.

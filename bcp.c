@@ -85,6 +85,39 @@ void bcp(implication_graph_node_t *node)
     assert(node->num_assignments == 1);
 
     list_t *clauses = variable_map_get(&g_watch_literals, node->assignments[0]);
+    if (list->size > 0)
+    {
+        list_iterator_t *clauses_it = list_get_iterator(clauses);
+
+        for (clause_t *cl = list_iterator_get(clauses_it); list_iterator_has_next(clauses_it); cl = list_iterator_next(clauses_it))
+        {
+            variable_vector_t unassigned_lits;
+            variable_vector_init(&unassigned_lits);
+            clause_get_unassigned_literals(cl, node, &unassigned_lits);
+
+            if (unassigned_lits.size == 1)
+            {
+                //TODO: Unit propagation
+            }
+            // The clause has more unassigned literals
+            else
+            {
+                for (int *lit = variable_vector_cbegin(&unassigned_lits); 
+                        lit < variable_vector_cend(&unassigned_lits);
+                        lit++)
+                {
+                    list_t *watched = variable_map_get(&g_watch_literals, *lit);
+                    // We have found an unassigned literal that is not currently watching this clause
+                    if (!list_find(watched, cl))
+                    {
+                        // Add this clause to the literals watch list
+                        list_append(watched, cl);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void bcp_free(void)
