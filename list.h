@@ -59,6 +59,11 @@ typedef struct
 } list_iterator_t;
 
 /**
+ Get an iterator for the current list.
+ */
+list_iterator_t *list_get_iterator(list_t *list);
+
+/**
  Returns whether the iterator has a next value.
  */
 bool list_iterator_has_next(list_iterator_t *it);

@@ -98,6 +98,13 @@ void list_remove_at(list_t *list, size_t pos)
 
 // Iterator
 
+list_iterator_t *list_get_iterator(list_t *list)
+{
+    list_iterator_t *iterator = malloc(sizeof (list_iterator_t));
+    iterator->curr = list->_header;
+    return iterator;
+}
+
 bool list_iterator_has_next(list_iterator_t *it)
 {
     return it->curr->next == NULL;
