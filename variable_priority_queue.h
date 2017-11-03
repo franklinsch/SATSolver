@@ -11,7 +11,7 @@ typedef struct
     size_t _capacity;
     size_t size;
 
-    // A pointer to the first element of the list.
+    // A pointer to the first element of the queue.
     struct variable_priority_queue_elem_t **_elems;
 
 } variable_priority_queue_t;
@@ -19,7 +19,7 @@ typedef struct
 /**
  Initializes a priority queue of variable.
 
- @param list The priority queue to initialize.
+ @param queue The priority queue to initialize.
  */
 void variable_priority_queue_init(variable_priority_queue_t *queue, size_t size);
 
@@ -29,14 +29,12 @@ void variable_priority_queue_init(variable_priority_queue_t *queue, size_t size)
 void variable_priority_queue_free(variable_priority_queue_t *queue);
 
 /**
- Appends the given index to the index list.
+ Inserts the given value according to its priority.
  */
 void variable_priority_queue_enqueue(variable_priority_queue_t *queue, int value, size_t priority);
 
 /**
- Remove the index at the given position.
-
- @param pos The position of the element to remove.
+ Dequeue value with maximum priority
  */
 int variable_priority_queue_dequeue(variable_priority_queue_t *queue);
 
