@@ -34,13 +34,30 @@ void variable_priority_queue_free(variable_priority_queue_t *queue)
 {
     if (queue != NULL)
     {
+        //TODO: fix free each element
         _variable_priority_queue_elem_free(queue->_elems);
     }
 
     free(queue);
 }
 
-void _variable_priority_queue_rebuild_down(variable_priority_queue_t *queue, variable_priority_queue_elem_t *elem)
+static void _variable_priority_queue_resize(variable_priority_queue_t *queue, size_t capacity)
+{
+#ifdef NDEBUG
+    fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, queue->capacity, capacity);
+#endif
+
+    variable_priority_queue_elem_t **elems =
+        realloc(queue->_elems, capacity * sizeof (variable_priority_queue_elem_t *));
+
+    if (elems)
+    {
+        queue->_elems = elems;
+        queue->capacity = capacity;
+    }
+}
+
+static void _variable_priority_queue_rebuild_down(variable_priority_queue_t *queue, variable_priority_queue_elem_t *elem)
 {
     assert(elem != NULL);
     size_t left_child_index = 2 * elem->index + 1;
@@ -60,23 +77,23 @@ void _variable_priority_queue_rebuild_down(variable_priority_queue_t *queue, var
             elem = max_child;
             max_child = tmp;
 
-            _variable_priority_queue_heap_rebuild(queue, max_child);
+            _variable_priority_queue_rebuild_down(queue, max_child);
         }
     }
 }
 
-void _variable_priority_queue_rebuild_up(variable_priority_queue_t *queue, variable_priority_queue_elem_t *elem)
+static void _variable_priority_queue_rebuild_up(variable_priority_queue_t *queue, variable_priority_queue_elem_t *elem)
 {
     assert(elem != NULL);
     if (elem->index > 0)
     {
         size_t parent_index = (elem->index - 1) / 2;
-        variable_priority_queue_elem_t *parent = queue->_elems + parent_index;
+        variable_priority_queue_elem_t *parent = queue->_elems[parent_index];
         if (parent->priority < elem->priority)
         {
             variable_priority_queue_elem_t *tmp = parent;
             parent = elem;
-            elem = parent;
+            elem = tmp;
 
             _variable_priority_queue_rebuild_up(queue, parent);
         }
@@ -86,7 +103,10 @@ void _variable_priority_queue_rebuild_up(variable_priority_queue_t *queue, varia
 void variable_priority_queue_enqueue(variable_priority_queue_t *queue, int value, size_t priority)
 {
 
-    //TODO: resize if size == capacity
+    if (queue->size == queue->capacity)
+    {
+        _variable_priority_queue_resize(queue, queue->capacity * 2);
+    }
 
 
     variable_priority_queue_elem_t *elem = queue->_elems[queue->size];
@@ -104,9 +124,13 @@ int variable_priority_queue_dequeue(variable_priority_queue_t *queue)
 
     queue->_elems[0] = queue->_elems[queue->size - 1];
     queue->size--;
-    _variable_priority_queue_heap_rebuild(queue, queue->_elems[0]);
+    _variable_priority_queue_rebuild_down(queue, queue->_elems[0]);
 
-    //TODO: resize if little size compared to capacity
+    if (queue->size <= queue->capacity / 4)
+    {
+        _variable_priority_queue_resize(queue, queue->capacity / 2);
+    }
 
     return max;
 }
+
