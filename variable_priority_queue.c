@@ -16,35 +16,21 @@ typedef struct variable_priority_queue_elem_t
 
 void variable_priority_queue_init(variable_priority_queue_t *queue, size_t capacity)
 {
-    queue->capacity = capacity;
+    queue->_capacity = capacity;
     queue->size = 0;
 
     queue->_elems = malloc(capacity * sizeof (variable_priority_queue_elem_t *));
 }
 
-void _variable_priority_queue_elem_free(variable_priority_queue_elem_t *elem)
-{
-    if (elem != NULL)
-    {
-        free(elem);
-    }
-}
-
 void variable_priority_queue_free(variable_priority_queue_t *queue)
 {
-    if (queue != NULL)
-    {
-        //TODO: fix free each element
-        _variable_priority_queue_elem_free(queue->_elems);
-    }
-
-    free(queue);
+    if (queue != NULL) free(queue->_elems);
 }
 
 static void _variable_priority_queue_resize(variable_priority_queue_t *queue, size_t capacity)
 {
 #ifdef NDEBUG
-    fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, queue->capacity, capacity);
+    fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, queue->_capacity, capacity);
 #endif
 
     variable_priority_queue_elem_t **elems =
@@ -53,7 +39,7 @@ static void _variable_priority_queue_resize(variable_priority_queue_t *queue, si
     if (elems)
     {
         queue->_elems = elems;
-        queue->capacity = capacity;
+        queue->_capacity = capacity;
     }
 }
 
@@ -103,9 +89,9 @@ static void _variable_priority_queue_rebuild_up(variable_priority_queue_t *queue
 void variable_priority_queue_enqueue(variable_priority_queue_t *queue, int value, size_t priority)
 {
 
-    if (queue->size == queue->capacity)
+    if (queue->size == queue->_capacity)
     {
-        _variable_priority_queue_resize(queue, queue->capacity * 2);
+        _variable_priority_queue_resize(queue, queue->_capacity * 2);
     }
 
 
@@ -126,9 +112,9 @@ int variable_priority_queue_dequeue(variable_priority_queue_t *queue)
     queue->size--;
     _variable_priority_queue_rebuild_down(queue, queue->_elems[0]);
 
-    if (queue->size <= queue->capacity / 4)
+    if (queue->size <= queue->_capacity / 4)
     {
-        _variable_priority_queue_resize(queue, queue->capacity / 2);
+        _variable_priority_queue_resize(queue, queue->_capacity / 2);
     }
 
     return max;

@@ -8,7 +8,7 @@ struct variable_priority_queue_elem_t;
 
 typedef struct
 {
-    size_t capacity;
+    size_t _capacity;
     size_t size;
 
     // A pointer to the first element of the list.
