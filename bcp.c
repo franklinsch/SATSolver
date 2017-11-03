@@ -84,8 +84,10 @@ void bcp(implication_graph_node_t *node)
     // The node should only have one assignment (added by DPLL).
     assert(node->num_assignments == 1);
 
-    list_t *clauses = variable_map_get(&g_watch_literals, node->assignments[0]);
-    if (list->size > 0)
+    // We only need to worry about the negative assignments for each literals
+    // Therefore we only update the clauses with watch literal -assignment
+    list_t *clauses = variable_map_get(&g_watch_literals, -node->assignments[0]);
+    if (clauses->size > 0)
     {
         list_iterator_t *clauses_it = list_get_iterator(clauses);
 
@@ -97,12 +99,17 @@ void bcp(implication_graph_node_t *node)
 
             if (unassigned_lits.size == 1)
             {
+
+                int unit = variable_vector_get(&unassigned_lits, 0);
+                implication_graph_node_add_assignment(node, unit);
+
+                // add assignment
                 //TODO: Unit propagation
             }
             // The clause has more unassigned literals
             else
             {
-                for (int *lit = variable_vector_cbegin(&unassigned_lits); 
+                for (int *lit = variable_vector_cbegin(&unassigned_lits);
                         lit < variable_vector_cend(&unassigned_lits);
                         lit++)
                 {
