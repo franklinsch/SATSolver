@@ -82,15 +82,18 @@ void bcp(implication_graph_node_t *node)
     list_init(&pending_assignments);
 
     // the first assignment should be made by DPLL, any following ones are done via unit resolution
-    // bcp should always treat the last as it is the most recent at this level
-    assert(node->num_assignments > 0);
+    assert(node->num_assignments == 0);
+    list_append(&pending_assignments, (void *) node->assignments[0]);
 
     // We only need to worry about the negative assignments for each literals
     // Therefore we only update the clauses with watch literal -assignment
-    int neg_assignment = -node->assignments[node->num_assignments - 1];
-    list_t *clauses = variable_map_get(&g_watch_literals, neg_assignment);
-    if (clauses->size > 0)
+    if (pending_assignments.size > 0)
     {
+        // TODO: substitute with dequeue
+        int assignment = list_get_at(&pending_assignments, 0);
+        list_remove_at(&pending_assignments, 0);
+
+        list_t *clauses = variable_map_get(&g_watch_literals, assignment);
         list_iterator_t *clauses_it = list_get_iterator(clauses);
 
         for (clause_t *cl = list_iterator_get(clauses_it); list_iterator_has_next(clauses_it); cl = list_iterator_next(clauses_it))
@@ -105,8 +108,8 @@ void bcp(implication_graph_node_t *node)
                 int unit = *variable_vector_get(&unassigned_lits, 0);
                 implication_graph_node_add_assignment(node, unit);
 
-                // Recurse on bcp until no more unit literal are left
-                bcp(node);
+                // Recurse on bcp to resolve potentian new unit literals
+                list_append(&pending_assignments, (void *) unit);
 
             }
             // The clause has more unassigned literals
