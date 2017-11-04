@@ -12,7 +12,7 @@ typedef struct
     size_t size;
 
     // A pointer to the first element of the queue.
-    struct variable_priority_queue_elem_t **_elems;
+    struct variable_priority_queue_elem_t *_elems;
 
 } variable_priority_queue_t;
 

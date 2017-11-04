@@ -19,7 +19,7 @@ void variable_priority_queue_init(variable_priority_queue_t *queue, size_t capac
     queue->_capacity = capacity;
     queue->size = 0;
 
-    queue->_elems = malloc(capacity * sizeof (variable_priority_queue_elem_t *));
+    queue->_elems = calloc(capacity, sizeof (variable_priority_queue_elem_t));
 }
 
 void variable_priority_queue_free(variable_priority_queue_t *queue)
@@ -33,8 +33,8 @@ static void _variable_priority_queue_resize(variable_priority_queue_t *queue, si
     fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, queue->_capacity, capacity);
 #endif
 
-    variable_priority_queue_elem_t **elems =
-        realloc(queue->_elems, capacity * sizeof (variable_priority_queue_elem_t *));
+    variable_priority_queue_elem_t *elems =
+        realloc(queue->_elems, capacity * sizeof (variable_priority_queue_elem_t));
 
     if (elems)
     {
@@ -49,7 +49,7 @@ static void _variable_priority_queue_rebuild_down(variable_priority_queue_t *que
     size_t left_child_index = 2 * elem->index + 1;
     if (queue->size > left_child_index)
     {
-        variable_priority_queue_elem_t *max_child = queue->_elems[left_child_index];
+        variable_priority_queue_elem_t *max_child = queue->_elems + left_child_index;
         size_t right_child_index = left_child_index + 1;
 
         if (queue->size > right_child_index)
@@ -74,7 +74,7 @@ static void _variable_priority_queue_rebuild_up(variable_priority_queue_t *queue
     if (elem->index > 0)
     {
         size_t parent_index = (elem->index - 1) / 2;
-        variable_priority_queue_elem_t *parent = queue->_elems[parent_index];
+        variable_priority_queue_elem_t *parent = queue->_elems +parent_index;
         if (parent->priority < elem->priority)
         {
             variable_priority_queue_elem_t *tmp = parent;
@@ -95,7 +95,8 @@ void variable_priority_queue_enqueue(variable_priority_queue_t *queue, int value
     }
 
 
-    variable_priority_queue_elem_t *elem = queue->_elems[queue->size];
+    variable_priority_queue_elem_t *elem = queue->_elems + queue->size;
+    queue->size++;
     elem->value = value;
     elem->priority = priority;
     elem->index = queue->size;
@@ -106,11 +107,11 @@ int variable_priority_queue_dequeue(variable_priority_queue_t *queue)
 {
     if (queue->size == 0) return 0;
 
-    int max = queue->_elems[0]->value;
+    int max = queue->_elems->value;
 
     queue->_elems[0] = queue->_elems[queue->size - 1];
     queue->size--;
-    _variable_priority_queue_rebuild_down(queue, queue->_elems[0]);
+    _variable_priority_queue_rebuild_down(queue, queue->_elems);
 
     if (queue->size <= queue->_capacity / 4)
     {
