@@ -1,6 +1,6 @@
 #include "clause.h"
 
-#include "variable_vector.h"
+#include "vector.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,26 +8,28 @@
 
 void clause_init(clause_t *clause)
 {
-    variable_vector_init(&clause->variables);
+    vector_init(&clause->variables);
 }
 
 
-EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, variable_vector_t *unassigned_lits)
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, vector_t *unassigned_lits)
 {
     EVALUATION evaluation = EVALUATION_FALSE;
+    if (unassigned_lits) vector_init(unassigned_lits);
 
-    for (int *it = variable_vector_cbegin(&clause->variables); it < variable_vector_cend(&clause->variables); it++)
+    for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
-        int assignment_value = implication_graph_find_assignment(node, *it);
+        int it_val = (int) *it;
+        int assignment_value = implication_graph_find_assignment(node, it_val);
 
-        if (*it == assignment_value)
+        if (it_val == assignment_value)
         {
             return EVALUATION_TRUE;
         }
         else if (assignment_value == ASSIGNMENT_NOT_FOUND)
         {
             evaluation = EVALUATION_UNDETERMINED;
-            if (unassigned_lits) variable_vector_push_back(unassigned_lits, *it);
+            if (unassigned_lits) vector_push_back(unassigned_lits, *it);
         }
     }
 
@@ -36,32 +38,33 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, var
 
 void clause_add_var(clause_t *clause, int var)
 {
-    variable_vector_push_back(&clause->variables, var);
+    vector_push_back(&clause->variables, (void *) var);
 }
 
 void clause_delete_var(clause_t *clause, size_t index)
 {
-    variable_vector_delete(&clause->variables, index);
+    vector_delete(&clause->variables, index);
 }
 
 int clause_get_var(clause_t *clause, size_t index)
 {
-    int *res = variable_vector_get(&clause->variables, index);
+    int *res = (int *) vector_get(&clause->variables, index);
     return *res;
 }
 
 void clause_get_unassigned_literals(const clause_t *clause,
         implication_graph_node_t *curr_assignment,
-        variable_vector_t *unassigned_lits)
+        vector_t *unassigned_lits)
 {
-    for (int *it = variable_vector_cbegin(&clause->variables); it < variable_vector_cend(&clause->variables); it++)
+    vector_init(unassigned_lits);
+    for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
-        int ass = implication_graph_find_assignment(curr_assignment, *it);
-        if (ass == ASSIGNMENT_NOT_FOUND) variable_vector_push_back(unassigned_lits, *it);
+        int ass = implication_graph_find_assignment(curr_assignment, (int) *it);
+        if (ass == ASSIGNMENT_NOT_FOUND) vector_push_back(unassigned_lits, *it);
     }
 }
 
 void clause_free(clause_t *clause)
 {
-    variable_vector_free(&clause->variables);
+    vector_free(&clause->variables);
 }

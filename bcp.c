@@ -1,9 +1,8 @@
 #include "bcp.h"
 #include "formula.h"
 #include "implication_graph.h"
-#include "list.h"
 #include "variable_map.h"
-#include "variable_vector.h"
+#include "vector.h"
 
 #include <assert.h>
 
@@ -20,8 +19,7 @@ static const formula_t *g_formula;
 static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implication_graph_node_t *root) {
     EVALUATION evaluation = EVALUATION_TRUE;
 
-    variable_vector_t unassigned_lits;
-    variable_vector_init(&unassigned_lits);
+    vector_t unassigned_lits;
     clause_get_unassigned_literals(clause, root, &unassigned_lits);
 
     if (unassigned_lits.size > 1)
@@ -31,17 +29,17 @@ static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implicatio
 
         for (int i = 0; i < 2; i++)
         {
-            int watch = *variable_vector_get(&unassigned_lits, i);
-            list_t *watch_list = variable_map_get(&g_watch_literals, watch);
+            int watch = (int) *vector_get(&unassigned_lits, i);
+            vector_t *watch_list = variable_map_get(&g_watch_literals, watch);
 
             if (watch_list == NULL)
             {
-                watch_list = malloc(sizeof (list_t));
-                list_init(watch_list);
+                watch_list = malloc(sizeof (vector_t));
+                vector_init(watch_list);
                 variable_map_add(&g_watch_literals, watch, watch_list);
             }
 
-            list_append(watch_list, (void *) clause);
+            vector_push_back(watch_list, (void *) clause);
         }
 
     }
@@ -55,7 +53,7 @@ static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implicatio
         implication_graph_node_add_assignment(root, assignment);
     }
 
-    variable_vector_free(&unassigned_lits);
+    vector_free(&unassigned_lits);
     return evaluation;
 }
 
@@ -78,53 +76,50 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 
 void bcp(implication_graph_node_t *node)
 {
-    list_t pending_assignments;
-    list_init(&pending_assignments);
+    vector_t pending_assignments;
+    vector_init(&pending_assignments);
 
     // the first assignment should be made by DPLL, any following ones are done via unit resolution
     assert(node->num_assignments == 0);
-    list_append(&pending_assignments, (void *) node->assignments[0]);
+    vector_push_back(&pending_assignments, (void *) node->assignments[0]);
 
     // We only need to worry about the negative assignments for each literals
     // Therefore we only update the clauses with watch literal -assignment
-    if (pending_assignments.size > 0)
+    while (pending_assignments.size > 0)
     {
         // TODO: substitute with dequeue
-        int assignment = list_get_at(&pending_assignments, 0);
-        list_remove_at(&pending_assignments, 0);
+        int assignment = (int) *vector_get(&pending_assignments, 0);
+        vector_delete(&pending_assignments, 0);
 
-        list_t *clauses = variable_map_get(&g_watch_literals, assignment);
-        list_iterator_t *clauses_it = list_get_iterator(clauses);
+        vector_t *clauses = variable_map_get(&g_watch_literals, assignment);
 
-        for (clause_t *cl = list_iterator_get(clauses_it); list_iterator_has_next(clauses_it); cl = list_iterator_next(clauses_it))
+        for (void **cl = vector_cbegin(clauses); cl < vector_cend(clauses); cl++)
         {
-            variable_vector_t unassigned_lits;
-            variable_vector_init(&unassigned_lits);
-            clause_get_unassigned_literals(cl, node, &unassigned_lits);
+            clause_t *clause = (clause_t *) *cl;
+            vector_t unassigned_lits;
+            clause_get_unassigned_literals(clause, node, &unassigned_lits);
 
             if (unassigned_lits.size == 1)
             {
                 // Assign unit literal left in clause to true
-                int unit = *variable_vector_get(&unassigned_lits, 0);
+                int unit = (int) *vector_get(&unassigned_lits, 0);
                 implication_graph_node_add_assignment(node, unit);
 
                 // Recurse on bcp to resolve potentian new unit literals
-                list_append(&pending_assignments, (void *) unit);
+                vector_push_back(&pending_assignments, (void *) unit);
 
             }
             // The clause has more unassigned literals
             else
             {
-                for (int *lit = variable_vector_cbegin(&unassigned_lits);
-                        lit < variable_vector_cend(&unassigned_lits);
-                        lit++)
+                for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
                 {
-                    list_t *watched = variable_map_get(&g_watch_literals, *lit);
+                    vector_t *watched = variable_map_get(&g_watch_literals, (int) *lit);
                     // We have found an unassigned literal that is not currently watching this clause
-                    if (!list_find(watched, cl))
+                    if (!vector_find(watched, cl))
                     {
                         // Add this clause to the literals watch list
-                        list_append(watched, cl);
+                        vector_push_back(watched, (void *) clause);
                         break;
                     }
                 }
