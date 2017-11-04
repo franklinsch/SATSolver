@@ -3,6 +3,7 @@
 #include "clause.h"
 #include "formula.h"
 #include "implication_graph.h"
+#include "bcp.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -32,12 +33,17 @@ static int choose_var(int num_variables, implication_graph_node_t *node)
 
 struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 {
+    struct dpll_result result;
 
-    /* bcp(formula, node) */
+    if (bcp(node) == EVALUATION_FALSE)
+    {
+        result.evaluation = false;
+        result.leaf = NULL;
+        return result;
+    }
 
     EVALUATION evaluation = formula_evaluate(formula, node);
 
-    struct dpll_result result;
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
@@ -93,6 +99,7 @@ bool dpll(formula_t *formula, bool assignments[])
 
     // initialise literal_to_watching_clause
     // struct dpll_result result = _dpll(formula, &root, literal_to_watching_clauses_map);
+    bcp_init(formula, &root);
     struct dpll_result result = _dpll(formula, &root);
     EVALUATION evaluation = result.evaluation;
     flatten_assignments(result.leaf, assignments);

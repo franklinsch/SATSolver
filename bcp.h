@@ -19,7 +19,7 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root);
 
  @param node The last assignment that was made by the DPLL procedure.
 */
-void bcp(implication_graph_node_t *node);
+EVALUATION bcp(implication_graph_node_t *node);
 
 /**
  Frees the resources BCP needs.

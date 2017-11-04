@@ -1,4 +1,4 @@
-#include "vector.h"
+//#include "vector.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -71,7 +71,7 @@ void vector_delete(vector_t *vector, size_t index)
 
 void **vector_get(const vector_t *vector, size_t index)
 {
-    assert(index >= vector->size);
+    assert(index < vector->size);
 
     return vector->elems + index;
 }

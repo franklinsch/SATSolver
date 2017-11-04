@@ -52,7 +52,7 @@ int clause_get_var(clause_t *clause, size_t index)
     return *res;
 }
 
-void clause_get_unassigned_literals(const clause_t *clause,
+void clause_populate_unassigned_literals(const clause_t *clause,
         implication_graph_node_t *curr_assignment,
         vector_t *unassigned_lits)
 {

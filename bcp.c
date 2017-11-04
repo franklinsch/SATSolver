@@ -9,6 +9,64 @@
 static variable_map_t g_watch_literals;
 static const formula_t *g_formula;
 
+typedef enum
+{
+    // Successfully assigned a new watch literal.
+    BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS,
+
+    // No new watch literal has been set, but an assignment has been deduced.
+    BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED,
+
+    // There were no assignable variables.
+    BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE
+}  BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT;
+
+static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(clause_t *clause,
+    implication_graph_node_t *node,
+    int assignment)
+{
+
+
+    // We find the clauses associated with the watch literals of opposite polarity.
+    vector_t *clauses = variable_map_get(&g_watch_literals, -assignment);
+
+    // For each clause in which the variable is a watch literal.
+    for (void **cl = vector_cbegin(clauses); cl < vector_cend(clauses); cl++)
+    {
+        clause_t *clause = (clause_t *) *cl;
+        vector_t unassigned_lits;
+        clause_populate_unassigned_literals(clause, node, &unassigned_lits);
+
+        if (unassigned_lits.size == 0) return EVALUATION_FALSE;
+
+        if (unassigned_lits.size == 1)
+        {
+            // Derive the necessary assignment in order to make the clause true.
+            int unit = (int) *vector_get(&unassigned_lits, 0);
+
+            implication_graph_node_add_assignment(node, unit);
+
+            // Find any potential assignments, at the same depth.
+            vector_push_back(&pending_assignments, (void *) unit);
+        }
+        // The clause has more unassigned literals.
+        else
+        {
+            for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
+            {
+                vector_t *watched = variable_map_get(&g_watch_literals, (int) *lit);
+                // We have found an unassigned literal that is not currently watching this clause
+                if (!vector_find(watched, cl))
+                {
+                    // Add this clause to the literals watch list
+                    vector_push_back(watched, (void *) clause);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 /**
  Assign the watch literals for the given clause. Deduces trivial assignments if the clause has only one
  literal.
@@ -20,7 +78,7 @@ static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implicatio
     EVALUATION evaluation = EVALUATION_TRUE;
 
     vector_t unassigned_lits;
-    clause_get_unassigned_literals(clause, root, &unassigned_lits);
+    clause_populate_unassigned_literals(clause, root, &unassigned_lits);
 
     if (unassigned_lits.size > 1)
     {
@@ -74,58 +132,24 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
     return evaluation;
 }
 
-void bcp(implication_graph_node_t *node)
+EVALUATION bcp(implication_graph_node_t *node)
 {
     vector_t pending_assignments;
     vector_init(&pending_assignments);
 
-    // the first assignment should be made by DPLL, any following ones are done via unit resolution
+    // The first assignment should be made by DPLL, any following ones are done via unit resolution.
     assert(node->num_assignments == 0);
     vector_push_back(&pending_assignments, (void *) node->assignments[0]);
 
-    // We only need to worry about the negative assignments for each literals
-    // Therefore we only update the clauses with watch literal -assignment
+    // Process all the necessary assignments.
     while (pending_assignments.size > 0)
     {
         // TODO: substitute with dequeue
         int assignment = (int) *vector_get(&pending_assignments, 0);
         vector_delete(&pending_assignments, 0);
-
-        vector_t *clauses = variable_map_get(&g_watch_literals, assignment);
-
-        for (void **cl = vector_cbegin(clauses); cl < vector_cend(clauses); cl++)
-        {
-            clause_t *clause = (clause_t *) *cl;
-            vector_t unassigned_lits;
-            clause_get_unassigned_literals(clause, node, &unassigned_lits);
-
-            if (unassigned_lits.size == 1)
-            {
-                // Assign unit literal left in clause to true
-                int unit = (int) *vector_get(&unassigned_lits, 0);
-                implication_graph_node_add_assignment(node, unit);
-
-                // Recurse on bcp to resolve potentian new unit literals
-                vector_push_back(&pending_assignments, (void *) unit);
-
-            }
-            // The clause has more unassigned literals
-            else
-            {
-                for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
-                {
-                    vector_t *watched = variable_map_get(&g_watch_literals, (int) *lit);
-                    // We have found an unassigned literal that is not currently watching this clause
-                    if (!vector_find(watched, cl))
-                    {
-                        // Add this clause to the literals watch list
-                        vector_push_back(watched, (void *) clause);
-                        break;
-                    }
-                }
-            }
-        }
     }
+
+    return EVALUATION_UNDETERMINED;
 }
 
 void bcp_free(void)

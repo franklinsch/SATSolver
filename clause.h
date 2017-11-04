@@ -62,7 +62,7 @@ int clause_get_var(clause_t *clause, size_t index);
  @param [out] unassigned_lits The address of a vector to add the unassigned literals in the clause to.
  beforehands.
 */
-void clause_get_unassigned_literals(const clause_t *clause,
+void clause_populate_unassigned_literals(const clause_t *clause,
         implication_graph_node_t *curr_assignment,
         vector_t *unassigned_lits);
 
