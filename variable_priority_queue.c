@@ -58,7 +58,7 @@ static void _variable_priority_queue_rebuild_down(variable_priority_queue_t *que
         variable_priority_queue_elem_t *max_child = &queue->_elems[max_child_index];
         if (elem->priority < max_child->priority)
         {
-            variable_priority_queue_elem_t tmp = queue->_elems[max_child->index];
+            variable_priority_queue_elem_t tmp = queue->_elems[elem->index];
             queue->_elems[elem->index] = queue->_elems[max_child->index];
             queue->_elems[max_child->index] = tmp;
             _variable_priority_queue_rebuild_down(queue, max_child);

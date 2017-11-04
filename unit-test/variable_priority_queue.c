@@ -33,10 +33,8 @@ int main(void)
     CHECK( (int) val == 4 );
 
     val = variable_priority_queue_dequeue(&queue);
-    printf("val %i\n", val);
     CHECK( (int) val == 1 );
 
-    printf("size %zu\n", queue.size);
     CHECK( queue.size == 0 );
 
     return 0;
