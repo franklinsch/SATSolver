@@ -15,7 +15,7 @@
 		0E6A2E201F9F5F0800839042 /* dpll.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E6A2E191F9F5F0800839042 /* dpll.c */; };
 		0E924AEB1FAA371400450ECC /* bcp.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E924AE91FAA371300450ECC /* bcp.c */; };
 		0E98B9931FA88256002E5182 /* variable_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E98B9921FA88256002E5182 /* variable_map.c */; };
-		0E98B99A1FA8C74E002E5182 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E98B9981FA8C74E002E5182 /* list.c */; };
+		0EBD8F9F1FAE1F2F005CE72E /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 0EBD8F9E1FAE1F2F005CE72E /* vector.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,8 +48,8 @@
 		0E924AEA1FAA371300450ECC /* bcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bcp.h; sourceTree = "<group>"; };
 		0E98B9911FA88256002E5182 /* variable_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = variable_map.h; sourceTree = "<group>"; };
 		0E98B9921FA88256002E5182 /* variable_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = variable_map.c; sourceTree = "<group>"; };
-		0E98B9981FA8C74E002E5182 /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = list.c; sourceTree = "<group>"; };
-		0E98B9991FA8C74E002E5182 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
+		0EBD8F9D1FAE1F2F005CE72E /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
+		0EBD8F9E1FAE1F2F005CE72E /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +95,8 @@
 				0E6A2E131F9F5F0800839042 /* implication_graph.h */,
 				0E98B9921FA88256002E5182 /* variable_map.c */,
 				0E98B9911FA88256002E5182 /* variable_map.h */,
-				0E98B9981FA8C74E002E5182 /* list.c */,
-				0E98B9991FA8C74E002E5182 /* list.h */,
+				0EBD8F9E1FAE1F2F005CE72E /* vector.c */,
+				0EBD8F9D1FAE1F2F005CE72E /* vector.h */,
 				0E6A2E161F9F5F0800839042 /* parser.c */,
 				0E6A2E101F9F5F0800839042 /* parser.h */,
 				0E6A2E171F9F5F0800839042 /* sat.c */,
@@ -166,11 +166,11 @@
 				0E6A2E201F9F5F0800839042 /* dpll.c in Sources */,
 				0E98B9931FA88256002E5182 /* variable_map.c in Sources */,
 				0E924AEB1FAA371400450ECC /* bcp.c in Sources */,
-				0E98B99A1FA8C74E002E5182 /* list.c in Sources */,
 				0E6A2E1C1F9F5F0800839042 /* formula.c in Sources */,
 				0E6A2E1E1F9F5F0800839042 /* parser.c in Sources */,
 				0E6A2E1F1F9F5F0800839042 /* sat.c in Sources */,
 				0E6A2E1B1F9F5F0800839042 /* clause.c in Sources */,
+				0EBD8F9F1FAE1F2F005CE72E /* vector.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
