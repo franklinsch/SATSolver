@@ -89,7 +89,6 @@ void variable_priority_queue_enqueue(variable_priority_queue_t *queue, int value
 
     if (queue->size == queue->_capacity)
     {
-        printf("resizing\n");
         _variable_priority_queue_resize(queue, queue->_capacity * 2);
     }
 
@@ -100,7 +99,6 @@ void variable_priority_queue_enqueue(variable_priority_queue_t *queue, int value
         elem->index = index;
         elem->value = value;
         elem->priority = priority;
-        printf("hello\n");
 
         _variable_priority_queue_rebuild_up(queue, elem);
     }
