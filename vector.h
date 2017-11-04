@@ -34,7 +34,7 @@ void vector_reserve(vector_t *vector, size_t capacity);
  Append a variable to the vector. This function does not check if the variable is
  already in the vector.
 
- @param var Variable index, negative values indicate a negation.
+ @param elem Variable index, negative values indicate a negation.
  @return position in the underlying container.
 */
 size_t vector_push_back(vector_t *vector, void *elem);
