@@ -21,98 +21,57 @@ typedef enum
     BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE
 }  BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT;
 
-static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(clause_t *clause,
-    implication_graph_node_t *node,
-    int assignment)
-{
-
-
-    // We find the clauses associated with the watch literals of opposite polarity.
-    vector_t *clauses = variable_map_get(&g_watch_literals, -assignment);
-
-    // For each clause in which the variable is a watch literal.
-    for (void **cl = vector_cbegin(clauses); cl < vector_cend(clauses); cl++)
-    {
-        clause_t *clause = (clause_t *) *cl;
-        vector_t unassigned_lits;
-        clause_populate_unassigned_literals(clause, node, &unassigned_lits);
-
-        if (unassigned_lits.size == 0) return EVALUATION_FALSE;
-
-        if (unassigned_lits.size == 1)
-        {
-            // Derive the necessary assignment in order to make the clause true.
-            int unit = (int) *vector_get(&unassigned_lits, 0);
-
-            implication_graph_node_add_assignment(node, unit);
-
-            // Find any potential assignments, at the same depth.
-            vector_push_back(&pending_assignments, (void *) unit);
-        }
-        // The clause has more unassigned literals.
-        else
-        {
-            for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
-            {
-                vector_t *watched = variable_map_get(&g_watch_literals, (int) *lit);
-                // We have found an unassigned literal that is not currently watching this clause
-                if (!vector_find(watched, cl))
-                {
-                    // Add this clause to the literals watch list
-                    vector_push_back(watched, (void *) clause);
-                    break;
-                }
-            }
-        }
-    }
-}
-
 /**
- Assign the watch literals for the given clause. Deduces trivial assignments if the clause has only one
- literal.
+ Executes one step of boolean constraint propagation for one clause
 
- @param root The root of the implication graph.
- @return Whether the clause's satisfiability is trivially decidable.
- */
-static EVALUATION _bcp_clause_assign_watch_literals(clause_t *clause, implication_graph_node_t *root) {
-    EVALUATION evaluation = EVALUATION_TRUE;
+ @param node The current assignment.
+ @param clause The current clause under consideration.
+ @param previous_watch_list The watch list of the previous watch literal.
+ @param previous_watch_list_index The index in the previous watch literal's watch list.
+ @param deduction [out] The deduction that has been made if any.
+
+ @return The result of this step of BCP.
+*/
+static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(implication_graph_node_t *node,
+    clause_t *clause,
+    int *deduction)
+{
+    BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE;
 
     vector_t unassigned_lits;
-    clause_populate_unassigned_literals(clause, root, &unassigned_lits);
+    clause_populate_unassigned_literals(clause, node, &unassigned_lits);
 
-    if (unassigned_lits.size > 1)
+    if (unassigned_lits.size == 0) return BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE;
+
+    if (unassigned_lits.size == 1)
     {
-        // This clause's satisfiability is not trivially decidable since it contains more than one unassigned literal.
-        evaluation = EVALUATION_UNDETERMINED;
+        // Derive the necessary assignment in order to make the clause true.
+        int unit = (int) *vector_get(&unassigned_lits, 0);
+        *deduction = unit;
 
-        for (int i = 0; i < 2; i++)
-        {
-            int watch = (int) *vector_get(&unassigned_lits, i);
-            vector_t *watch_list = variable_map_get(&g_watch_literals, watch);
-
-            if (watch_list == NULL)
-            {
-                watch_list = malloc(sizeof (vector_t));
-                vector_init(watch_list);
-                variable_map_add(&g_watch_literals, watch, watch_list);
-            }
-
-            vector_push_back(watch_list, (void *) clause);
-        }
-
+        res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED;
+        goto cleanup;
     }
+    // The clause has more unassigned literals.
     else
     {
-        int assignment = clause_get_var(clause, 0);
-
-        int existing_assignment = implication_graph_find_assignment(root, assignment);
-        if (existing_assignment == -assignment) return EVALUATION_FALSE;
-
-        implication_graph_node_add_assignment(root, assignment);
+        for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
+        {
+            vector_t *watched = variable_map_get(&g_watch_literals, (int) *lit);
+            // We have found an unassigned literal that is not currently watching this clause
+            if (!vector_find(watched, clause))
+            {
+                // Add this clause to the literals watch list
+                vector_push_back(watched, (void *) clause);
+                res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS;
+                goto cleanup;
+            }
+        }
     }
 
+cleanup:
     vector_free(&unassigned_lits);
-    return evaluation;
+    return res;
 }
 
 EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
@@ -122,11 +81,30 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
     g_formula = formula;
     variable_map_init(&g_watch_literals, formula->num_variables);
     clause_t *end = g_formula->clauses + g_formula->num_clauses;
+
     for (clause_t *clause = g_formula->clauses; clause < end; clause++)
     {
-        EVALUATION clause_evaluation = _bcp_clause_assign_watch_literals(clause, root);
-        if (clause_evaluation == EVALUATION_FALSE) return EVALUATION_FALSE;
-        if (clause_evaluation == EVALUATION_UNDETERMINED) evaluation = EVALUATION_UNDETERMINED;
+        int deduction;
+        BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
+            = _bcp_assign_next_watch_literal(root, clause, &deduction);
+        if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
+        {
+            if (implication_graph_find_assignment(root, deduction) == -deduction)
+            {
+                return EVALUATION_FALSE;
+            }
+
+            implication_graph_node_add_assignment(root, deduction);
+        }
+        else if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE)
+        {
+            return EVALUATION_FALSE;
+        }
+        else
+        {
+            // assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS
+            evaluation = EVALUATION_UNDETERMINED;
+        }
     }
 
     return evaluation;
@@ -147,6 +125,33 @@ EVALUATION bcp(implication_graph_node_t *node)
         // TODO: substitute with dequeue
         int assignment = (int) *vector_get(&pending_assignments, 0);
         vector_delete(&pending_assignments, 0);
+
+        // We find the clauses associated with the watch literals of opposite polarity.
+        vector_t *watch_list= variable_map_get(&g_watch_literals, -assignment);
+
+        for (void **cl = vector_cbegin(watch_list); cl < vector_cend(watch_list); cl++)
+        {
+            clause_t *clause = (clause_t *) *cl;
+            int deduction = 0;
+            BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT iteration_result
+                = _bcp_assign_next_watch_literal(node, clause, &deduction);
+
+            if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
+            {
+                implication_graph_node_add_assignment(node, deduction);
+
+                // Find any potential assignments, at the same depth.
+                vector_push_back(&pending_assignments, (void *) deduction);
+            }
+            else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
+            {
+                vector_delete(watch_list, cl - vector_cbegin(watch_list));
+            }
+            else
+            {
+                return EVALUATION_FALSE;
+            }
+        }
     }
 
     return EVALUATION_UNDETERMINED;

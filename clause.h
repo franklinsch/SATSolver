@@ -25,8 +25,8 @@ void clause_init(clause_t *clause);
  the assignment tree, up to the root.
 
  @param node The current assignment node. This function traverses its parents.
- @param [out] unassigned_lits The address of a vector to add the unassigned literals in the clause to.  beforehands. A
- NULL value indicates the caller does not care about this.
+ @param unassigned_lits [out] The address of a vector to add the unassigned literals in the clause to. A NULL value
+ indicates the caller does not care about this.
  @return The result of the evaluation.
  */
 EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, vector_t *unassigned_lits);

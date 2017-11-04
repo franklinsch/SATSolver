@@ -86,7 +86,7 @@ static void flatten_assignments(implication_graph_node_t *leaf, bool assignments
 
     // At the end of DPLL, the graph will contain a single path from the root to the last assignment.
     // Every node will have at most one parent, so we pick it.
-    for (implication_graph_node_t *node = leaf; node->depth > 0; node = node->parents[0])
+    for (implication_graph_node_t *node = leaf; node->depth >= 0; node = node->parents[0])
     {
         assignments[abs(node->assignments[0]) - 1] = node->assignments[0] > 0;
     }
@@ -97,12 +97,15 @@ bool dpll(formula_t *formula, bool assignments[])
     implication_graph_node_t root;
     implication_graph_node_init(&root, formula, 0);
 
-    // initialise literal_to_watching_clause
-    // struct dpll_result result = _dpll(formula, &root, literal_to_watching_clauses_map);
-    bcp_init(formula, &root);
-    struct dpll_result result = _dpll(formula, &root);
-    EVALUATION evaluation = result.evaluation;
-    flatten_assignments(result.leaf, assignments);
+    EVALUATION evaluation = bcp_init(formula, &root);
+    if (evaluation == EVALUATION_UNDETERMINED)
+    {
+        struct dpll_result result = _dpll(formula, &root);
+        evaluation = result.evaluation;
+    }
+
+    if (evaluation == EVALUATION_TRUE) flatten_assignments(result.leaf, assignments);
+
     implication_graph_node_delete(&root);
     return evaluation == EVALUATION_TRUE ? true : false;
 }
