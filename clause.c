@@ -68,3 +68,12 @@ void clause_free(clause_t *clause)
 {
     vector_free(&clause->variables);
 }
+
+void clause_print(clause_t *clause)
+{
+    for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
+    {
+        printf("%d ", (int) *it);
+    }
+    printf("\n");
+}

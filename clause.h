@@ -71,4 +71,9 @@ void clause_populate_unassigned_literals(const clause_t *clause,
 */
 void clause_free(clause_t *clause);
 
+/**
+ Prints the variables in the given clause.
+ */
+void clause_print(clause_t *clause);
+
 #endif // !CLAUSE_H
