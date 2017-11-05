@@ -169,8 +169,8 @@ EVALUATION bcp(implication_graph_node_t *node)
                 vector_init(&unassigned_lits);
 
                 EVALUATION evaluation = clause_evaluate(clause, node, &unassigned_lits);
-                if (evaluation != EVALUATION_UNDETERMINED) return evaluation;
-                return EVALUATION_UNDETERMINED;
+                assert(evaluation != EVALUATION_UNDETERMINED);
+                return evaluation;
             }
         }
     }
