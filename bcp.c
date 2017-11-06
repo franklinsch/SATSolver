@@ -64,7 +64,8 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
             }
         }
 
-        // we are in a situation where 'a -a' is found in one clause
+        // If we try to find another watch literal we should have at least one unassigned available
+        assert(0);
     }
 
 cleanup:
