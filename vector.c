@@ -14,14 +14,6 @@ void vector_init(vector_t *vector)
     vector->_capacity = VARIABLE_VECTOR_INIT_CAPACITY;
 }
 
-void vector_swap(vector_t **a, vector_t **b)
-{
-    // Swap the underlying references to vectors
-    void *tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-
 // Internal API for resizing the array underpinning a vector.
 static void _vector_resize(vector_t *vector, size_t capacity)
 {

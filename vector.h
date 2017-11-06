@@ -19,11 +19,6 @@ typedef struct vector_t
 void vector_init(vector_t *vector);
 
 /**
- Swap two different vectors. Can be used as a way to do move construction.
-*/
-void vector_swap(vector_t **a, vector_t **b);
-
-/**
  Resize the underlying memory allocation in advance if size is known.
 
  @param capacity The new capacity of the underlying memory allocation.
