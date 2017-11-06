@@ -37,7 +37,7 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
     vector_t unassigned_lits;
     clause_populate_unassigned_literals(clause, node, &unassigned_lits);
 
-    if (unassigned_lits.size == 0) return BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE;
+    if (unassigned_lits.size == 0) goto cleanup;
 
     if (unassigned_lits.size == 1)
     {
