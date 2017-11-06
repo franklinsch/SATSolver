@@ -4,10 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Release.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>aim-100-1_6-no-1.cnf.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>6</integer>
+		</dict>
+		<key>aim-50-1_6-yes1-4.cnf.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
 		</dict>
 		<key>formula.xcscheme</key>
 		<dict>

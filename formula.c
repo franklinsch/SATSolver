@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variables)
+void formula_init(formula_t *formula, size_t num_clauses, unsigned num_variables)
 {
     formula->num_variables = (int) num_variables;
     formula->num_clauses = num_clauses;
@@ -13,18 +13,38 @@ void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variabl
     formula->clauses = malloc(num_clauses * sizeof (clause_t));
 }
 
-EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node)
+EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication_graph, int *unassigned)
 {
     EVALUATION evaluation = EVALUATION_TRUE;
 
     clause_t *end = formula->clauses + formula->num_clauses;
+    *unassigned = 0;
     for (clause_t *curr = formula->clauses; curr < end; curr++)
     {
-        EVALUATION curr_evaluation = clause_evaluate(curr, node, NULL);
+        EVALUATION curr_evaluation;
+
+        if (!(*unassigned)) {
+
+            static int unassigned_lits[3];
+            unassigned_lits[0] = 0;
+            unassigned_lits[1] = 0;
+            unassigned_lits[2] = 0;
+            curr_evaluation = clause_evaluate(curr, implication_graph, unassigned_lits);
+
+            if (unassigned_lits[0] != 0) {
+                *unassigned = unassigned_lits[0];
+            }
+        }
+        else
+        {
+            curr_evaluation = clause_evaluate(curr, implication_graph, NULL);
+        }
+
         switch (curr_evaluation)
         {
             // If one of the clauses evaluates to false, the formula is false.
-            case EVALUATION_FALSE: return EVALUATION_FALSE;
+            case EVALUATION_FALSE:
+                return EVALUATION_FALSE;
 
             // If one of the clauses cannot be evaluated, the formula cannot be either.
             case EVALUATION_UNDETERMINED: evaluation = EVALUATION_UNDETERMINED; break;
@@ -60,13 +80,14 @@ void formula_free(formula_t *formula)
 
 void formula_print(formula_t *formula)
 {
+#ifdef DEBUG
     if (!formula)
     {
         fprintf(stderr, "%s: The formula is empty.\n", __func__);
         return;
     }
 
-    printf("p cnf %d %u\n", formula->num_variables, formula->num_clauses);
+    printf("p cnf %d %zu\n", formula->num_variables, formula->num_clauses);
 
     clause_t *end = (formula->clauses + formula->num_clauses);
     for (clause_t *c = formula->clauses; c < end; ++c)
@@ -78,4 +99,5 @@ void formula_print(formula_t *formula)
         }
         printf("\n");
     }
+#endif
 }

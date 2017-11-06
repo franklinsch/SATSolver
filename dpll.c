@@ -4,25 +4,21 @@
 #include "formula.h"
 #include "implication_graph.h"
 #include "bcp.h"
+#include "variable_map.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
-struct dpll_result
-{
-    EVALUATION evaluation;
-    implication_graph_node_t *leaf;
-};
-
 #define CHOOSE_VAR_ALL_ASSIGNED 0
 
-static int choose_var(int num_variables, implication_graph_node_t *node)
+static int choose_var(int num_variables, implication_graph_t *implication_graph)
 {
     for (int i = 1; i <= num_variables; i++)
     {
-        if (implication_graph_find_assignment(node, i) == ASSIGNMENT_NOT_FOUND)
+        if (implication_graph_find_assignment(implication_graph, i) == ASSIGNMENT_NOT_FOUND)
         {
             return i;
         }
@@ -31,87 +27,100 @@ static int choose_var(int num_variables, implication_graph_node_t *node)
     return CHOOSE_VAR_ALL_ASSIGNED;
 }
 
-struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
+#ifdef DEBUG
+char *tabulate(size_t depth)
 {
-    struct dpll_result result;
+    char *s = malloc(sizeof (char) * (depth + 1));
+    memset(s, ' ', depth);
+    s[depth] = '\0';
+    return s;
+}
+#endif
 
-    if (bcp(node) == EVALUATION_FALSE)
-    {
-        result.evaluation = false;
-        result.leaf = NULL;
-        return result;
-    }
+EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int last_assignment, size_t decision_level)
+{
+    bool no_conflict_present = bcp(implication_graph, last_assignment, decision_level);
 
-    EVALUATION evaluation = formula_evaluate(formula, node);
+    if (!no_conflict_present) return EVALUATION_FALSE;
+
+    int unassigned_lit = 0;
+    EVALUATION evaluation = formula_evaluate(formula, implication_graph, &unassigned_lit);
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
-        int variable = choose_var(formula->num_variables, node);
+        int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, implication_graph);
 
         // At least one variable should be unassigned, otherwise formula_evaluate would not
         // have returned EVALUATION_UNDETERMINED.
         assert(variable != CHOOSE_VAR_ALL_ASSIGNED);
 
         // Create a new assignment setting the variable to the positive value.
-        implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
+        implication_graph_add_assignment(implication_graph, variable, decision_level + 1, 0, NULL);
 
-        result = _dpll(formula, child);
-
-        EVALUATION evaluation = result.evaluation;
+#ifdef DEBUG
+        fprintf(stderr, "%sVariable: %d\n", tabulate(decision_level), variable);
+#endif
+        evaluation = _dpll(formula, implication_graph, variable, decision_level);
 
         if (evaluation == EVALUATION_FALSE)
         {
+#ifdef DEBUG
+            fprintf(stderr, "%sBacktrack: %d\n", tabulate(decision_level + 1), variable);
+#endif
             // Remove the assignment made previously.
-            implication_graph_node_delete(child);
+
+            implication_graph_remove_decision_variable(implication_graph, variable);
 
             // Create a new assignment with the negated value and run DPLL again.
-            child = implication_graph_node_add_child(node, -variable);
+            implication_graph_add_assignment(implication_graph, -variable, decision_level + 1, 0, NULL);
 
-            return _dpll(formula, child);
+            EVALUATION other_evaluation = _dpll(formula, implication_graph, -variable, decision_level);
+
+            if (other_evaluation == EVALUATION_FALSE) {
+                implication_graph_remove_decision_variable(implication_graph, -variable);
+#ifdef DEBUG
+                fprintf(stderr, "%sBacktrack: %d\n", tabulate(decision_level + 1), -variable);
+#endif
+            }
+            return other_evaluation;
         }
 
-        return result;
+        return evaluation;
     }
 
-    result.evaluation = evaluation;
-    result.leaf = node;
-    return result;
+    return evaluation;
 }
 
-static void flatten_assignments(implication_graph_node_t *leaf, bool assignments[])
+static void flatten_assignments(implication_graph_t *implication_graph, bool assignments[])
 {
     // Set all the values of assignments to DPLL_ASSIGNMENT_DONT_CARE.
-    memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (bool) * (leaf->formula->num_variables));
+    size_t num_variables = implication_graph->num_variables;
+    memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (bool) * (num_variables));
 
-    // At the end of DPLL, the graph will contain a single path from the root to the last assignment.
-    // Every node will have at most one parent, so we pick it.
-    for (implication_graph_node_t *node = leaf; node != NULL; node = node->parents[0])
+    for (int i = 1; i <= num_variables; i++)
     {
-        if (node->num_assignments < 1) continue;
-        for (int i = 0; i < node->num_assignments; i++)
+        int assignment = implication_graph_find_assignment(implication_graph, i);
+        if (assignment != ASSIGNMENT_NOT_FOUND)
         {
-            assignments[abs(node->assignments[i]) - 1] = node->assignments[i] > 0;
+            assignments[i - 1] = assignment > 0 ? true : false;
         }
     }
 }
 
 bool dpll(formula_t *formula, bool assignments[])
 {
-    implication_graph_node_t root;
-    implication_graph_node_init(&root, formula, 0);
+    implication_graph_t implication_graph;
+    implication_graph_init(&implication_graph, formula->num_variables);
 
-    EVALUATION evaluation = bcp_init(formula, &root);
-    implication_graph_node_t *leaf = &root;
+    EVALUATION evaluation = bcp_init(formula, &implication_graph);
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
-        struct dpll_result result = _dpll(formula, &root);
-        evaluation = result.evaluation;
-        leaf = result.leaf;
+        evaluation = _dpll(formula, &implication_graph, 0, 0);
     }
 
-    if (evaluation == EVALUATION_TRUE) flatten_assignments(leaf, assignments);
+    if (evaluation == EVALUATION_TRUE) flatten_assignments(&implication_graph, assignments);
 
-    implication_graph_node_delete(&root);
+    implication_graph_free(&implication_graph);
     return evaluation == EVALUATION_TRUE ? true : false;
 }

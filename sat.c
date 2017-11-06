@@ -24,17 +24,11 @@ int main(int argc, char **argv) {
 
     formula_t *formula = parse_dimacs_file(argv[1]);
 
-    // There is no formula for some reason we can not continue.
-    if (!formula)
-    {
-        exit(EXIT_FAILURE);
-    }
+    if (!formula) exit(EXIT_FAILURE);
 
     bool assignments[formula->num_variables];
 
     bool is_sat = dpll(formula, assignments);
-
-//    formula_print(formula);
 
     if (is_sat)
     {

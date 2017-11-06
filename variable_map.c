@@ -28,7 +28,6 @@ void variable_map_free(variable_map_t *map)
 
 void variable_map_add(variable_map_t *map, const int variable, const void *value)
 {
-    // Mod just to be sure
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % (map->_num_variables << 1));
 
     bucket->value = value;
@@ -36,7 +35,6 @@ void variable_map_add(variable_map_t *map, const int variable, const void *value
 
 void *variable_map_get(variable_map_t *map, const int variable)
 {
-    // Mod just to be sure
     variable_map_entry_t *bucket = map->_buckets + (_hash_variable(map, variable) % (map->_num_variables << 1));
 
     // Explicitly remove constness of the pointer for the user to do whatever they want with their memory
