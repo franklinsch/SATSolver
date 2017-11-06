@@ -195,6 +195,8 @@ EVALUATION bcp(implication_graph_node_t *node)
     vector_t pending_assignments;
     vector_init(&pending_assignments);
 
+    EVALUATION evaluation_result = EVALUATION_UNDETERMINED;
+
     // The first assignment should be made by DPLL, any following ones are done via unit resolution.
 //    assert(node->num_assignments == 0);
 
@@ -238,17 +240,17 @@ EVALUATION bcp(implication_graph_node_t *node)
             }
             else
             {
-                vector_t unassigned_lits;
-                vector_init(&unassigned_lits);
-
-                EVALUATION evaluation = clause_evaluate(clause, node, &unassigned_lits);
+                EVALUATION evaluation = clause_evaluate(clause, node, NULL);
                 assert(evaluation != EVALUATION_UNDETERMINED);
-                return evaluation;
+                evaluation_result = evaluation;
+                goto cleanup;
             }
         }
     }
 
-    return EVALUATION_UNDETERMINED;
+cleanup:
+    vector_free(&pending_assignments);
+    return evaluation_result;
 }
 
 void bcp_free(void)

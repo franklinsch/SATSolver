@@ -29,6 +29,8 @@ static void _vector_resize(vector_t *vector, size_t capacity)
     fprintf(stderr, "%s: Vector resize from %d to %d.\n", __func__, vector->_capacity, capacity);
 #endif
 
+    if (capacity == 0) return;
+
     void **vars = realloc(vector->elems, capacity * sizeof (void *));
     if (vars)
     {

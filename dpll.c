@@ -44,7 +44,6 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 
     EVALUATION evaluation = formula_evaluate(formula, node);
 
-
     if (evaluation == EVALUATION_UNDETERMINED)
     {
         int variable = choose_var(formula->num_variables, node);
