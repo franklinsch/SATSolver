@@ -9,7 +9,7 @@
 
 typedef struct
 {
-    // This contains ints representing variables
+    // This contains integers, representing variables.
     vector_t variables;
 } clause_t;
 
