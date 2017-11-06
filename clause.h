@@ -1,16 +1,16 @@
 #ifndef CLAUSE_H
 #define CLAUSE_H
 
-#include "implication_graph.h"
 #include "evaluation.h"
+#include "implication_graph.h"
+#include "vector.h"
 
 #include <stddef.h>
 
 typedef struct
 {
-    size_t size;
-    size_t _capacity;
-    int *variables;
+    // This contains integers, representing variables.
+    vector_t variables;
 } clause_t;
 
 /**
@@ -18,12 +18,6 @@ typedef struct
 */
 void clause_init(clause_t *clause);
 
-/**
- Resize the underlying memory allocation in advance if size is known.
-
- @param capacity The new capacity of the underlying memory allocation.
-*/
-void clause_reserve(clause_t *clause, size_t capacity);
 
 /**
  Evaluates the given clause given a node in the implication graph. This function
@@ -31,9 +25,11 @@ void clause_reserve(clause_t *clause, size_t capacity);
  the assignment tree, up to the root.
 
  @param node The current assignment node. This function traverses its parents.
+ @param unassigned_lits [out] The address of a vector to add the unassigned literals in the clause to. A NULL value
+ indicates the caller does not care about this.
  @return The result of the evaluation.
  */
-EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node);
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, vector_t *unassigned_lits);
 
 /**
  Add a variable to the clause. This function does not check if the variable is
@@ -41,9 +37,8 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node);
  does not change its semantics.
 
  @param var Variable index, negative values indicate a negation.
- @return position In the underlying container.
 */
-size_t clause_add_var(clause_t *clause, int var);
+void clause_add_var(clause_t *clause, int var);
 
 /**
  Remove a variable from the clause.
@@ -61,8 +56,24 @@ void clause_delete_var(clause_t *clause, size_t index);
 int clause_get_var(clause_t *clause, size_t index);
 
 /**
+ Get the unassigned literals in the given clause.
+
+ @param curr_assignment The current assignment
+ @param [out] unassigned_lits The address of a vector to add the unassigned literals in the clause to
+ beforehands.
+*/
+void clause_populate_unassigned_literals(const clause_t *clause,
+        implication_graph_node_t *curr_assignment,
+        vector_t *unassigned_lits);
+
+/**
  Deallocate the clause and all associated ressources.
 */
 void clause_free(clause_t *clause);
+
+/**
+ Prints the variables in the given clause.
+ */
+void clause_print(clause_t *clause);
 
 #endif // !CLAUSE_H
