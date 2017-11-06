@@ -51,8 +51,7 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
     // The clause has more unassigned literals.
     else
     {
-        int num_watched = 0;
-        for (void **lit = vector_cbegin(&unassigned_lits); num_watched < 2 && lit < vector_cend(&unassigned_lits); lit++)
+        for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
         {
             vector_t *watched = variable_map_get(&g_watch_literals, (int) *lit);
             if (!vector_find(watched, clause))
@@ -60,11 +59,12 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
                 // We have found an unassigned literal that is not currently watching this clause.
                 // Add this clause to the literals watch list.
                 vector_push_back(watched, (void *) clause);
-                num_watched++;
+                res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS;
+                break;
             }
         }
-        assert(num_watched == 2);
-        res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS;
+        // When more than one unsassigned literal is found we should always be able to assign a new watch
+        assert(0);
     }
 
 cleanup:
@@ -161,6 +161,7 @@ EVALUATION bcp(implication_graph_node_t *node)
             }
             else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
             {
+                // Remove the previous watch literal
                 vector_delete(watch_list, cl - vector_cbegin(watch_list));
             }
             else
