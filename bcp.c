@@ -60,7 +60,7 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
                 // Add this clause to the literals watch list.
                 vector_push_back(watched, (void *) clause);
                 res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS;
-                break;
+                goto cleanup;
             }
         }
         // When more than one unsassigned literal is found we should always be able to assign a new watch
@@ -115,6 +115,7 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
         else
         {
             // assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS
+            assignment_result = _bcp_assign_next_watch_literal(root, clause, &deduction);
             evaluation = EVALUATION_UNDETERMINED;
         }
     }
