@@ -61,7 +61,7 @@ void vector_delete(vector_t *vector, size_t index)
     void **dst = vector->elems + index;
     void **src = dst + 1;
     size_t amount = vector->size - index - 1;
-    memmove(dst, src, amount);
+    memmove(dst, src, amount * sizeof(void *));
 
     vector->size--;
 

@@ -11,6 +11,8 @@ static const formula_t *g_formula;
 
 static clause_t *offensive;
 
+static clause_t *bob;
+
 typedef struct variable_map_entry_t
 {
     const void *value;
@@ -79,6 +81,12 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
     // The clause has more unassigned literals.
     else
     {
+
+        if (*(int*)clause->variables.elems == -33 && *(int*)(clause->variables.elems + 1) == 34 && *(int*)(clause->variables.elems + 2) == 35)
+        {
+            _print_watch_literals(clause);
+            bob = clause;
+        }
         for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
         {
             int assignment = *(int *)lit;
@@ -89,6 +97,9 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
                 // We have found an unassigned literal that is not currently watching this clause.
                 // Add this clause to the literals watch list.
 //                printf("Ass: %d\n", assignment);
+                if (clause == bob) {
+                    printf("");
+                }
                 vector_push_back(watched, (void *) clause);
                 res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS;
                 goto cleanup;
@@ -164,7 +175,7 @@ void _vector_delete(vector_t *vector, void *target)
     {
         if (*it == target)
         {
-            printf("%d\n", i);
+//            printf("%d\n", i);
             return;
         }
         i++;
@@ -215,9 +226,9 @@ EVALUATION bcp(implication_graph_node_t *node)
             else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
             {
                 // Remove the previous watch literal
-                _vector_delete(watch_list, *cl);
+//                _vector_delete(watch_list, *cl);
                 vector_delete(watch_list, cl - vector_cbegin(watch_list));
-                //Account for deletion
+                //Account for deletionzzzz
                 cl--;
             }
             else
