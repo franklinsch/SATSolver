@@ -63,8 +63,8 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
                 goto cleanup;
             }
         }
-        // When more than one unsassigned literal is found we should always be able to assign a new watch
-        assert(0);
+
+        // we are in a situation where 'a -a' is found in one clause
     }
 
 cleanup:
