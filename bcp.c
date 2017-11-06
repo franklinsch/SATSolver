@@ -140,10 +140,20 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 
     for (clause_t *clause = g_formula->clauses; clause < end; clause++)
     {
-        int deduction;
+        int deduction = 0;
         offensive = clause;
         BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
             = _bcp_assign_next_watch_literal(root, clause, &deduction);
+
+        if (*(int*)clause->variables.elems == 87 && *(int*)(clause->variables.elems + 1) == -196)
+        {
+            printf("");
+        }
+
+        if (deduction == 196) {
+            printf("");
+        }
+
         if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
         {
             if (implication_graph_find_assignment(root, deduction) == -deduction)
