@@ -7,39 +7,15 @@
 #include "vector.h"
 
 #include <assert.h>
+#include <stdbool.h>
 
 static variable_map_t g_watch_literals;
-static formula_t *g_formula;
-
-static clause_t *offensive;
-
-static clause_t *bob;
+static const formula_t *g_formula;
 
 typedef struct variable_map_entry_t
 {
     const void *value;
 } variable_map_entry_t;
-
-static size_t _hash_variable(variable_map_t *map, const int variable)
-{
-    return (variable > 0 ? variable : (abs(variable) + map->_num_variables)) - 1;
-}
-
-void _print_watch_literals(clause_t * clause)
-{
-    for (size_t i = 0; i < (g_watch_literals._num_variables * 2); i++)
-    {
-        variable_map_entry_t *bucket = g_watch_literals._buckets + i;
-        vector_t *watched_list = (vector_t *) (bucket->value);
-
-        if (vector_find(watched_list, (void *) clause))
-        {
-            int lit = i + 1 < g_watch_literals._num_variables ? ((int) i) + 1 : g_watch_literals._num_variables - i - 1;
-            printf ("%d ", lit);
-        }
-    }
-    printf("\n");
-}
 
 typedef enum
 {
@@ -83,34 +59,22 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
     // The clause has more unassigned literals.
     else
     {
-
-        if (*(int*)clause->variables.elems == -33 && *(int*)(clause->variables.elems + 1) == 34 && *(int*)(clause->variables.elems + 2) == 35)
-        {
-            _print_watch_literals(clause);
-            bob = clause;
-        }
         for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
         {
             int assignment = *(int *)lit;
             vector_t *watched = variable_map_get(&g_watch_literals, assignment);
-            assert(clause == offensive);
             if (!vector_find(watched, clause))
             {
                 // We have found an unassigned literal that is not currently watching this clause.
                 // Add this clause to the literals watch list.
-//                printf("Ass: %d\n", assignment);
-                if (clause == bob) {
-                    printf("");
-                }
                 vector_push_back(watched, (void *) clause);
                 res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS;
                 goto cleanup;
             }
         }
 
-        // If we try to find another watch literal we should have at least one unassigned available
-        _print_watch_literals(clause);
-        assert(0);
+        // If we try to find another watch literal, we should have at least one unassigned available.
+        assert(false);
     }
 
 cleanup:
@@ -143,7 +107,6 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
     for (clause_t *clause = g_formula->clauses; clause < end; clause++)
     {
         int deduction = 0;
-        offensive = clause;
         BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
             = _bcp_assign_next_watch_literal(root, clause, &deduction);
 
@@ -163,32 +126,14 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
         }
         else
         {
-            // assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS
-            // This should never fail as the clause is already undetermined. and thus has 2 unassigned watch literals
-            assignment_result = _bcp_assign_next_watch_literal(root, clause, &deduction);
+            // This should never fail as the clause is already undetermined, and thus has 2 unassigned watch literals.
+            _bcp_assign_next_watch_literal(root, clause, &deduction);
             evaluation = EVALUATION_UNDETERMINED;
         }
     }
 
     return evaluation;
 }
-
-void _vector_delete(vector_t *vector, void *target)
-{
-    int i = 0;
-    for (void **it = vector_cbegin(vector); it < vector_cend(vector); it++)
-    {
-        if (*it == target)
-        {
-//            printf("%d\n", i);
-            return;
-        }
-        i++;
-    }
-
-    printf("NOT FOUND\n");
-}
-
 
 EVALUATION bcp(implication_graph_node_t *node)
 {
@@ -219,7 +164,6 @@ EVALUATION bcp(implication_graph_node_t *node)
         {
             clause_t *clause = (clause_t *) *cl;
             int deduction = 0;
-            offensive = clause;
             BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT iteration_result
                 = _bcp_assign_next_watch_literal(node, clause, &deduction);
 
@@ -233,9 +177,9 @@ EVALUATION bcp(implication_graph_node_t *node)
             else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
             {
                 // Remove the previous watch literal
-//                _vector_delete(watch_list, *cl);
                 vector_delete(watch_list, cl - vector_cbegin(watch_list));
-                //Account for deletionzzzz
+
+                // Update the clause pointer.
                 cl--;
             }
             else
