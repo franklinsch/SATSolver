@@ -60,7 +60,9 @@ void clause_populate_unassigned_literals(const clause_t *clause,
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
         int ass = implication_graph_find_assignment(curr_assignment, (int) *it);
-        if (ass == ASSIGNMENT_NOT_FOUND) vector_push_back(unassigned_lits, *it);
+        if (ass == ASSIGNMENT_NOT_FOUND) {
+            vector_push_back(unassigned_lits, *it);
+        }
     }
 }
 
