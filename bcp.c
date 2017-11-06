@@ -142,9 +142,6 @@ EVALUATION bcp(implication_graph_node_t *node)
 
     EVALUATION evaluation_result = EVALUATION_UNDETERMINED;
 
-    // The first assignment should be made by DPLL, any following ones are done via unit resolution.
-//    assert(node->num_assignments == 0);
-
     // If DPLL has not made any assignments, no deductions can be made.
     if (node->num_assignments < 1) return EVALUATION_UNDETERMINED;
 
