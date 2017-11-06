@@ -1,4 +1,6 @@
 #include "bcp.h"
+
+#include "evaluation.h"
 #include "formula.h"
 #include "implication_graph.h"
 #include "variable_map.h"
@@ -7,7 +9,7 @@
 #include <assert.h>
 
 static variable_map_t g_watch_literals;
-static const formula_t *g_formula;
+static formula_t *g_formula;
 
 static clause_t *offensive;
 
@@ -145,15 +147,6 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
         BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
             = _bcp_assign_next_watch_literal(root, clause, &deduction);
 
-        if (*(int*)clause->variables.elems == 87 && *(int*)(clause->variables.elems + 1) == -196)
-        {
-            printf("");
-        }
-
-        if (deduction == 196) {
-            printf("");
-        }
-
         if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
         {
             if (implication_graph_find_assignment(root, deduction) == -deduction)
@@ -161,15 +154,17 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
                 return EVALUATION_FALSE;
             }
 
-            implication_graph_node_add_assignment(root, deduction);
+            if (clause_evaluate(clause, root, NULL) != EVALUATION_TRUE)
+                implication_graph_node_add_assignment(root, deduction);
         }
         else if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE)
         {
-            return EVALUATION_FALSE;
+            if (clause_evaluate(clause, root, NULL) == EVALUATION_FALSE) return EVALUATION_FALSE;
         }
         else
         {
             // assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS
+            // This should never fail as the clause is already undetermined. and thus has 2 unassigned watch literals
             assignment_result = _bcp_assign_next_watch_literal(root, clause, &deduction);
             evaluation = EVALUATION_UNDETERMINED;
         }
