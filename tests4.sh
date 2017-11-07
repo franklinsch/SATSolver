@@ -5,6 +5,7 @@ set -u
 
 CURR_PATH=$(cd "$(dirname "$0")"; pwd -P)
 TESTS_PATH="/Users/fschrans/Downloads/tests_med"
+#TESTS_PATH="tests2"
 SAT_BIN="${CURR_PATH}/sat"
 MODEL_CHECKER="${CURR_PATH}/satmodelvalidator.py"
 

@@ -21,12 +21,23 @@ EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirro
     *unassigned = 0;
     for (clause_t *curr = formula->clauses; curr < end; curr++)
     {
-        vector_t unassigned_lits;
-        vector_init(&unassigned_lits);
-        EVALUATION curr_evaluation = clause_evaluate(curr, assignment_mirror, &unassigned_lits);
-        assert(unassigned_lits.size < 3);
-        if (!(*unassigned) && unassigned_lits.size > 0) *unassigned = (int) *vector_get(&unassigned_lits, 0);
-        vector_free(&unassigned_lits);
+        EVALUATION curr_evaluation;
+
+        if (!(*unassigned)) {
+            vector_t unassigned_lits;
+            curr_evaluation = clause_evaluate(curr, assignment_mirror, &unassigned_lits);
+
+            if (unassigned_lits.size > 0) {
+                *unassigned = (int) *vector_get(&unassigned_lits, 0);
+            }
+
+            vector_free(&unassigned_lits);
+        }
+        else
+        {
+            curr_evaluation = clause_evaluate(curr, assignment_mirror, NULL);
+        }
+
         switch (curr_evaluation)
         {
             // If one of the clauses evaluates to false, the formula is false.

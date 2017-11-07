@@ -162,6 +162,7 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
             {
                 if (implication_graph_find_assignment(root, deduction) == -deduction)
                 {
+                    free(num_watch_literals);
                     return EVALUATION_FALSE;
                 }
 
@@ -186,7 +187,11 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
             else if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE)
             {
                 EVALUATION clause_evaluation = clause_evaluate_with_node(clause, root);
-                if (clause_evaluation == EVALUATION_FALSE) return EVALUATION_FALSE;
+                if (clause_evaluation == EVALUATION_FALSE)
+                {
+                    free(num_watch_literals);
+                    return EVALUATION_FALSE;
+                }
                 if (clause_evaluation == EVALUATION_TRUE)
                 {
                     void **elem = vector_find(&non_trivial_clauses, (void *) clause);
@@ -208,6 +213,7 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
     } while (num_deductions > 0);
 
     int num_variables = g_formula->num_variables;
+    free(num_watch_literals);
 //    formula_free(g_formula);
     formula_init(g_formula, non_trivial_clauses.size, num_variables);
     for (void **it = vector_cbegin(&non_trivial_clauses); it < vector_cend(&non_trivial_clauses); it++)
