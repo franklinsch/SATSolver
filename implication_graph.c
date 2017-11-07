@@ -41,7 +41,9 @@ implication_graph_node_t *implication_graph_node_add_child(implication_graph_nod
 {
     if (abs(variable) > node->formula->num_variables)
     {
+#ifdef DEBUG
         fprintf(stderr, "%s: Variable %d is invalid for the current formula.", __func__, variable);
+#endif
         return NULL;
     }
 

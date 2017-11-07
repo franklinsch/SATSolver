@@ -4,6 +4,7 @@
 #include "evaluation.h"
 #include "implication_graph.h"
 #include "vector.h"
+#include "variable_map.h"
 
 #include <stddef.h>
 
@@ -24,12 +25,12 @@ void clause_init(clause_t *clause);
  tries to find assignments for all the variables in the clause by traversing up
  the assignment tree, up to the root.
 
- @param node The current assignment node. This function traverses its parents.
+ @param assignment_mirror The current assignment, gets updated by the function.
  @param unassigned_lits [out] The address of a vector to add the unassigned literals in the clause to. A NULL value
  indicates the caller does not care about this.
  @return The result of the evaluation.
  */
-EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, vector_t *unassigned_lits);
+EVALUATION clause_evaluate(clause_t *clause, variable_map_t *assignment_mirror, vector_t *unassigned_lits);
 
 /**
  Add a variable to the clause. This function does not check if the variable is

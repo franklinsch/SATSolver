@@ -4,6 +4,7 @@
 #include "formula.h"
 #include "implication_graph.h"
 #include "bcp.h"
+#include "variable_map.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -40,19 +41,24 @@ char *tabulate(int depth)
     return s;
 }
 
-struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
+struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node, variable_map_t *assignment_mirror)
 {
     struct dpll_result result;
 
-    bcp(node);
+    bcp(node, assignment_mirror);
+
+//    int *end = node->assignments + node->num_assignments;
+//    for (int *curr = node->assignments; curr < end; curr++)
+//    {
+//        variable_map_add(assignment_mirror, *curr, (void *) *curr);
+//    }
 
     int unassigned_lit = 0;
-    EVALUATION evaluation = formula_evaluate(formula, node, &unassigned_lit);
+    EVALUATION evaluation = formula_evaluate(formula, assignment_mirror, &unassigned_lit);
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
         int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, node);
-
 
         // At least one variable should be unassigned, otherwise formula_evaluate would not
         // have returned EVALUATION_UNDETERMINED.
@@ -61,23 +67,44 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
         // Create a new assignment setting the variable to the positive value.
         implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
 
+        variable_map_add(assignment_mirror, variable, (void *) variable);
+#ifdef DEBUG
         fprintf(stderr, "%sVariable: %d\n", tabulate(node->depth), variable);
-        result = _dpll(formula, child);
+#endif
+        result = _dpll(formula, child, assignment_mirror);
 
         evaluation = result.evaluation;
 
         if (evaluation == EVALUATION_FALSE)
         {
+#ifdef DEBUG
             fprintf(stderr, "%sBacktrack: %d\n", tabulate(node->depth), variable);
+#endif
             // Remove the assignment made previously.
+
+            int *end = child->assignments + child->num_assignments;
+            for (int *curr = child->assignments; curr < end; curr++)
+            {
+                variable_map_remove(assignment_mirror, *curr);
+            }
+
             implication_graph_node_delete(child);
 
             // Create a new assignment with the negated value and run DPLL again.
             child = implication_graph_node_add_child(node, -variable);
 
-            struct dpll_result other_result = _dpll(formula, child);
+            variable_map_add(assignment_mirror, -variable, (void *) -variable);
+
+            struct dpll_result other_result = _dpll(formula, child, assignment_mirror);
             if (other_result.evaluation == EVALUATION_FALSE) {
+                int *end = child->assignments + child->num_assignments;
+                for (int *curr = child->assignments; curr < end; curr++)
+                {
+                    variable_map_remove(assignment_mirror, *curr);
+                }
+#ifdef DEBUG
                 fprintf(stderr, "%sBacktrack: %d\n", tabulate(node->depth), -variable);
+#endif
             }
             return other_result;
         }
@@ -115,9 +142,15 @@ bool dpll(formula_t *formula, bool assignments[])
     EVALUATION evaluation = bcp_init(formula, &root);
     implication_graph_node_t *leaf = &root;
 
+    variable_map_t assignment_mirror;
+    variable_map_init(&assignment_mirror, formula->num_variables);
+
+    int *end= root.assignments + root.num_assignments;
+    for (int *ass = root.assignments; ass < end; ass++) variable_map_add(&assignment_mirror, *ass, (void*) *ass);
+
     if (evaluation == EVALUATION_UNDETERMINED)
     {
-        struct dpll_result result = _dpll(formula, &root);
+        struct dpll_result result = _dpll(formula, &root, &assignment_mirror);
         evaluation = result.evaluation;
         leaf = result.leaf;
     }

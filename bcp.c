@@ -6,11 +6,12 @@
 #include "variable_map.h"
 #include "vector.h"
 
+#include <stdio.h>
 #include <assert.h>
 #include <stdbool.h>
 
 static variable_map_t g_watch_literals;
-static const formula_t *g_formula;
+static formula_t *g_formula;
 
 typedef struct variable_map_entry_t
 {
@@ -75,11 +76,6 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
     // The clause has more unassigned literals.
     else
     {
-
-        if (*(int*)clause->variables.elems == -1 && *(int*)(clause->variables.elems + 1) == -2 && *(int*)(clause->variables.elems + 2) == -3)
-        {
-            printf("");
-        }
         for (void **lit = vector_cbegin(&unassigned_lits); lit < vector_cend(&unassigned_lits); lit++)
         {
             int assignment = *(int *)lit;
@@ -115,6 +111,20 @@ static void variable_map_init_clauses(variable_map_t *map, size_t num_variables)
     }
 }
 
+static EVALUATION clause_evaluate_with_node(clause_t *clause, implication_graph_node_t *node)
+{
+    EVALUATION evaluation = EVALUATION_FALSE;
+    for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
+    {
+        int it_val = (int) *it;
+        int assignment_value = implication_graph_find_assignment(node, it_val);
+
+        if (assignment_value == it_val) return EVALUATION_TRUE;
+        if (assignment_value == ASSIGNMENT_NOT_FOUND) evaluation = EVALUATION_UNDETERMINED;
+    }
+    return evaluation;
+}
+
 EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 {
     EVALUATION evaluation = EVALUATION_TRUE;
@@ -125,6 +135,13 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
 
     clause_t *end = g_formula->clauses + g_formula->num_clauses;
     size_t num_deductions;
+
+    vector_t non_trivial_clauses;
+    vector_init(&non_trivial_clauses);
+    for (clause_t *clause = g_formula->clauses; clause < end; clause++)
+    {
+        vector_push_back(&non_trivial_clauses, (void *) clause);
+    }
 
     size_t *num_watch_literals = calloc(formula->num_clauses, sizeof (size_t));
 
@@ -148,17 +165,36 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
                     return EVALUATION_FALSE;
                 }
 
-                if (clause_evaluate(clause, root, NULL) != EVALUATION_TRUE)
+                if (clause_evaluate_with_node(clause, root) != EVALUATION_TRUE)
                 {
-                    printf("Deduction: %d from ", deduction);
+#ifdef DEBUG
+                    fprintf(stderr, "Deduction: %d from ", deduction);
+#endif
                     clause_print(clause);
                     implication_graph_node_add_assignment(root, deduction);
                     num_deductions++;
                 }
+                else
+                {
+                    void **elem = vector_find(&non_trivial_clauses, (void *) clause);
+                    if (elem)
+                    {
+                        vector_delete(&non_trivial_clauses, elem - vector_cbegin(&non_trivial_clauses));
+                    }
+                }
             }
             else if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE)
             {
-                if (clause_evaluate(clause, root, NULL) == EVALUATION_FALSE) return EVALUATION_FALSE;
+                EVALUATION clause_evaluation = clause_evaluate_with_node(clause, root);
+                if (clause_evaluation == EVALUATION_FALSE) return EVALUATION_FALSE;
+                if (clause_evaluation == EVALUATION_TRUE)
+                {
+                    void **elem = vector_find(&non_trivial_clauses, (void *) clause);
+                    if (elem)
+                    {
+                        vector_delete(&non_trivial_clauses, elem - vector_cbegin(&non_trivial_clauses));
+                    }
+                }
             }
             else
             {
@@ -167,13 +203,22 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
                 num_watch_literals[clause - formula->clauses] += 2;
                 evaluation = EVALUATION_UNDETERMINED;
             }
+
         }
     } while (num_deductions > 0);
+
+    int num_variables = g_formula->num_variables;
+//    formula_free(g_formula);
+    formula_init(g_formula, non_trivial_clauses.size, num_variables);
+    for (void **it = vector_cbegin(&non_trivial_clauses); it < vector_cend(&non_trivial_clauses); it++)
+    {
+        formula_add_clause(g_formula, *(clause_t*) *it);
+    }
 
     return evaluation;
 }
 
-void bcp(implication_graph_node_t *node)
+void bcp(implication_graph_node_t *node, variable_map_t *assignment_mirror)
 {
     vector_t pending_assignments;
     vector_init(&pending_assignments);
@@ -199,7 +244,7 @@ void bcp(implication_graph_node_t *node)
             clause_t *clause = (clause_t *) *cl;
             int deduction = 0;
 
-            if (clause_evaluate(clause, node, NULL) == EVALUATION_TRUE)
+            if (clause_evaluate(clause, assignment_mirror, NULL) == EVALUATION_TRUE)
             {
                 continue;
             }
@@ -210,6 +255,7 @@ void bcp(implication_graph_node_t *node)
             if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
             {
                 implication_graph_node_add_assignment(node, deduction);
+                variable_map_add(assignment_mirror, deduction, (void *) deduction);
 
                 // Find any potential assignments, at the same depth.
                 vector_push_back(&pending_assignments, (void *) deduction);

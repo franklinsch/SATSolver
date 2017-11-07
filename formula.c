@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variables)
+void formula_init(formula_t *formula, size_t num_clauses, unsigned num_variables)
 {
     formula->num_variables = (int) num_variables;
     formula->num_clauses = num_clauses;
@@ -13,7 +13,7 @@ void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variabl
     formula->clauses = malloc(num_clauses * sizeof (clause_t));
 }
 
-EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node, int *unassigned)
+EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirror, int *unassigned)
 {
     EVALUATION evaluation = EVALUATION_TRUE;
 
@@ -23,13 +23,14 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node, 
     {
         vector_t unassigned_lits;
         vector_init(&unassigned_lits);
-        EVALUATION curr_evaluation = clause_evaluate(curr, node, &unassigned_lits);
+        EVALUATION curr_evaluation = clause_evaluate(curr, assignment_mirror, &unassigned_lits);
+        assert(unassigned_lits.size < 3);
         if (!(*unassigned) && unassigned_lits.size > 0) *unassigned = (int) *vector_get(&unassigned_lits, 0);
         vector_free(&unassigned_lits);
         switch (curr_evaluation)
         {
             // If one of the clauses evaluates to false, the formula is false.
-            case EVALUATION_FALSE: 
+            case EVALUATION_FALSE:
                 return EVALUATION_FALSE;
 
             // If one of the clauses cannot be evaluated, the formula cannot be either.
@@ -66,13 +67,14 @@ void formula_free(formula_t *formula)
 
 void formula_print(formula_t *formula)
 {
+#ifdef DEBUG
     if (!formula)
     {
         fprintf(stderr, "%s: The formula is empty.\n", __func__);
         return;
     }
 
-    printf("p cnf %d %u\n", formula->num_variables, formula->num_clauses);
+    printf("p cnf %d %zu\n", formula->num_variables, formula->num_clauses);
 
     clause_t *end = (formula->clauses + formula->num_clauses);
     for (clause_t *c = formula->clauses; c < end; ++c)
@@ -84,4 +86,5 @@ void formula_print(formula_t *formula)
         }
         printf("\n");
     }
+#endif
 }

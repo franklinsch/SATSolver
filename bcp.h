@@ -4,6 +4,7 @@
 #include "formula.h"
 #include "implication_graph.h"
 #include "evaluation.h"
+#include "variable_map.h"
 
 /**
  Initialises the internal BCP data structures.
@@ -18,8 +19,9 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root);
  Performs BCP on the given formula.
 
  @param node The last assignment that was made by the DPLL procedure.
+ @param assignment_mirror The current assignment.
 */
-void bcp(implication_graph_node_t *node);
+void bcp(implication_graph_node_t *node, variable_map_t *assignment_mirror);
 
 /**
  Frees the resources BCP needs.

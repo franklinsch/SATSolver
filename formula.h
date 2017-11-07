@@ -4,11 +4,12 @@
 #include "clause.h"
 #include "evaluation.h"
 #include "implication_graph.h"
+#include "variable_map.h"
 
 typedef struct formula_t
 {
     int num_variables;
-    unsigned num_clauses;
+    size_t num_clauses;
     unsigned _curr_clause;
     clause_t *clauses;
 } formula_t;
@@ -19,7 +20,7 @@ typedef struct formula_t
  @param num_clauses Number of clauses in the formula.
  @param num_variables Number of variables in the formula.
 */
-void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variables);
+void formula_init(formula_t *formula, size_t num_clauses, unsigned num_variables);
 
 /**
  Evaluates the given formula given a node in the implication graph. This function
@@ -30,7 +31,7 @@ void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variabl
  @param unassigned [out] An unassigned literal in the formula.
  @return The result of the evaluation.
  */
-EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node, int *unassigned);
+EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirror, int *unassigned);
 
 /**
  Add a clause to the formula.
