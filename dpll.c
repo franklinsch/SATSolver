@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
@@ -31,22 +32,27 @@ static int choose_var(int num_variables, implication_graph_node_t *node)
     return CHOOSE_VAR_ALL_ASSIGNED;
 }
 
+char *tabulate(int depth)
+{
+    char *s = malloc(sizeof (char) * (depth + 1));
+    memset(s, ' ', depth);
+    s[depth] = '\0';
+    return s;
+}
+
 struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
 {
     struct dpll_result result;
 
-    if (bcp(node) == EVALUATION_FALSE)
-    {
-        result.evaluation = false;
-        result.leaf = NULL;
-        return result;
-    }
+    bcp(node);
 
-    EVALUATION evaluation = formula_evaluate(formula, node);
+    int unassigned_lit = 0;
+    EVALUATION evaluation = formula_evaluate(formula, node, &unassigned_lit);
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
-        int variable = choose_var(formula->num_variables, node);
+        int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, node);
+
 
         // At least one variable should be unassigned, otherwise formula_evaluate would not
         // have returned EVALUATION_UNDETERMINED.
@@ -55,19 +61,25 @@ struct dpll_result _dpll(formula_t *formula, implication_graph_node_t *node)
         // Create a new assignment setting the variable to the positive value.
         implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
 
+        fprintf(stderr, "%sVariable: %d\n", tabulate(node->depth), variable);
         result = _dpll(formula, child);
 
-        EVALUATION evaluation = result.evaluation;
+        evaluation = result.evaluation;
 
         if (evaluation == EVALUATION_FALSE)
         {
+            fprintf(stderr, "%sBacktrack: %d\n", tabulate(node->depth), variable);
             // Remove the assignment made previously.
             implication_graph_node_delete(child);
 
             // Create a new assignment with the negated value and run DPLL again.
             child = implication_graph_node_add_child(node, -variable);
 
-            return _dpll(formula, child);
+            struct dpll_result other_result = _dpll(formula, child);
+            if (other_result.evaluation == EVALUATION_FALSE) {
+                fprintf(stderr, "%sBacktrack: %d\n", tabulate(node->depth), -variable);
+            }
+            return other_result;
         }
 
         return result;

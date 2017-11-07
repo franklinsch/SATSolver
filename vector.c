@@ -49,7 +49,8 @@ size_t vector_push_back(vector_t *vector, void *elem)
 
 void vector_delete(vector_t *vector, size_t index)
 {
-    assert(index < vector->size && vector->size > 0);
+    assert(index < vector->size);
+    assert(vector->size > 0);
 
     // Shift all the remaining elements one slot to the left.
     void **dst = vector->elems + index;
@@ -59,7 +60,7 @@ void vector_delete(vector_t *vector, size_t index)
 
     vector->size--;
 
-    if (vector->size <= vector->_capacity / 4)
+    if (vector->size != 0 && vector->size <= vector->_capacity / 4)
         _vector_resize(vector, vector->_capacity / 2);
 }
 

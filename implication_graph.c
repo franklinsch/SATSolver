@@ -103,12 +103,13 @@ int implication_graph_find_assignment(implication_graph_node_t *node, int variab
     }
 
     implication_graph_node_t *par_end = *(node->parents) + node->num_parents;
-    int assigned = ASSIGNMENT_NOT_FOUND;
+
     for (implication_graph_node_t *par = *(node->parents); par < par_end; par++)
     {
-        assigned |= implication_graph_find_assignment(par, variable);
+        int result = implication_graph_find_assignment(par, variable);
+        if (result != ASSIGNMENT_NOT_FOUND) return result;
     }
 
-    return assigned;
+    return ASSIGNMENT_NOT_FOUND;
 }
 

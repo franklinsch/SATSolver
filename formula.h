@@ -27,9 +27,10 @@ void formula_init(formula_t *formula, unsigned num_clauses, unsigned num_variabl
  the assignment tree, up to the root.
 
  @param node The current assignment node. This function traverses its parents.
+ @param unassigned [out] An unassigned literal in the formula.
  @return The result of the evaluation.
  */
-EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node);
+EVALUATION formula_evaluate(formula_t *formula, implication_graph_node_t *node, int *unassigned);
 
 /**
  Add a clause to the formula.

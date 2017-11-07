@@ -17,9 +17,13 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, vec
     EVALUATION evaluation = EVALUATION_FALSE;
     if (unassigned_lits) vector_init(unassigned_lits);
 
-    for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
+    int bob = 0;
+
+    void **it;
+    for (it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
         int it_val = (int) *it;
+        bob = it_val;
         int assignment_value = implication_graph_find_assignment(node, it_val);
 
         if (it_val == assignment_value)
@@ -33,6 +37,10 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_node_t *node, vec
         }
     }
 
+    it--;
+    int ass = implication_graph_find_assignment(node, (int) *it);
+    if (bob == -5 && evaluation == EVALUATION_FALSE)
+        printf("");
     return evaluation;
 }
 
