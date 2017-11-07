@@ -20,7 +20,6 @@ EVALUATION clause_evaluate(clause_t *clause, variable_map_t *assigment_mirror, v
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
         int it_val = (int) *it;
-//        int assignment_value = implication_graph_find_assignment(node, it_val);
         int assignment_value = (int) variable_map_get(assigment_mirror, it_val);
 
         if (assignment_value == ASSIGNMENT_NOT_FOUND)
