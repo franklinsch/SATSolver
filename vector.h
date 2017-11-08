@@ -35,11 +35,18 @@ void vector_reserve(vector_t *vector, size_t capacity);
 size_t vector_push_back(vector_t *vector, void *elem);
 
 /**
+ Remove the value at the given target pointer in the given vector, using referential equality.
+
+ @param target The entry to delete.
+ */
+void vector_delete_ptr(vector_t *vector, void *target);
+
+/**
  Remove a variable from the vector.
 
  @param index The index of the element to delete.
 */
-void vector_delete(vector_t *vector, size_t index);
+void **vector_delete(vector_t *vector, size_t index);
 
 /**
  Get a variable from the vector at the given index.

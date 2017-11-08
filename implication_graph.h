@@ -2,60 +2,57 @@
 #define IMPLICATION_GRAPH_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
-typedef struct formula_t formula_t;
+typedef struct implication_graph_node_t implication_graph_node_t;
 
-typedef struct implication_graph_node_t
+typedef struct
 {
-    unsigned depth;
-    formula_t *formula;
-
-    int *assignments;
-    size_t num_assignments;
-
-    struct implication_graph_node_t **parents;
-    size_t num_parents;
-
-    struct implication_graph_node_t **children;
-    size_t num_children;
-} implication_graph_node_t;
+    implication_graph_node_t *nodes;
+    implication_graph_node_t *conflict_node;
+    size_t num_variables;
+} implication_graph_t;
 
 /**
- Initialises the given implication graph node.
-
- @param formula The formula this implication graph is associated to.
- @param depth The depth at which this node sits in the graph.
-*/
-void implication_graph_node_init(implication_graph_node_t *node, formula_t *formula, unsigned depth);
+ Initializes the given implication graph with num_variables.
+ */
+void implication_graph_init(implication_graph_t *implication_graph, size_t num_variables);
 
 /**
- Add an assignemnt to the given node.
+ Frees the resources associated with the given implication graph.
+ */
+void implication_graph_free(implication_graph_t *implication_graph);
 
- @param variable The variable assignment we are adding to the node.
-*/
-void implication_graph_node_add_assignment(implication_graph_node_t *node, int variable);
-
-/**
- Add a child to the given implication graph node.
-
- @param variable The variable assignment we are adding to the child.
- @return The new child.
-*/
-implication_graph_node_t *implication_graph_node_add_child(implication_graph_node_t *node, int variable);
+typedef struct clause_t clause_t;
 
 /**
- Deletes the given implication graph node. This removes the node from its parents' children.
-*/
-void implication_graph_node_delete(implication_graph_node_t *node);
+ Adds an assignment to the given implication graph.
+
+ @param assignment The assignment to add.
+ @param parent_assignment The assignment which derived assignment. 0 if the assignment was an arbitrary decision.
+ @param parent_clause The clause from which assignment was deduced. NULL if the assignment was an arbitrary decision.
+ @return Whether adding the assignment doesn't cause a conflict.
+ */
+bool implication_graph_add_assignment(implication_graph_t *implication_graph, int assignment, size_t decision_level, int parent_assignment, clause_t *parent_clause);
+
+/**
+ Removes the given assignment from the implication graph
+ */
+void implication_graph_remove_assignment(implication_graph_t *implication_graph, int assignment);
 
 #define ASSIGNMENT_NOT_FOUND 0
 
 /**
- Finds the assignement of the given variable along the path from the given node to the graph's root.
+ Finds the given variable's assignment in the implication graph.
 
- @param variable The variable assignement to search for.
- @return The assignment if it exists, ASSIGNMENT_NOT_FOUND otherwise. Negative values indicate negative assignments.
-*/
-int implication_graph_find_assignment(implication_graph_node_t *node, int variable);
+ @param variable The variable to look up.
+ @return The value of the assignment. ASSIGNMENT_NOT_FOUND if the variable hasn't been assigned.
+ */
+int implication_graph_find_assignment(implication_graph_t *implication_graph, int variable);
+
+/**
+ Removes the given decision variable, as well as the assignments which were deduced from it.
+ */
+void implication_graph_remove_decision_variable(implication_graph_t *implication_graph, int assignment);
 
 #endif // !IMPLICATION_GRAPH_H

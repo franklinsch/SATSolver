@@ -6,16 +6,12 @@
 #include "variable_map.h"
 #include "vector.h"
 
+#include <stdio.h>
 #include <assert.h>
 #include <stdbool.h>
 
 static variable_map_t g_watch_literals;
-static const formula_t *g_formula;
-
-typedef struct variable_map_entry_t
-{
-    const void *value;
-} variable_map_entry_t;
+static formula_t *g_formula;
 
 typedef enum
 {
@@ -32,18 +28,18 @@ typedef enum
 /**
  Executes one step of boolean constraint propagation for one clause
 
- @param node The current assignment.
+ @param implication_graph The current implication graph.
  @param clause The current clause under consideration.
  @param deduction (Out) The deduction that has been made, if any.
 
  @return The result of this step of BCP.
-*/
-static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(implication_graph_node_t *node, clause_t *clause, int *deduction)
+ */
+static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(implication_graph_t *implication_graph, clause_t *clause, int *deduction)
 {
     BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE;
 
     vector_t unassigned_lits;
-    clause_populate_unassigned_literals(clause, node, &unassigned_lits);
+    clause_populate_unassigned_literals(clause, implication_graph, &unassigned_lits);
 
     if (unassigned_lits.size == 0) goto cleanup;
 
@@ -72,9 +68,6 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
                 goto cleanup;
             }
         }
-
-        // If we try to find another watch literal, we should have at least one unassigned available.
-        assert(false);
     }
 
 cleanup:
@@ -94,7 +87,7 @@ static void variable_map_init_clauses(variable_map_t *map, size_t num_variables)
     }
 }
 
-EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
+EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
 {
     EVALUATION evaluation = EVALUATION_TRUE;
 
@@ -103,54 +96,105 @@ EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root)
     variable_map_init_clauses(&g_watch_literals, formula->num_variables);
 
     clause_t *end = g_formula->clauses + g_formula->num_clauses;
+    size_t num_deductions;
 
+    vector_t non_trivial_clauses;
+    vector_init(&non_trivial_clauses);
     for (clause_t *clause = g_formula->clauses; clause < end; clause++)
     {
-        int deduction = 0;
-        BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
-            = _bcp_assign_next_watch_literal(root, clause, &deduction);
+        vector_push_back(&non_trivial_clauses, (void *) clause);
+    }
 
-        if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
+    size_t *num_watch_literals = calloc(formula->num_clauses, sizeof (size_t));
+
+    // Keep weeding out trivial clauses as long as we have made deductions in the previous round.
+    do
+    {
+        num_deductions = 0;
+        for (clause_t *clause = g_formula->clauses; clause < end; clause++)
         {
-            if (implication_graph_find_assignment(root, deduction) == -deduction)
+            int deduction = 0;
+
+            if (num_watch_literals[clause - formula->clauses] >= 2) continue;
+
+            BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
+            = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
+
+            if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
             {
-                return EVALUATION_FALSE;
+                if (implication_graph_find_assignment(implication_graph, deduction) == -deduction)
+                {
+                    free(num_watch_literals);
+                    return EVALUATION_FALSE;
+                }
+
+                if (clause_evaluate(clause, implication_graph, NULL) != EVALUATION_TRUE)
+                {
+#ifdef DEBUG
+                    fprintf(stderr, "Deduction: %d from ", deduction);
+                    clause_print(clause);
+#endif
+                    implication_graph_add_assignment(implication_graph, deduction, 0, 0, NULL);
+                    num_deductions++;
+                }
+                else
+                {
+                    void **elem = vector_find(&non_trivial_clauses, (void *) clause);
+                    if (elem)
+                    {
+                        vector_delete(&non_trivial_clauses, elem - vector_cbegin(&non_trivial_clauses));
+                    }
+                }
+            }
+            else if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE)
+            {
+                EVALUATION clause_evaluation = clause_evaluate(clause, implication_graph, NULL);
+                if (clause_evaluation == EVALUATION_FALSE)
+                {
+                    free(num_watch_literals);
+                    return EVALUATION_FALSE;
+                }
+                if (clause_evaluation == EVALUATION_TRUE)
+                {
+                    void **elem = vector_find(&non_trivial_clauses, (void *) clause);
+                    if (elem)
+                    {
+                        vector_delete(&non_trivial_clauses, elem - vector_cbegin(&non_trivial_clauses));
+                    }
+                }
+            }
+            else
+            {
+                // This should never fail as the clause is already undetermined, and thus has 2 unassigned watch literals.
+                _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
+                num_watch_literals[clause - formula->clauses] += 2;
+                evaluation = EVALUATION_UNDETERMINED;
             }
 
-            if (clause_evaluate(clause, root, NULL) != EVALUATION_TRUE)
-                implication_graph_node_add_assignment(root, deduction);
         }
-        else if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_FAILURE)
-        {
-            if (clause_evaluate(clause, root, NULL) == EVALUATION_FALSE) return EVALUATION_FALSE;
-        }
-        else
-        {
-            // This should never fail as the clause is already undetermined, and thus has 2 unassigned watch literals.
-            _bcp_assign_next_watch_literal(root, clause, &deduction);
-            evaluation = EVALUATION_UNDETERMINED;
-        }
+    } while (num_deductions > 0);
+
+    int num_variables = g_formula->num_variables;
+    free(num_watch_literals);
+    formula_init(g_formula, non_trivial_clauses.size, num_variables);
+    for (void **it = vector_cbegin(&non_trivial_clauses); it < vector_cend(&non_trivial_clauses); it++)
+    {
+        formula_add_clause(g_formula, *(clause_t*) *it);
     }
 
     return evaluation;
 }
 
-EVALUATION bcp(implication_graph_node_t *node)
+bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t decision_level)
 {
     vector_t pending_assignments;
     vector_init(&pending_assignments);
 
-    EVALUATION evaluation_result = EVALUATION_UNDETERMINED;
-
-    // If DPLL has not made any assignments, no deductions can be made.
-    if (node->num_assignments < 1) return EVALUATION_UNDETERMINED;
-
-    vector_push_back(&pending_assignments, (void *) node->assignments[0]);
+    vector_push_back(&pending_assignments, (void *) (uintptr_t) last_assignment);
 
     // Process all the necessary assignments.
     while (pending_assignments.size > 0)
     {
-        // TODO: substitute with dequeue
         int assignment = (int) *vector_get(&pending_assignments, 0);
         vector_delete(&pending_assignments, 0);
 
@@ -161,37 +205,31 @@ EVALUATION bcp(implication_graph_node_t *node)
         {
             clause_t *clause = (clause_t *) *cl;
             int deduction = 0;
+
+            if (clause_evaluate(clause, implication_graph, NULL) == EVALUATION_TRUE) continue;
+
             BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT iteration_result
-                = _bcp_assign_next_watch_literal(node, clause, &deduction);
+                = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
 
             if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
             {
-                implication_graph_node_add_assignment(node, deduction);
+                bool no_conflict_present = implication_graph_add_assignment(implication_graph, deduction, decision_level, assignment, clause);
+
+                if (!no_conflict_present) return false;
 
                 // Find any potential assignments, at the same depth.
-                vector_push_back(&pending_assignments, (void *) deduction);
+                vector_push_back(&pending_assignments, (void *) (uintptr_t) deduction);
             }
             else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
             {
-                // Remove the previous watch literal
-                vector_delete(watch_list, cl - vector_cbegin(watch_list));
-
-                // Update the clause pointer.
-                cl--;
-            }
-            else
-            {
-                EVALUATION evaluation = clause_evaluate(clause, node, NULL);
-                assert(evaluation != EVALUATION_UNDETERMINED);
-                evaluation_result = evaluation;
-                goto cleanup;
-            }
+                // Remove the previous watch literal.
+                cl = vector_delete(watch_list, cl - vector_cbegin(watch_list));            }
         }
     }
 
 cleanup:
     vector_free(&pending_assignments);
-    return evaluation_result;
+    return true;
 }
 
 void bcp_free(void)
