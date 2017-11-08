@@ -206,10 +206,7 @@ bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
             clause_t *clause = (clause_t *) *cl;
             int deduction = 0;
 
-            if (clause_evaluate(clause, implication_graph, NULL) == EVALUATION_TRUE)
-            {
-                continue;
-            }
+            if (clause_evaluate(clause, implication_graph, NULL) == EVALUATION_TRUE) continue;
 
             BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT iteration_result
                 = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
