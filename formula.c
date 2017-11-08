@@ -24,7 +24,6 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication
         EVALUATION curr_evaluation;
 
         if (!(*unassigned)) {
-//            vector_t unassigned_lits;
 
             static int unassigned_lits[3];
             unassigned_lits[0] = 0;
@@ -35,8 +34,6 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication
             if (unassigned_lits[0] != 0) {
                 *unassigned = unassigned_lits[0];
             }
-
-//            vector_free(&unassigned_lits);
         }
         else
         {
@@ -83,7 +80,7 @@ void formula_free(formula_t *formula)
 
 void formula_print(formula_t *formula)
 {
-#ifdef DEBUGS
+#ifdef DEBUG
     if (!formula)
     {
         fprintf(stderr, "%s: The formula is empty.\n", __func__);

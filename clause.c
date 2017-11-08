@@ -14,7 +14,6 @@ void clause_init(clause_t *clause)
 EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_graph, int unassigned_lits[3])
 {
     EVALUATION evaluation = EVALUATION_FALSE;
-//    if (unassigned_lits) vector_init(unassigned_lits);
 
     size_t num_assigned = 0;
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
@@ -37,7 +36,6 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_gr
             if (unassigned_lits && num_assigned < 3)
             {
                 unassigned_lits[num_assigned++] = *(int*) it;
-//                vector_push_back(unassigned_lits, *it);
             }
         }
     }
@@ -47,7 +45,7 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_gr
 
 void clause_add_var(clause_t *clause, int var)
 {
-    vector_push_back(&clause->variables, (void *) var);
+    vector_push_back(&clause->variables, (void *) (uintptr_t) var);
 }
 
 void clause_delete_var(clause_t *clause, size_t index)
@@ -82,7 +80,7 @@ void clause_free(clause_t *clause)
 
 void clause_print(clause_t *clause)
 {
-#ifdef DEBUGS
+#ifdef DEBUG
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
         fprintf(stderr, "%d ", (int) *it);

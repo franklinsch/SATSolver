@@ -13,27 +13,6 @@
 static variable_map_t g_watch_literals;
 static formula_t *g_formula;
 
-typedef struct variable_map_entry_t
-{
-    const void *value;
-} variable_map_entry_t;
-
-//void _print_watch_literals(clause_t * clause)
-//{
-//    for (size_t i = 0; i < (g_watch_literals._num_variables * 2); i++)
-//    {
-//        variable_map_entry_t *bucket = g_watch_literals._buckets + i;
-//        vector_t *watched_list = (vector_t *) (bucket->value);
-//
-//        if (vector_find(watched_list, (void *) clause))
-//        {
-//            int lit = i + 1 < g_watch_literals._num_variables ? ((int) i) + 1 : g_watch_literals._num_variables - i - 1;
-//            printf ("%d ", lit);
-//        }
-//    }
-//    printf("\n");
-//}
-
 typedef enum
 {
     // Successfully assigned a new watch literal.
@@ -149,15 +128,12 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
                     return EVALUATION_FALSE;
                 }
 
-                // TODO: This is cockery.
-                //                if (clause_evaluate_with_node(clause, implication_graph) != EVALUATION_TRUE)
                 if (clause_evaluate(clause, implication_graph, NULL) != EVALUATION_TRUE)
                 {
-#ifdef DEBUGS
+#ifdef DEBUG
                     fprintf(stderr, "Deduction: %d from ", deduction);
-#endif
                     clause_print(clause);
-//                    implication_graph_node_add_assignment(root, deduction);
+#endif
                     implication_graph_add_assignment(implication_graph, deduction, 0, 0, NULL);
                     num_deductions++;
                 }
@@ -200,7 +176,6 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
 
     int num_variables = g_formula->num_variables;
     free(num_watch_literals);
-//    formula_free(g_formula);
     formula_init(g_formula, non_trivial_clauses.size, num_variables);
     for (void **it = vector_cbegin(&non_trivial_clauses); it < vector_cend(&non_trivial_clauses); it++)
     {
@@ -215,7 +190,7 @@ bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
     vector_t pending_assignments;
     vector_init(&pending_assignments);
 
-    vector_push_back(&pending_assignments, (void *)last_assignment);
+    vector_push_back(&pending_assignments, (void *) (uintptr_t) last_assignment);
 
     // Process all the necessary assignments.
     while (pending_assignments.size > 0)
@@ -237,23 +212,20 @@ bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
             }
 
             BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT iteration_result
-            = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
+                = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
 
             if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
             {
                 bool no_conflict_present = implication_graph_add_assignment(implication_graph, deduction, decision_level, assignment, clause);
 
-                if (!no_conflict_present)
-                {
-                    return false;
-                }
+                if (!no_conflict_present) return false;
 
                 // Find any potential assignments, at the same depth.
-                vector_push_back(&pending_assignments, (void *) deduction);
+                vector_push_back(&pending_assignments, (void *) (uintptr_t) deduction);
             }
             else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
             {
-                // Remove the previous watch literal
+                // Remove the previous watch literal.
                 cl = vector_delete(watch_list, cl - vector_cbegin(watch_list));            }
         }
     }

@@ -28,7 +28,7 @@ void formula_init(formula_t *formula, size_t num_clauses, unsigned num_variables
  the assignment tree, up to the root.
 
  @param implication_graph The current implication graph.
- @param unassigned [out] An unassigned literal in the formula.
+ @param unassigned (out) An unassigned literal in the formula.
  @return The result of the evaluation.
  */
 EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication_graph, int *unassigned);
