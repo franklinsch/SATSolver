@@ -27,11 +27,11 @@ void formula_init(formula_t *formula, size_t num_clauses, unsigned num_variables
  tries to find assignments for all the variables in each clause by traversing up
  the assignment tree, up to the root.
 
- @param node The current assignment node. This function traverses its parents.
+ @param implication_graph The current implication graph.
  @param unassigned [out] An unassigned literal in the formula.
  @return The result of the evaluation.
  */
-EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirror, int *unassigned);
+EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication_graph, int *unassigned);
 
 /**
  Add a clause to the formula.

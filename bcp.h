@@ -10,18 +10,19 @@
  Initialises the internal BCP data structures.
 
  @param formula The formula on which we will be performing the BCP.
- @param root the root of the implication graph to use.
+ @param implication_graph The current implication graph.
  @return An EVALUATION that determines trivially decidable formulas.
 */
-EVALUATION bcp_init(const formula_t *formula, implication_graph_node_t *root);
+EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph);
 
 /**
  Performs BCP on the given formula.
 
- @param node The last assignment that was made by the DPLL procedure.
- @param assignment_mirror The current assignment.
+ @param implication_graph The current implication graph.
+ @param last_assignment The last assignment that was made by the DPLL procedure.
+ @param decision_level The current decision level.
 */
-void bcp(implication_graph_node_t *node, variable_map_t *assignment_mirror);
+void bcp(implication_graph_t *implication_graph, int last_assignment, size_t decision_level);
 
 /**
  Frees the resources BCP needs.

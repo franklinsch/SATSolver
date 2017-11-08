@@ -47,6 +47,26 @@ size_t vector_push_back(vector_t *vector, void *elem)
     return vector->size;
 }
 
+void vector_delete_ptr(vector_t *vector, void *target)
+{
+    void **elem = vector_find(vector, target);
+
+    while (elem)
+    {
+        vector_delete(vector, elem - vector->elems);
+        elem = vector_find(vector, target);
+    }
+//
+//    for (void **elem = vector->elems; elem < vector_cend(vector); elem++)
+//    {
+//        if (*elem == target)
+//        {
+//            vector_delete(vector, elem - vector->elems);
+//            elem--;
+//        }
+//    }
+}
+
 void vector_delete(vector_t *vector, size_t index)
 {
     assert(index < vector->size);

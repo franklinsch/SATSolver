@@ -2,17 +2,19 @@
 #define CLAUSE_H
 
 #include "evaluation.h"
-#include "implication_graph.h"
 #include "vector.h"
 #include "variable_map.h"
+#include "implication_graph.h"
 
 #include <stddef.h>
 
-typedef struct
+typedef struct clause_t
 {
     // This contains integers, representing variables.
     vector_t variables;
 } clause_t;
+
+typedef struct implication_graph_node_t implication_graph_node_t;
 
 /**
  Initialise a clause, and allocate all the necessary resources on the heap.
@@ -25,12 +27,12 @@ void clause_init(clause_t *clause);
  tries to find assignments for all the variables in the clause by traversing up
  the assignment tree, up to the root.
 
- @param assignment_mirror The current assignment, gets updated by the function.
- @param unassigned_lits [out] The address of a vector to add the unassigned literals in the clause to. A NULL value
+ @param implication_graph The current assignment graph.
+ @param unassigned_lits (out) The address of a vector to add the unassigned literals in the clause to. A NULL value
  indicates the caller does not care about this.
  @return The result of the evaluation.
  */
-EVALUATION clause_evaluate(clause_t *clause, variable_map_t *assignment_mirror, vector_t *unassigned_lits);
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_graph, vector_t *unassigned_lits);
 
 /**
  Add a variable to the clause. This function does not check if the variable is
@@ -59,13 +61,11 @@ int clause_get_var(clause_t *clause, size_t index);
 /**
  Get the unassigned literals in the given clause.
 
- @param curr_assignment The current assignment
- @param [out] unassigned_lits The address of a vector to add the unassigned literals in the clause to
+ @param implication_graph The current implication graph.
+ @param unassigned_lits (out) The address of a vector to add the unassigned literals in the clause to
  beforehands.
 */
-void clause_populate_unassigned_literals(const clause_t *clause,
-        implication_graph_node_t *curr_assignment,
-        vector_t *unassigned_lits);
+void clause_populate_unassigned_literals(const clause_t *clause, implication_graph_t *implication_graph, vector_t *unassigned_lits);
 
 /**
  Deallocate the clause and all associated ressources.

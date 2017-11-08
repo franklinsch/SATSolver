@@ -13,7 +13,7 @@ void formula_init(formula_t *formula, size_t num_clauses, unsigned num_variables
     formula->clauses = malloc(num_clauses * sizeof (clause_t));
 }
 
-EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirror, int *unassigned)
+EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication_graph, int *unassigned)
 {
     EVALUATION evaluation = EVALUATION_TRUE;
 
@@ -25,7 +25,7 @@ EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirro
 
         if (!(*unassigned)) {
             vector_t unassigned_lits;
-            curr_evaluation = clause_evaluate(curr, assignment_mirror, &unassigned_lits);
+            curr_evaluation = clause_evaluate(curr, implication_graph, &unassigned_lits);
 
             if (unassigned_lits.size > 0) {
                 *unassigned = (int) *vector_get(&unassigned_lits, 0);
@@ -35,7 +35,7 @@ EVALUATION formula_evaluate(formula_t *formula, variable_map_t *assignment_mirro
         }
         else
         {
-            curr_evaluation = clause_evaluate(curr, assignment_mirror, NULL);
+            curr_evaluation = clause_evaluate(curr, implication_graph, NULL);
         }
 
         switch (curr_evaluation)
