@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 static variable_map_t g_watch_literals;
 static formula_t *g_formula;
