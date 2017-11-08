@@ -22,7 +22,7 @@ for TESTFILE in $(echo ${TESTS_PATH}/*.cnf); do
 
     # Execute the sat solver by passing a test file of a sat formula
     RET=0
-    OUTPUT=$(timeout -s 9 5 ${SAT_BIN} "${TESTFILE}") || RET=${?}
+    OUTPUT=$(timeout -s 9 30 ${SAT_BIN} "${TESTFILE}") || RET=${?}
     if [[ ${RET} == 137 ]]; then
         echo "TIMEOUT: ${TESTFILE}"
         SCORE=$(( ${SCORE} + 0 ))

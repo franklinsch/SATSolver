@@ -69,7 +69,7 @@ void vector_delete_ptr(vector_t *vector, void *target)
 
 void vector_delete(vector_t *vector, size_t index)
 {
-    assert(index < vector->size);
+//    assert(index < vector->size);
     assert(vector->size > 0);
 
     // Shift all the remaining elements one slot to the left.

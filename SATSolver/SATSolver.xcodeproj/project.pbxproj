@@ -297,6 +297,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				GCC_OPTIMIZATION_LEVEL = fast;
 				OTHER_CFLAGS = "-Wno-int-to-void-pointer-cast";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

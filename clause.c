@@ -11,10 +11,10 @@ void clause_init(clause_t *clause)
     vector_init(&clause->variables);
 }
 
-EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_graph, vector_t *unassigned_lits)
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_graph, int unassigned_lits[3])
 {
     EVALUATION evaluation = EVALUATION_FALSE;
-    if (unassigned_lits) vector_init(unassigned_lits);
+//    if (unassigned_lits) vector_init(unassigned_lits);
 
     size_t num_assigned = 0;
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
@@ -34,8 +34,11 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_gr
         else if (assignment_value == ASSIGNMENT_NOT_FOUND)
         {
             evaluation = EVALUATION_UNDETERMINED;
-            num_assigned++;
-            if (unassigned_lits && num_assigned < 3) vector_push_back(unassigned_lits, *it);
+            if (unassigned_lits && num_assigned < 3)
+            {
+                unassigned_lits[num_assigned++] = *(int*) it;
+//                vector_push_back(unassigned_lits, *it);
+            }
         }
     }
 

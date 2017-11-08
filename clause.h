@@ -32,7 +32,7 @@ void clause_init(clause_t *clause);
  indicates the caller does not care about this.
  @return The result of the evaluation.
  */
-EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_graph, vector_t *unassigned_lits);
+EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_graph, int unassigned_lits[3]);
 
 /**
  Add a variable to the clause. This function does not check if the variable is

@@ -24,14 +24,19 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication
         EVALUATION curr_evaluation;
 
         if (!(*unassigned)) {
-            vector_t unassigned_lits;
-            curr_evaluation = clause_evaluate(curr, implication_graph, &unassigned_lits);
+//            vector_t unassigned_lits;
 
-            if (unassigned_lits.size > 0) {
-                *unassigned = (int) *vector_get(&unassigned_lits, 0);
+            static int unassigned_lits[3];
+            unassigned_lits[0] = 0;
+            unassigned_lits[1] = 0;
+            unassigned_lits[2] = 0;
+            curr_evaluation = clause_evaluate(curr, implication_graph, unassigned_lits);
+
+            if (unassigned_lits[0] != 0) {
+                *unassigned = unassigned_lits[0];
             }
 
-            vector_free(&unassigned_lits);
+//            vector_free(&unassigned_lits);
         }
         else
         {
