@@ -82,6 +82,10 @@ bool implication_graph_add_assignment(implication_graph_t *implication_graph, in
         edge->child = implication_graph->conflict_node;
         vector_push_back(&edge->child->incoming_edges, (void *) edge);
     }
+    else
+    {
+        edge->child = node;
+    }
 
     node->assignment = assignment;
     node->decision_level = decision_level;
@@ -144,7 +148,8 @@ void implication_graph_remove_decision_variable(implication_graph_t *implication
 
     for (void **it = vector_cbegin(&node->outgoing_edges); it < vector_cend(&node->outgoing_edges); it++)
     {
-        implication_graph_remove_decision_variable(implication_graph, node->assignment);
+        implication_graph_edge_t *edge = *it;
+        implication_graph_remove_decision_variable(implication_graph, edge->child->assignment);
     }
 
     implication_graph_remove_assignment(implication_graph, assignment);

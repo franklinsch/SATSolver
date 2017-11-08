@@ -4,7 +4,7 @@ set -e
 set -u
 
 CURR_PATH=$(cd "$(dirname "$0")"; pwd -P)
-TESTS_PATH="/Users/fschrans/Downloads/selected_small"
+TESTS_PATH="/Users/fschrans/Downloads/tests_med"
 #TESTS_PATH="tests2"
 SAT_BIN="${CURR_PATH}/sat"
 MODEL_CHECKER="${CURR_PATH}/satmodelvalidator.py"
@@ -22,7 +22,7 @@ for TESTFILE in $(echo ${TESTS_PATH}/*.cnf); do
 
     # Execute the sat solver by passing a test file of a sat formula
     RET=0
-    OUTPUT=$(timeout -s 9 30 ${SAT_BIN} "${TESTFILE}") || RET=${?}
+    OUTPUT=$(timeout -s 9 5 ${SAT_BIN} "${TESTFILE}") || RET=${?}
     if [[ ${RET} == 137 ]]; then
         echo "TIMEOUT: ${TESTFILE}"
         SCORE=$(( ${SCORE} + 0 ))

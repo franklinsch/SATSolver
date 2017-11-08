@@ -50,7 +50,8 @@ EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
-        int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, implication_graph);
+//        int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, implication_graph);
+        int variable = choose_var(formula->num_variables, implication_graph);
 
         // At least one variable should be unassigned, otherwise formula_evaluate would not
         // have returned EVALUATION_UNDETERMINED.
