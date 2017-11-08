@@ -25,10 +25,7 @@ EVALUATION formula_evaluate(formula_t *formula, implication_graph_t *implication
 
         if (!(*unassigned)) {
 
-            static int unassigned_lits[3];
-            unassigned_lits[0] = 0;
-            unassigned_lits[1] = 0;
-            unassigned_lits[2] = 0;
+            static int unassigned_lits[3] = { 0, 0, 0 };
             curr_evaluation = clause_evaluate(curr, implication_graph, unassigned_lits);
 
             if (unassigned_lits[0] != 0) {
