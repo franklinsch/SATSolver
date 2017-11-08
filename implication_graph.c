@@ -55,27 +55,36 @@ void implication_graph_init(implication_graph_t *implication_graph, size_t num_v
 void implication_graph_free(implication_graph_t *implication_graph)
 {
     implication_graph_node_t *end = implication_graph->nodes + implication_graph->num_variables;
+
+    for (int i = 1; i < implication_graph->num_variables; i++)
+    {
+        implication_graph_remove_assignment(implication_graph, i);
+    }
+
     for (implication_graph_node_t *curr = implication_graph->nodes; curr < end; curr++)
     {
         vector_free(&curr->incoming_edges);
         vector_free(&curr->outgoing_edges);
     }
+
     free(implication_graph->nodes);
     free(implication_graph->conflict_node);
 }
 
 bool implication_graph_add_assignment(implication_graph_t *implication_graph, int assignment, size_t decision_level, int parent_assignment, clause_t *parent_clause)
 {
+    implication_graph_node_t *node = implication_graph-> nodes + node_index(assignment);
+
+    node->assignment = assignment;
+    node->decision_level = decision_level;
+
+    if (parent_assignment == 0) return true;
+
     implication_graph_edge_t *edge = malloc(sizeof (implication_graph_edge_t));
     edge->clause = parent_clause;
 
-    if (parent_assignment != 0)
-    {
-        implication_graph_node_t *parent = implication_graph->nodes + node_index(parent_assignment);
-        edge->parent = parent;
-    }
-
-    implication_graph_node_t *node = implication_graph-> nodes + node_index(assignment);
+    implication_graph_node_t *parent = implication_graph->nodes + node_index(parent_assignment);
+    edge->parent = parent;
 
     if (node->assignment != 0 && node->assignment == -assignment)
     {
@@ -87,15 +96,9 @@ bool implication_graph_add_assignment(implication_graph_t *implication_graph, in
         edge->child = node;
     }
 
-    node->assignment = assignment;
-    node->decision_level = decision_level;
+    vector_push_back(&edge->parent->outgoing_edges, (void *) edge);
 
-    if (parent_assignment != 0)
-    {
-        vector_push_back(&edge->parent->outgoing_edges, (void *) edge);
-    }
-
-    return edge->child == implication_graph->conflict_node;
+    return edge->child != implication_graph->conflict_node;
 }
 
 static void remove_parents(implication_graph_node_t *node)
@@ -127,7 +130,6 @@ static void remove_children(implication_graph_node_t *node)
 void implication_graph_remove_assignment(implication_graph_t *implication_graph, int assignment)
 {
     implication_graph_node_t *node = implication_graph->nodes + node_index(assignment);
-    assert(node->assignment != 0);
 
     remove_parents(node);
     remove_children(node);

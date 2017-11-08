@@ -31,7 +31,7 @@ typedef struct clause_t clause_t;
  @param assignment The assignment to add.
  @param parent_assignment The assignment which derived assignment. 0 if the assignment was an arbitrary decision.
  @param parent_clause The clause from which assignment was deduced. NULL if the assignment was an arbitrary decision.
- @return Whether adding the assignment causes a conflict.
+ @return Whether adding the assignment doesn't cause a conflict.
  */
 bool implication_graph_add_assignment(implication_graph_t *implication_graph, int assignment, size_t decision_level, int parent_assignment, clause_t *parent_clause);
 
