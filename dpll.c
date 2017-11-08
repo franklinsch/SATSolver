@@ -37,13 +37,9 @@ char *tabulate(size_t depth)
 
 EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int last_assignment, size_t decision_level)
 {
-    bcp(implication_graph, last_assignment, decision_level);
+    bool no_conflict_present = bcp(implication_graph, last_assignment, decision_level);
 
-//    int *end = node->assignments + node->num_assignments;
-//    for (int *curr = node->assignments; curr < end; curr++)
-//    {
-//        variable_map_add(assignment_mirror, *curr, (void *) *curr);
-//    }
+    if (!no_conflict_present) return EVALUATION_FALSE;
 
     int unassigned_lit = 0;
     EVALUATION evaluation = formula_evaluate(formula, implication_graph, &unassigned_lit);
@@ -59,14 +55,14 @@ EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int
         // Create a new assignment setting the variable to the positive value.
         implication_graph_add_assignment(implication_graph, variable, decision_level + 1, 0, NULL);
 
-#ifdef DEBUG
+#ifdef DEBUGS
         fprintf(stderr, "%sVariable: %d\n", tabulate(decision_level), variable);
 #endif
         evaluation = _dpll(formula, implication_graph, variable, decision_level);
 
         if (evaluation == EVALUATION_FALSE)
         {
-#ifdef DEBUG
+#ifdef DEBUGS
             fprintf(stderr, "%sBacktrack: %d\n", tabulate(decision_level + 1), variable);
 #endif
             // Remove the assignment made previously.
@@ -80,7 +76,7 @@ EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int
 
             if (other_evaluation == EVALUATION_FALSE) {
                 implication_graph_remove_decision_variable(implication_graph, -variable);
-#ifdef DEBUG
+#ifdef DEBUGS
                 fprintf(stderr, "%sBacktrack: %d\n", tabulate(decision_level + 1), -variable);
 #endif
             }

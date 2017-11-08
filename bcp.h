@@ -21,8 +21,9 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph);
  @param implication_graph The current implication graph.
  @param last_assignment The last assignment that was made by the DPLL procedure.
  @param decision_level The current decision level.
+ @return True iff BCP found no conflicting assignments.
 */
-void bcp(implication_graph_t *implication_graph, int last_assignment, size_t decision_level);
+bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t decision_level);
 
 /**
  Frees the resources BCP needs.

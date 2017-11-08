@@ -153,7 +153,7 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
                 //                if (clause_evaluate_with_node(clause, implication_graph) != EVALUATION_TRUE)
                 if (clause_evaluate(clause, implication_graph, NULL) != EVALUATION_TRUE)
                 {
-#ifdef DEBUG
+#ifdef DEBUGS
                     fprintf(stderr, "Deduction: %d from ", deduction);
 #endif
                     clause_print(clause);
@@ -210,7 +210,7 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
     return evaluation;
 }
 
-void bcp(implication_graph_t *implication_graph, int last_assignment, size_t decision_level)
+bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t decision_level)
 {
     vector_t pending_assignments;
     vector_init(&pending_assignments);
@@ -241,7 +241,12 @@ void bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
 
             if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
             {
-                implication_graph_add_assignment(implication_graph, deduction, decision_level, assignment, clause);
+                bool no_conflict_present = implication_graph_add_assignment(implication_graph, deduction, decision_level, assignment, clause);
+
+                if (!no_conflict_present)
+                {
+                    return false;
+                }
 
                 // Find any potential assignments, at the same depth.
                 vector_push_back(&pending_assignments, (void *) deduction);
@@ -249,16 +254,13 @@ void bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
             else if (iteration_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_SUCCESS)
             {
                 // Remove the previous watch literal
-                vector_delete(watch_list, cl - vector_cbegin(watch_list));
-
-                // Update the clause pointer.
-                cl--;
-            }
+                cl = vector_delete(watch_list, cl - vector_cbegin(watch_list));            }
         }
     }
 
 cleanup:
     vector_free(&pending_assignments);
+    return true;
 }
 
 void bcp_free(void)

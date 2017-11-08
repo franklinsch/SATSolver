@@ -46,7 +46,7 @@ void vector_delete_ptr(vector_t *vector, void *target);
 
  @param index The index of the element to delete.
 */
-void vector_delete(vector_t *vector, size_t index);
+void **vector_delete(vector_t *vector, size_t index);
 
 /**
  Get a variable from the vector at the given index.

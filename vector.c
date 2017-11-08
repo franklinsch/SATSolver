@@ -56,20 +56,11 @@ void vector_delete_ptr(vector_t *vector, void *target)
         vector_delete(vector, elem - vector->elems);
         elem = vector_find(vector, target);
     }
-//
-//    for (void **elem = vector->elems; elem < vector_cend(vector); elem++)
-//    {
-//        if (*elem == target)
-//        {
-//            vector_delete(vector, elem - vector->elems);
-//            elem--;
-//        }
-//    }
 }
 
-void vector_delete(vector_t *vector, size_t index)
+void **vector_delete(vector_t *vector, size_t index)
 {
-//    assert(index < vector->size);
+    assert(index < vector->size);
     assert(vector->size > 0);
 
     // Shift all the remaining elements one slot to the left.
@@ -80,8 +71,14 @@ void vector_delete(vector_t *vector, size_t index)
 
     vector->size--;
 
+    size_t offset = src - vector->elems;
+
     if (vector->size != 0 && vector->size <= vector->_capacity / 4)
+    {
         _vector_resize(vector, vector->_capacity / 2);
+    }
+
+    return vector->elems + offset;
 }
 
 void **vector_get(const vector_t *vector, size_t index)
