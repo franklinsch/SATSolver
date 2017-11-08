@@ -131,7 +131,7 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
 
                 if (clause_evaluate(clause, implication_graph, NULL) != EVALUATION_TRUE)
                 {
-#ifdef DEBUG
+#ifdef LOGGING
                     fprintf(stderr, "Deduction: %d from ", deduction);
                     clause_print(clause);
 #endif

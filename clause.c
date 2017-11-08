@@ -79,7 +79,7 @@ void clause_free(clause_t *clause)
     vector_free(&clause->variables);
 }
 
-#ifdef DEBUG
+#ifdef LOGGING
 void clause_print(clause_t *clause)
 {
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)

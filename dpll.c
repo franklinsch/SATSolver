@@ -27,7 +27,7 @@ static int choose_var(int num_variables, implication_graph_t *implication_graph)
     return CHOOSE_VAR_ALL_ASSIGNED;
 }
 
-#ifdef DEBUG
+#ifdef LOGGING
 char *tabulate(size_t depth)
 {
     char *s = malloc(sizeof (char) * (depth + 1));
@@ -57,14 +57,14 @@ EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int
         // Create a new assignment setting the variable to the positive value.
         implication_graph_add_assignment(implication_graph, variable, decision_level + 1, 0, NULL);
 
-#ifdef DEBUG
+#ifdef LOGGING
         fprintf(stderr, "%sVariable: %d\n", tabulate(decision_level), variable);
 #endif
         evaluation = _dpll(formula, implication_graph, variable, decision_level);
 
         if (evaluation == EVALUATION_FALSE)
         {
-#ifdef DEBUG
+#ifdef LOGGING
             fprintf(stderr, "%sBacktrack: %d\n", tabulate(decision_level + 1), variable);
 #endif
             // Remove the assignment made previously.
@@ -78,7 +78,7 @@ EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int
 
             if (other_evaluation == EVALUATION_FALSE) {
                 implication_graph_remove_decision_variable(implication_graph, -variable);
-#ifdef DEBUG
+#ifdef LOGGING
                 fprintf(stderr, "%sBacktrack: %d\n", tabulate(decision_level + 1), -variable);
 #endif
             }

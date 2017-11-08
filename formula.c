@@ -78,7 +78,7 @@ void formula_free(formula_t *formula)
     }
 }
 
-#ifdef DEBUG
+#ifdef LOGGING
 void formula_print(formula_t *formula)
 {
     if (!formula)
