@@ -19,7 +19,7 @@ EVALUATION clause_evaluate(clause_t *clause, implication_graph_t *implication_gr
     size_t num_assigned = 0;
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
-        int it_val = (int) *it;
+        int it_val = (int) (uintptr_t) *it;
         int assignment_value = implication_graph_find_assignment(implication_graph, it_val);
 
         if (assignment_value == ASSIGNMENT_NOT_FOUND)
@@ -66,7 +66,7 @@ void clause_populate_unassigned_literals(const clause_t *clause, implication_gra
     int num_unassigned = 0;
     for (void **it = vector_cbegin(&clause->variables); num_unassigned < 3 && it < vector_cend(&clause->variables); it++)
     {
-        int ass = implication_graph_find_assignment(implication_graph, (int) *it);
+        int ass = implication_graph_find_assignment(implication_graph, (int) (uintptr_t) *it);
         if (ass == ASSIGNMENT_NOT_FOUND) {
             vector_push_back(unassigned_lits, *it);
             num_unassigned++;
@@ -79,13 +79,13 @@ void clause_free(clause_t *clause)
     vector_free(&clause->variables);
 }
 
+#ifdef DEBUG
 void clause_print(clause_t *clause)
 {
-#ifdef DEBUG
     for (void **it = vector_cbegin(&clause->variables); it < vector_cend(&clause->variables); it++)
     {
         fprintf(stderr, "%d ", (int) *it);
     }
     fprintf(stderr, "\n");
-#endif
 }
+#endif

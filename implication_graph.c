@@ -56,9 +56,9 @@ void implication_graph_free(implication_graph_t *implication_graph)
 {
     implication_graph_node_t *end = implication_graph->nodes + implication_graph->num_variables;
 
-    for (int i = 1; i < implication_graph->num_variables; i++)
+    for (size_t i = 1; i < implication_graph->num_variables; i++)
     {
-        implication_graph_remove_assignment(implication_graph, i);
+        implication_graph_remove_assignment(implication_graph, (int) i);
     }
 
     for (implication_graph_node_t *curr = implication_graph->nodes; curr < end; curr++)

@@ -47,7 +47,7 @@ static BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT _bcp_assign_next_watch_literal(impli
     if (unassigned_lits.size == 1)
     {
         // Derive the necessary assignment in order to make the clause true.
-        int unit = (int) *vector_get(&unassigned_lits, 0);
+        int unit = (int) (uintptr_t) *vector_get(&unassigned_lits, 0);
         *deduction = unit;
 
         res = BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED;
@@ -79,7 +79,7 @@ cleanup:
 static void variable_map_init_clauses(variable_map_t *map, size_t num_variables)
 {
     for (int sign = -1; sign <= 1; sign += 2) {
-        for (int i = 1; i <= num_variables; i++)
+        for (int i = 1; i <= (int) num_variables; i++)
         {
             vector_t *vector = malloc(sizeof (vector_t));
             vector_init(vector);
@@ -196,7 +196,7 @@ bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
     // Process all the necessary assignments.
     while (pending_assignments.size > 0)
     {
-        int assignment = (int) *vector_get(&pending_assignments, 0);
+        int assignment = (int) (uintptr_t) *vector_get(&pending_assignments, 0);
         vector_delete(&pending_assignments, 0);
 
         // We find the clauses associated with the watch literals of opposite polarity.
@@ -216,7 +216,11 @@ bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
             {
                 bool no_conflict_present = implication_graph_add_assignment(implication_graph, deduction, decision_level, assignment, clause);
 
-                if (!no_conflict_present) return false;
+                if (!no_conflict_present)
+                {
+                    vector_free(&pending_assignments);
+                    return false;
+                }
 
                 // Find any potential assignments, at the same depth.
                 vector_push_back(&pending_assignments, (void *) (uintptr_t) deduction);
@@ -228,7 +232,6 @@ bool bcp(implication_graph_t *implication_graph, int last_assignment, size_t dec
         }
     }
 
-cleanup:
     vector_free(&pending_assignments);
     return true;
 }

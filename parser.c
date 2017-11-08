@@ -42,7 +42,7 @@ static formula_t *parse_problem_line(FILE *fp)
     return formula;
 }
 
-static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
+static int parse_clause(formula_t *formula, FILE *fp)
 {
     clause_t clause;
     clause_init(&clause);
@@ -52,9 +52,6 @@ static int parse_clause(formula_t *formula, FILE *fp, unsigned clause_index)
     {
         if (abs(var) > formula->num_variables)
         {
-#ifdef DEBUG
-            fprintf(stderr, "Unknown variable: %d at clause %u\n", var, clause_index);
-#endif
             // Report the error to the caller.
             return 1;
         }
@@ -82,7 +79,7 @@ formula_t *parse_dimacs_file(char *path)
     {
         skip_comments(fp);
 
-        if(parse_clause(formula, fp, c))
+        if(parse_clause(formula, fp))
             goto cleanup;
     }
 

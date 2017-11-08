@@ -78,9 +78,9 @@ void formula_free(formula_t *formula)
     }
 }
 
+#ifdef DEBUG
 void formula_print(formula_t *formula)
 {
-#ifdef DEBUG
     if (!formula)
     {
         fprintf(stderr, "%s: The formula is empty.\n", __func__);
@@ -99,5 +99,5 @@ void formula_print(formula_t *formula)
         }
         printf("\n");
     }
-#endif
 }
+#endif

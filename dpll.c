@@ -97,9 +97,9 @@ static void flatten_assignments(implication_graph_t *implication_graph, bool ass
     size_t num_variables = implication_graph->num_variables;
     memset(assignments, DPLL_ASSIGNMENT_DONT_CARE, sizeof (bool) * (num_variables));
 
-    for (int i = 1; i <= num_variables; i++)
+    for (size_t i = 1; i <= num_variables; i++)
     {
-        int assignment = implication_graph_find_assignment(implication_graph, i);
+        int assignment = implication_graph_find_assignment(implication_graph, (int) i);
         if (assignment != ASSIGNMENT_NOT_FOUND)
         {
             assignments[i - 1] = assignment > 0 ? true : false;
