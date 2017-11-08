@@ -50,18 +50,15 @@ EVALUATION _dpll(formula_t *formula, implication_graph_t *implication_graph, int
 
     if (evaluation == EVALUATION_UNDETERMINED)
     {
-//        int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, implication_graph);
-        int variable = choose_var(formula->num_variables, implication_graph);
+        int variable = unassigned_lit ? unassigned_lit : choose_var(formula->num_variables, implication_graph);
 
         // At least one variable should be unassigned, otherwise formula_evaluate would not
         // have returned EVALUATION_UNDETERMINED.
         assert(variable != CHOOSE_VAR_ALL_ASSIGNED);
 
         // Create a new assignment setting the variable to the positive value.
-//        implication_graph_node_t *child = implication_graph_node_add_child(node, variable);
         implication_graph_add_assignment(implication_graph, variable, decision_level + 1, 0, NULL);
 
-//        variable_map_add(assignment_mirror, variable, (void *) variable);
 #ifdef DEBUG
         fprintf(stderr, "%sVariable: %d\n", tabulate(decision_level), variable);
 #endif
