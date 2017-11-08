@@ -119,7 +119,7 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
             if (num_watch_literals[clause - formula->clauses] >= 2) continue;
 
             BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT assignment_result
-            = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
+                = _bcp_assign_next_watch_literal(implication_graph, clause, &deduction);
 
             if (assignment_result == BCP_ASSIGN_NEXT_WATCH_LITERAL_RESULT_DEDUCED)
             {
@@ -183,6 +183,7 @@ EVALUATION bcp_init(formula_t *formula, implication_graph_t *implication_graph)
         formula_add_clause(g_formula, *(clause_t*) *it);
     }
 
+    vector_free(&non_trivial_clauses);
     return evaluation;
 }
 
